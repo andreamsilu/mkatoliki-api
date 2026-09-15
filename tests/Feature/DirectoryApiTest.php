@@ -1,0 +1,100 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Models\Association;
+use App\Models\Choir;
+use App\Models\Family;
+use App\Models\Jumuiya;
+use App\Models\Member;
+use App\Models\Ministry;
+use App\Models\Outstation;
+use App\Models\Parish;
+use App\Models\Zone;
+use App\Support\EntityRegistry;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Tests\TestCase;
+
+class DirectoryApiTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public static function publicEntities(): array
+    {
+        return array_map(fn ($entity) => [$entity], ['provinces', 'dioceses', 'deaneries', 'parishes', 'outstations', 'zones', 'jumuiyas', 'associations', 'choirs', 'ministries']);
+    }
+
+    #[DataProvider('publicEntities')]
+    public function test_public_entities_have_paginated_lists_and_details(string $entity): void
+    {
+        $class = EntityRegistry::definition($entity)['model'];
+        $record = $class::factory()->create();
+        $this->getJson('/api/v1/'.$entity)->assertOk()->assertJsonPath('success', true)->assertJsonPath('data.0.id', $record->id)->assertJsonPath('meta.total', 1);
+        $this->getJson('/api/v1/'.$entity.'/'.$record->id)->assertOk()->assertJsonPath('data.id', $record->id)->assertHeader('X-Request-ID');
+    }
+
+    public function test_nested_lists_are_bound_to_the_parent_even_with_conflicting_filters(): void
+    {
+        $parish = Parish::factory()->create();
+        $zone = Zone::factory()->create(['parish_id' => $parish->id]);
+        $other = Zone::factory()->create();
+        $this->getJson("/api/v1/parishes/{$parish->id}/zones")->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.id', $zone->id);
+        $this->getJson("/api/v1/parishes/{$parish->id}/zones?parish_id={$other->parish_id}")->assertOk()->assertJsonCount(0, 'data');
+        $this->getJson('/api/v1/parishes/999999/zones')->assertNotFound();
+        $this->getJson("/api/v1/provinces/{$parish->deanery->diocese->ecclesiastical_province_id}/dioceses")->assertOk()->assertJsonPath('data.0.id', $parish->deanery->diocese_id);
+        $this->getJson("/api/v1/dioceses/{$parish->deanery->diocese_id}/deaneries")->assertOk()->assertJsonPath('data.0.id', $parish->deanery_id);
+        $this->getJson("/api/v1/deaneries/{$parish->deanery_id}/parishes")->assertOk()->assertJsonPath('data.0.id', $parish->id);
+    }
+
+    public function test_context_and_structure_exclude_personal_data(): void
+    {
+        $parish = Parish::factory()->create(['phone' => '+255712345678', 'email' => 'private@example.test', 'address' => 'Private office']);
+        $outstation = Outstation::factory()->create(['parish_id' => $parish->id]);
+        $zone = Zone::factory()->create(['parish_id' => $parish->id, 'outstation_id' => $outstation->id]);
+        Jumuiya::factory()->create(['parish_id' => $parish->id, 'zone_id' => $zone->id]);
+        Family::factory()->create(['parish_id' => $parish->id, 'phone' => 'SECRET-FAMILY']);
+        Member::factory()->create(['parish_id' => $parish->id, 'first_name' => 'SECRET-MEMBER']);
+        foreach ([Association::class, Choir::class, Ministry::class] as $class) {
+            $class::factory()->create(['parish_id' => $parish->id]);
+        }
+        $this->getJson("/api/v1/parishes/{$parish->id}/context")->assertOk()->assertJsonPath('data.diocese.id', $parish->deanery->diocese_id)->assertJsonMissingPath('data.parish.phone');
+        $response = $this->getJson("/api/v1/parishes/{$parish->id}/structure")->assertOk()->assertJsonCount(1, 'data.zones')->assertJsonCount(1, 'data.choirs')->assertJsonMissingPath('data.families')->assertJsonMissingPath('data.members');
+        $this->assertStringNotContainsString('SECRET-', $response->getContent());
+        $this->assertStringNotContainsString('private@example.test', $response->getContent());
+        $this->getJson("/api/v1/zones/{$zone->id}/jumuiyas")->assertOk()->assertJsonCount(1, 'data');
+    }
+
+    public function test_filters_search_and_pagination_are_consistent(): void
+    {
+        $parish = Parish::factory()->create(['name' => 'Parokia ya Kijenge']);
+        Parish::factory()->create(['name' => 'Another parish']);
+        Member::factory()->create(['first_name' => 'Kijenge', 'parish_id' => $parish->id]);
+        $this->getJson('/api/v1/parishes?diocese_id='.$parish->deanery->diocese_id)->assertOk()->assertJsonCount(1, 'data');
+        $this->getJson('/api/v1/parishes?per_page=1&page=2')->assertOk()->assertJsonPath('meta.total', 2)->assertJsonPath('meta.current_page', 2);
+        $this->getJson('/api/v1/search?q=kijenge')->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.entity_type', 'parishes');
+        $this->getJson('/api/v1/search?q=%25%25')->assertOk()->assertJsonCount(0, 'data');
+        $this->getJson('/api/v1/search')->assertUnprocessable()->assertJsonPath('error.code', 'VALIDATION_ERROR');
+        $this->getJson('/api/v1/parishes?per_page=101')->assertUnprocessable();
+        $this->getJson('/api/v1/parishes?status=unknown')->assertUnprocessable();
+    }
+
+    public function test_unverified_inactive_and_hidden_ancestor_records_are_not_public(): void
+    {
+        $pending = Parish::factory()->create(['verification_status' => 'pending']);
+        Parish::factory()->create(['status' => 'inactive']);
+        $hidden = Parish::factory()->create();
+        $hidden->deanery->update(['status' => 'suppressed']);
+        Zone::factory()->create(['parish_id' => $pending->id]);
+        $this->getJson('/api/v1/parishes')->assertOk()->assertJsonCount(0, 'data');
+        $this->getJson('/api/v1/zones')->assertOk()->assertJsonCount(0, 'data');
+        $this->getJson("/api/v1/parishes/{$pending->id}")->assertNotFound()->assertJsonPath('error.code', 'PARISH_NOT_FOUND');
+    }
+
+    public function test_family_and_member_routes_require_authentication_even_without_accept_header(): void
+    {
+        foreach (['families', 'members', 'admin/parishes'] as $entity) {
+            $this->get('/api/v1/'.$entity)->assertUnauthorized()->assertJsonPath('error.code', 'UNAUTHENTICATED');
+        }
+    }
+}

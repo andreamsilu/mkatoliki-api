@@ -1,0 +1,3812 @@
+{
+  "source": {
+    "name": "Tanzania Catholic Directory",
+    "version": "2020",
+    "type": "tec_directory",
+    "publisher": "Tanzania Episcopal Conference",
+    "reference": "https://tec.or.tz/wp-content/uploads/2021/05/Catholic-Directory-2020-Edition.pdf",
+    "transcription_reference": "https://id.scribd.com/document/931037193/Catholic-Directory-2020-Edition",
+    "retrieved_at": "2026-09-14",
+    "transcription_sha256": "d9e7968cbf79a2c25c9430b596e2f420ed84abc61b928ee0f39f07c17d612689"
+  },
+  "coverage": {
+    "provinces": "All seven metropolitan provinces listed on page 5.",
+    "dioceses": "All 34 dioceses, including seven archdioceses, listed on pages 3 and 5.",
+    "deaneries": "Only explicitly named deaneries in the accessible 2020 transcription; not a complete national list.",
+    "parishes": "All explicitly listed parish entries in the accessible TEC 2020 transcription; deanery-linked where TEC provides an assignment, otherwise deanery_id is NULL pending verification.",
+    "notes": [
+      "Historical 2020 baseline. Every new record requires verification before public API publication.",
+      "The publisher PDF URL returned HTTP 404 at retrieval; names and printed page references were transcribed from the publicly readable mirror.",
+      "Names use parish locations where a dedication is masked as [Link] in the accessible transcription. No missing dedication has been guessed.",
+      "Codes are application identifiers, not identifiers assigned by TEC. Parish codes do not contain deanery codes, so transfers preserve identity.",
+      "Outstations, congregations, chaplaincies, seminaries, technical and formation institutions are not seeded as parishes.",
+      "Parish-deanery assignments are not inferred from religious community addresses, geography, or a priest serving as a dean.",
+      "The Dar es Salaam section names ten deaneries on page 54, but does not provide a complete parish-deanery list. Its congregation tables are not parish lists."
+    ],
+    "excluded_entries": [
+      {
+        "diocese_code": "ARU",
+        "name": "Olndotoi Quasi Parish",
+        "source_pages": [
+          19
+        ],
+        "reason": "Listed as a quasi parish; requires classification review."
+      },
+      {
+        "diocese_code": "ARU",
+        "name": "Kikunde Quasi Parish",
+        "source_pages": [
+          19
+        ],
+        "reason": "Listed as a quasi parish; requires classification review."
+      },
+      {
+        "diocese_code": "MSH",
+        "name": "Mailsita Chaplaincy",
+        "source_pages": [
+          217
+        ],
+        "reason": "An institution or chaplaincy in a mixed table; not treated as a parish."
+      },
+      {
+        "diocese_code": "MSH",
+        "name": "Karanga Formation",
+        "source_pages": [
+          218
+        ],
+        "reason": "An institution or chaplaincy in a mixed table; not treated as a parish."
+      },
+      {
+        "diocese_code": "MSH",
+        "name": "Karanga Technical",
+        "source_pages": [
+          218
+        ],
+        "reason": "An institution or chaplaincy in a mixed table; not treated as a parish."
+      },
+      {
+        "diocese_code": "MSH",
+        "name": "KCMC Chaplaincy",
+        "source_pages": [
+          218
+        ],
+        "reason": "An institution or chaplaincy in a mixed table; not treated as a parish."
+      },
+      {
+        "diocese_code": "MSH",
+        "name": "St. James Seminary",
+        "source_pages": [
+          220
+        ],
+        "reason": "An institution or chaplaincy in a mixed table; not treated as a parish."
+      },
+      {
+        "diocese_code": "MSH",
+        "name": "St. Amedeus Sec Chaplain",
+        "source_pages": [
+          220
+        ],
+        "reason": "An institution or chaplaincy in a mixed table; not treated as a parish."
+      },
+      {
+        "diocese_code": "MSH",
+        "name": "Kilacha Production",
+        "source_pages": [
+          220
+        ],
+        "reason": "An institution or chaplaincy in a mixed table; not treated as a parish."
+      },
+      {
+        "diocese_code": "MSH",
+        "name": "Kilacha Brothers",
+        "source_pages": [
+          220
+        ],
+        "reason": "An institution or chaplaincy in a mixed table; not treated as a parish."
+      },
+      {
+        "diocese_code": "MSH",
+        "name": "Huruma Hospital Chaplaincy",
+        "source_pages": [
+          221
+        ],
+        "reason": "An institution or chaplaincy in a mixed table; not treated as a parish."
+      },
+      {
+        "diocese_code": "MSH",
+        "name": "Huruma Convent Chaplaincy",
+        "source_pages": [
+          221
+        ],
+        "reason": "An institution or chaplaincy in a mixed table; not treated as a parish."
+      }
+    ],
+    "parish_diocese_codes": [
+      "ARU",
+      "KAH",
+      "MBL",
+      "MSH",
+      "SAM",
+      "SUM",
+      "TAB",
+      "TAN"
+    ],
+    "dioceses_requiring_parish_deanery_mapping": [
+      "MBL",
+      "SAM",
+      "DSM",
+      "IFA",
+      "MAH",
+      "MOR",
+      "ZAN",
+      "DOD",
+      "KON",
+      "SIN",
+      "MBY",
+      "IRI",
+      "MWZ",
+      "BUK",
+      "BUN",
+      "GEI",
+      "KAY",
+      "MUS",
+      "RUL",
+      "SHI",
+      "SON",
+      "LIN",
+      "MBI",
+      "MTW",
+      "NJO",
+      "TUN",
+      "KIG",
+      "MPA"
+    ],
+    "unmapped_parish_lists": [
+      {
+        "diocese_code": "MBL",
+        "parish_count": 55,
+        "source_pages": [
+          188,
+          189
+        ],
+        "reason": "TEC lists the 55 Mbulu parishes but does not state a parish-to-deanery assignment. The relational seed requires a verified deanery for every parish."
+      },
+      {
+        "diocese_code": "SAM",
+        "parish_count": 29,
+        "source_pages": [
+          281,
+          282,
+          283,
+          284,
+          285
+        ],
+        "reason": "TEC names Chambogho, Shengena and Kindoroko deaneries but does not assign the listed parishes to them."
+      }
+    ]
+  },
+  "provinces": [
+    {
+      "code": "ARU",
+      "name": "Jimbo Kuu la Arusha",
+      "name_en": "Ecclesiastical Province of Arusha",
+      "source_pages": [
+        5
+      ]
+    },
+    {
+      "code": "DOD",
+      "name": "Jimbo Kuu la Dodoma",
+      "name_en": "Ecclesiastical Province of Dodoma",
+      "source_pages": [
+        5
+      ]
+    },
+    {
+      "code": "DSM",
+      "name": "Jimbo Kuu la Dar es Salaam",
+      "name_en": "Ecclesiastical Province of Dar es Salaam",
+      "source_pages": [
+        5
+      ]
+    },
+    {
+      "code": "MBY",
+      "name": "Jimbo Kuu la Mbeya",
+      "name_en": "Ecclesiastical Province of Mbeya",
+      "source_pages": [
+        5
+      ]
+    },
+    {
+      "code": "MWZ",
+      "name": "Jimbo Kuu la Mwanza",
+      "name_en": "Ecclesiastical Province of Mwanza",
+      "source_pages": [
+        5
+      ]
+    },
+    {
+      "code": "SON",
+      "name": "Jimbo Kuu la Songea",
+      "name_en": "Ecclesiastical Province of Songea",
+      "source_pages": [
+        5
+      ]
+    },
+    {
+      "code": "TAB",
+      "name": "Jimbo Kuu la Tabora",
+      "name_en": "Ecclesiastical Province of Tabora",
+      "source_pages": [
+        5
+      ]
+    }
+  ],
+  "dioceses": [
+    {
+      "code": "ARU",
+      "parent_code": "ARU",
+      "name": "Jimbo Kuu la Arusha",
+      "name_en": "Archdiocese of Arusha",
+      "type": "archdiocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    },
+    {
+      "code": "BUK",
+      "parent_code": "MWZ",
+      "name": "Jimbo la Bukoba",
+      "name_en": "Diocese of Bukoba",
+      "type": "diocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    },
+    {
+      "code": "BUN",
+      "parent_code": "MWZ",
+      "name": "Jimbo la Bunda",
+      "name_en": "Diocese of Bunda",
+      "type": "diocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    },
+    {
+      "code": "DOD",
+      "parent_code": "DOD",
+      "name": "Jimbo Kuu la Dodoma",
+      "name_en": "Archdiocese of Dodoma",
+      "type": "archdiocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    },
+    {
+      "code": "DSM",
+      "parent_code": "DSM",
+      "name": "Jimbo Kuu la Dar es Salaam",
+      "name_en": "Archdiocese of Dar es Salaam",
+      "type": "archdiocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    },
+    {
+      "code": "GEI",
+      "parent_code": "MWZ",
+      "name": "Jimbo la Geita",
+      "name_en": "Diocese of Geita",
+      "type": "diocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    },
+    {
+      "code": "IFA",
+      "parent_code": "DSM",
+      "name": "Jimbo la Ifakara",
+      "name_en": "Diocese of Ifakara",
+      "type": "diocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    },
+    {
+      "code": "IRI",
+      "parent_code": "MBY",
+      "name": "Jimbo la Iringa",
+      "name_en": "Diocese of Iringa",
+      "type": "diocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    },
+    {
+      "code": "KAH",
+      "parent_code": "TAB",
+      "name": "Jimbo la Kahama",
+      "name_en": "Diocese of Kahama",
+      "type": "diocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    },
+    {
+      "code": "KAY",
+      "parent_code": "MWZ",
+      "name": "Jimbo la Kayanga",
+      "name_en": "Diocese of Kayanga",
+      "type": "diocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    },
+    {
+      "code": "KIG",
+      "parent_code": "TAB",
+      "name": "Jimbo la Kigoma",
+      "name_en": "Diocese of Kigoma",
+      "type": "diocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    },
+    {
+      "code": "KON",
+      "parent_code": "DOD",
+      "name": "Jimbo la Kondoa",
+      "name_en": "Diocese of Kondoa",
+      "type": "diocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    },
+    {
+      "code": "LIN",
+      "parent_code": "SON",
+      "name": "Jimbo la Lindi",
+      "name_en": "Diocese of Lindi",
+      "type": "diocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    },
+    {
+      "code": "MAH",
+      "parent_code": "DSM",
+      "name": "Jimbo la Mahenge",
+      "name_en": "Diocese of Mahenge",
+      "type": "diocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    },
+    {
+      "code": "MBI",
+      "parent_code": "SON",
+      "name": "Jimbo la Mbinga",
+      "name_en": "Diocese of Mbinga",
+      "type": "diocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    },
+    {
+      "code": "MBL",
+      "parent_code": "ARU",
+      "name": "Jimbo la Mbulu",
+      "name_en": "Diocese of Mbulu",
+      "type": "diocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    },
+    {
+      "code": "MBY",
+      "parent_code": "MBY",
+      "name": "Jimbo Kuu la Mbeya",
+      "name_en": "Archdiocese of Mbeya",
+      "type": "archdiocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    },
+    {
+      "code": "MOR",
+      "parent_code": "DSM",
+      "name": "Jimbo la Morogoro",
+      "name_en": "Diocese of Morogoro",
+      "type": "diocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    },
+    {
+      "code": "MPA",
+      "parent_code": "TAB",
+      "name": "Jimbo la Mpanda",
+      "name_en": "Diocese of Mpanda",
+      "type": "diocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    },
+    {
+      "code": "MSH",
+      "parent_code": "ARU",
+      "name": "Jimbo la Moshi",
+      "name_en": "Diocese of Moshi",
+      "type": "diocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    },
+    {
+      "code": "MTW",
+      "parent_code": "SON",
+      "name": "Jimbo la Mtwara",
+      "name_en": "Diocese of Mtwara",
+      "type": "diocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    },
+    {
+      "code": "MUS",
+      "parent_code": "MWZ",
+      "name": "Jimbo la Musoma",
+      "name_en": "Diocese of Musoma",
+      "type": "diocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    },
+    {
+      "code": "MWZ",
+      "parent_code": "MWZ",
+      "name": "Jimbo Kuu la Mwanza",
+      "name_en": "Archdiocese of Mwanza",
+      "type": "archdiocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    },
+    {
+      "code": "NJO",
+      "parent_code": "SON",
+      "name": "Jimbo la Njombe",
+      "name_en": "Diocese of Njombe",
+      "type": "diocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    },
+    {
+      "code": "RUL",
+      "parent_code": "MWZ",
+      "name": "Jimbo la Rulenge-Ngara",
+      "name_en": "Diocese of Rulenge-Ngara",
+      "type": "diocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    },
+    {
+      "code": "SAM",
+      "parent_code": "ARU",
+      "name": "Jimbo la Same",
+      "name_en": "Diocese of Same",
+      "type": "diocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    },
+    {
+      "code": "SHI",
+      "parent_code": "MWZ",
+      "name": "Jimbo la Shinyanga",
+      "name_en": "Diocese of Shinyanga",
+      "type": "diocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    },
+    {
+      "code": "SIN",
+      "parent_code": "DOD",
+      "name": "Jimbo la Singida",
+      "name_en": "Diocese of Singida",
+      "type": "diocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    },
+    {
+      "code": "SON",
+      "parent_code": "SON",
+      "name": "Jimbo Kuu la Songea",
+      "name_en": "Archdiocese of Songea",
+      "type": "archdiocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    },
+    {
+      "code": "SUM",
+      "parent_code": "MBY",
+      "name": "Jimbo la Sumbawanga",
+      "name_en": "Diocese of Sumbawanga",
+      "type": "diocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    },
+    {
+      "code": "TAB",
+      "parent_code": "TAB",
+      "name": "Jimbo Kuu la Tabora",
+      "name_en": "Archdiocese of Tabora",
+      "type": "archdiocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    },
+    {
+      "code": "TAN",
+      "parent_code": "DSM",
+      "name": "Jimbo la Tanga",
+      "name_en": "Diocese of Tanga",
+      "type": "diocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    },
+    {
+      "code": "TUN",
+      "parent_code": "SON",
+      "name": "Jimbo la Tunduru-Masasi",
+      "name_en": "Diocese of Tunduru-Masasi",
+      "type": "diocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    },
+    {
+      "code": "ZAN",
+      "parent_code": "DSM",
+      "name": "Jimbo la Zanzibar",
+      "name_en": "Diocese of Zanzibar",
+      "type": "diocese",
+      "source_pages": [
+        3,
+        5
+      ]
+    }
+  ],
+  "deaneries": [
+    {
+      "code": "ARU-ARUMERU",
+      "parent_code": "ARU",
+      "name": "Dekania ya Arumeru",
+      "name_en": "Arumeru Deanery",
+      "source_pages": [
+        17,
+        18
+      ]
+    },
+    {
+      "code": "ARU-EAST",
+      "parent_code": "ARU",
+      "name": "Dekania ya East Arusha Municipality",
+      "name_en": "East Arusha Municipality Deanery",
+      "source_pages": [
+        16
+      ]
+    },
+    {
+      "code": "ARU-KITETO",
+      "parent_code": "ARU",
+      "name": "Dekania ya Kiteto",
+      "name_en": "Kiteto Deanery",
+      "source_pages": [
+        19
+      ]
+    },
+    {
+      "code": "ARU-LONGIDO",
+      "parent_code": "ARU",
+      "name": "Dekania ya Longido",
+      "name_en": "Longido Deanery",
+      "source_pages": [
+        20
+      ]
+    },
+    {
+      "code": "ARU-MONDULI",
+      "parent_code": "ARU",
+      "name": "Dekania ya Monduli",
+      "name_en": "Monduli Deanery",
+      "source_pages": [
+        17
+      ]
+    },
+    {
+      "code": "ARU-NGORONGORO",
+      "parent_code": "ARU",
+      "name": "Dekania ya Ngorongoro",
+      "name_en": "Ngorongoro Deanery",
+      "source_pages": [
+        18
+      ]
+    },
+    {
+      "code": "ARU-SIMANJIRO",
+      "parent_code": "ARU",
+      "name": "Dekania ya Simanjiro",
+      "name_en": "Simanjiro Deanery",
+      "source_pages": [
+        19
+      ]
+    },
+    {
+      "code": "ARU-WEST",
+      "parent_code": "ARU",
+      "name": "Dekania ya West Arusha Municipality",
+      "name_en": "West Arusha Municipality Deanery",
+      "source_pages": [
+        16
+      ]
+    },
+    {
+      "code": "BUK-MULEBA",
+      "parent_code": "BUK",
+      "name": "Dekania ya Muleba",
+      "name_en": "Muleba Deanery",
+      "source_pages": [
+        35
+      ]
+    },
+    {
+      "code": "DSM-KIB",
+      "parent_code": "DSM",
+      "name": "Dekania ya Kibaha",
+      "name_en": "Kibaha Deanery",
+      "source_pages": [
+        54
+      ]
+    },
+    {
+      "code": "DSM-KIG",
+      "parent_code": "DSM",
+      "name": "Dekania ya Kigamboni",
+      "name_en": "Kigamboni Deanery",
+      "source_pages": [
+        54
+      ]
+    },
+    {
+      "code": "DSM-KIL",
+      "parent_code": "DSM",
+      "name": "Dekania ya Kilimahewa",
+      "name_en": "Kilimahewa Deanery",
+      "source_pages": [
+        54
+      ]
+    },
+    {
+      "code": "DSM-MBE",
+      "parent_code": "DSM",
+      "name": "Dekania ya Mbezi Luis",
+      "name_en": "Mbezi Luis Deanery",
+      "source_pages": [
+        54
+      ]
+    },
+    {
+      "code": "DSM-SEG",
+      "parent_code": "DSM",
+      "name": "Dekania ya Segerea",
+      "name_en": "Segerea Deanery",
+      "source_pages": [
+        54
+      ]
+    },
+    {
+      "code": "DSM-STG",
+      "parent_code": "DSM",
+      "name": "Dekania ya St. Gaspar",
+      "name_en": "St. Gaspar Deanery",
+      "source_pages": [
+        54,
+        56
+      ]
+    },
+    {
+      "code": "DSM-STJ",
+      "parent_code": "DSM",
+      "name": "Dekania ya St. Joseph",
+      "name_en": "St. Joseph Deanery",
+      "source_pages": [
+        54
+      ]
+    },
+    {
+      "code": "DSM-STP",
+      "parent_code": "DSM",
+      "name": "Dekania ya St. Peter",
+      "name_en": "St. Peter Deanery",
+      "source_pages": [
+        54
+      ]
+    },
+    {
+      "code": "DSM-UBU",
+      "parent_code": "DSM",
+      "name": "Dekania ya Ubungo",
+      "name_en": "Ubungo Deanery",
+      "source_pages": [
+        54
+      ]
+    },
+    {
+      "code": "DSM-UKO",
+      "parent_code": "DSM",
+      "name": "Dekania ya Ukonga",
+      "name_en": "Ukonga Deanery",
+      "source_pages": [
+        54
+      ]
+    },
+    {
+      "code": "IFA-MLIMBA",
+      "parent_code": "IFA",
+      "name": "Dekania ya Mlimba",
+      "name_en": "Mlimba Deanery",
+      "source_pages": [
+        94
+      ]
+    },
+    {
+      "code": "KAH-IBOJA",
+      "parent_code": "KAH",
+      "name": "Dekania ya Iboja",
+      "name_en": "Iboja Deanery",
+      "source_pages": [
+        113
+      ]
+    },
+    {
+      "code": "KAH-MASUMBWE",
+      "parent_code": "KAH",
+      "name": "Dekania ya Masumbwe",
+      "name_en": "Masumbwe Deanery",
+      "source_pages": [
+        113,
+        114
+      ]
+    },
+    {
+      "code": "KAH-NGAYA",
+      "parent_code": "KAH",
+      "name": "Dekania ya Ngaya",
+      "name_en": "Ngaya Deanery",
+      "source_pages": [
+        113
+      ]
+    },
+    {
+      "code": "KAH-TOWN",
+      "parent_code": "KAH",
+      "name": "Dekania ya Kahama Town",
+      "name_en": "Kahama Town Deanery",
+      "source_pages": [
+        113
+      ]
+    },
+    {
+      "code": "KAH-USHIROMBO",
+      "parent_code": "KAH",
+      "name": "Dekania ya Ushirombo",
+      "name_en": "Ushirombo Deanery",
+      "source_pages": [
+        113
+      ]
+    },
+    {
+      "code": "MSH-HAI",
+      "parent_code": "MSH",
+      "name": "Dekania ya Hai",
+      "name_en": "Hai Deanery",
+      "source_pages": [
+        216
+      ]
+    },
+    {
+      "code": "MSH-MOSHI",
+      "parent_code": "MSH",
+      "name": "Dekania ya Moshi",
+      "name_en": "Moshi Deanery",
+      "source_pages": [
+        216
+      ]
+    },
+    {
+      "code": "MSH-ROMBO",
+      "parent_code": "MSH",
+      "name": "Dekania ya Rombo",
+      "name_en": "Rombo Deanery",
+      "source_pages": [
+        216
+      ]
+    },
+    {
+      "code": "MSH-VUNJO",
+      "parent_code": "MSH",
+      "name": "Dekania ya Vunjo",
+      "name_en": "Vunjo Deanery",
+      "source_pages": [
+        216
+      ]
+    },
+    {
+      "code": "SAM-CHAMBOGHO",
+      "parent_code": "SAM",
+      "name": "Dekania ya Chambogho",
+      "name_en": "Chambogho Deanery",
+      "source_pages": [
+        285
+      ]
+    },
+    {
+      "code": "SAM-KINDOROKO",
+      "parent_code": "SAM",
+      "name": "Dekania ya Kindoroko",
+      "name_en": "Kindoroko Deanery",
+      "source_pages": [
+        285
+      ]
+    },
+    {
+      "code": "SAM-SHENGENA",
+      "parent_code": "SAM",
+      "name": "Dekania ya Shengena",
+      "name_en": "Shengena Deanery",
+      "source_pages": [
+        285
+      ]
+    },
+    {
+      "code": "SUM-CENTRAL",
+      "parent_code": "SUM",
+      "name": "Dekania ya Central",
+      "name_en": "Central Deanery",
+      "source_pages": [
+        315,
+        316
+      ]
+    },
+    {
+      "code": "SUM-KALAMBO",
+      "parent_code": "SUM",
+      "name": "Dekania ya Kalambo",
+      "name_en": "Kalambo Deanery",
+      "source_pages": [
+        316
+      ]
+    },
+    {
+      "code": "SUM-NKANSI",
+      "parent_code": "SUM",
+      "name": "Dekania ya Nkansi",
+      "name_en": "Nkansi Deanery",
+      "source_pages": [
+        316
+      ]
+    },
+    {
+      "code": "SUM-SOUTHERN",
+      "parent_code": "SUM",
+      "name": "Dekania ya Southern",
+      "name_en": "Southern Deanery",
+      "source_pages": [
+        316
+      ]
+    },
+    {
+      "code": "TAB-NZEGA",
+      "parent_code": "TAB",
+      "name": "Dekania ya Nzega",
+      "name_en": "Nzega Deanery",
+      "source_pages": [
+        322,
+        323
+      ]
+    },
+    {
+      "code": "TAB-TABORA",
+      "parent_code": "TAB",
+      "name": "Dekania ya Tabora",
+      "name_en": "Tabora Deanery",
+      "source_pages": [
+        322
+      ]
+    },
+    {
+      "code": "TAB-URAMBO",
+      "parent_code": "TAB",
+      "name": "Dekania ya Urambo",
+      "name_en": "Urambo Deanery",
+      "source_pages": [
+        323
+      ]
+    },
+    {
+      "code": "TAN-HANDENI",
+      "parent_code": "TAN",
+      "name": "Dekania ya Handeni",
+      "name_en": "Handeni Deanery",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-KOROGWE",
+      "parent_code": "TAN",
+      "name": "Dekania ya Korogwe",
+      "name_en": "Korogwe Deanery",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-LUSHOTO",
+      "parent_code": "TAN",
+      "name": "Dekania ya Lushoto",
+      "name_en": "Lushoto Deanery",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-TANGA",
+      "parent_code": "TAN",
+      "name": "Dekania ya Tanga",
+      "name_en": "Tanga Deanery",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "ZAN-PEMBA",
+      "parent_code": "ZAN",
+      "name": "Dekania ya Pemba",
+      "name_en": "Pemba Deanery",
+      "source_pages": [
+        349
+      ]
+    },
+    {
+      "code": "ZAN-UNGUJA",
+      "parent_code": "ZAN",
+      "name": "Dekania ya Unguja",
+      "name_en": "Unguja Deanery",
+      "source_pages": [
+        349
+      ]
+    }
+  ],
+  "parishes": [
+    {
+      "code": "ARU-BURKA",
+      "parent_code": "ARU-WEST",
+      "name": "Parokia ya Burka",
+      "name_en": "Burka Parish",
+      "source_pages": [
+        16
+      ]
+    },
+    {
+      "code": "ARU-CATHEDRAL",
+      "parent_code": "ARU-EAST",
+      "name": "Parokia ya Cathedral",
+      "name_en": "Cathedral Parish",
+      "source_pages": [
+        16
+      ]
+    },
+    {
+      "code": "ARU-CHEKERENI",
+      "parent_code": "ARU-ARUMERU",
+      "name": "Parokia ya Chekereni",
+      "name_en": "Chekereni Parish",
+      "source_pages": [
+        17,
+        18
+      ]
+    },
+    {
+      "code": "ARU-DIGODIGO",
+      "parent_code": "ARU-NGORONGORO",
+      "name": "Parokia ya Digodigo",
+      "name_en": "Digodigo Parish",
+      "source_pages": [
+        18
+      ]
+    },
+    {
+      "code": "ARU-EMBOREET",
+      "parent_code": "ARU-SIMANJIRO",
+      "name": "Parokia ya Emboreet",
+      "name_en": "Emboreet Parish",
+      "source_pages": [
+        19
+      ]
+    },
+    {
+      "code": "ARU-ENDUIMET",
+      "parent_code": "ARU-LONGIDO",
+      "name": "Parokia ya Enduimet",
+      "name_en": "Enduimet Parish",
+      "source_pages": [
+        20
+      ]
+    },
+    {
+      "code": "ARU-ENDULEN",
+      "parent_code": "ARU-NGORONGORO",
+      "name": "Parokia ya Endulen",
+      "name_en": "Endulen Parish",
+      "source_pages": [
+        18
+      ]
+    },
+    {
+      "code": "ARU-ENGIKARRET",
+      "parent_code": "ARU-LONGIDO",
+      "name": "Parokia ya Engikarret",
+      "name_en": "Engikarret Parish",
+      "source_pages": [
+        20
+      ]
+    },
+    {
+      "code": "ARU-ESSO",
+      "parent_code": "ARU-WEST",
+      "name": "Parokia ya Esso",
+      "name_en": "Esso Parish",
+      "source_pages": [
+        16
+      ]
+    },
+    {
+      "code": "ARU-ILBORU",
+      "parent_code": "ARU-EAST",
+      "name": "Parokia ya Ilboru",
+      "name_en": "Ilboru Parish",
+      "source_pages": [
+        16
+      ]
+    },
+    {
+      "code": "ARU-KAMWANGA",
+      "parent_code": "ARU-LONGIDO",
+      "name": "Parokia ya Kamwanga",
+      "name_en": "Kamwanga Parish",
+      "source_pages": [
+        20
+      ]
+    },
+    {
+      "code": "ARU-KIBAYA",
+      "parent_code": "ARU-KITETO",
+      "name": "Parokia ya Kibaya",
+      "name_en": "Kibaya Parish",
+      "source_pages": [
+        19
+      ]
+    },
+    {
+      "code": "ARU-KIJENGE",
+      "parent_code": "ARU-EAST",
+      "name": "Parokia ya Kijenge",
+      "name_en": "Kijenge Parish",
+      "source_pages": [
+        16
+      ]
+    },
+    {
+      "code": "ARU-KIJUNGU",
+      "parent_code": "ARU-KITETO",
+      "name": "Parokia ya Kijungu",
+      "name_en": "Kijungu Parish",
+      "source_pages": [
+        19
+      ]
+    },
+    {
+      "code": "ARU-KIKATITI",
+      "parent_code": "ARU-ARUMERU",
+      "name": "Parokia ya Kikatiti",
+      "name_en": "Kikatiti Parish",
+      "source_pages": [
+        17,
+        18
+      ]
+    },
+    {
+      "code": "ARU-KISONGO",
+      "parent_code": "ARU-WEST",
+      "name": "Parokia ya Kisongo",
+      "name_en": "Kisongo Parish",
+      "source_pages": [
+        16
+      ]
+    },
+    {
+      "code": "ARU-KORONA",
+      "parent_code": "ARU-EAST",
+      "name": "Parokia ya Korona",
+      "name_en": "Korona Parish",
+      "source_pages": [
+        16
+      ]
+    },
+    {
+      "code": "ARU-KWAMROMBO",
+      "parent_code": "ARU-WEST",
+      "name": "Parokia ya Kwamrombo",
+      "name_en": "Kwamrombo Parish",
+      "source_pages": [
+        16
+      ]
+    },
+    {
+      "code": "ARU-KWANGULELO",
+      "parent_code": "ARU-EAST",
+      "name": "Parokia ya Kwangulelo",
+      "name_en": "Kwangulelo Parish",
+      "source_pages": [
+        16
+      ]
+    },
+    {
+      "code": "ARU-LANDANAI",
+      "parent_code": "ARU-SIMANJIRO",
+      "name": "Parokia ya Landanai",
+      "name_en": "Landanai Parish",
+      "source_pages": [
+        19
+      ]
+    },
+    {
+      "code": "ARU-LOLIONDO",
+      "parent_code": "ARU-NGORONGORO",
+      "name": "Parokia ya Loliondo",
+      "name_en": "Loliondo Parish",
+      "source_pages": [
+        18
+      ]
+    },
+    {
+      "code": "ARU-LONGIDO",
+      "parent_code": "ARU-LONGIDO",
+      "name": "Parokia ya Longido",
+      "name_en": "Longido Parish",
+      "source_pages": [
+        20
+      ]
+    },
+    {
+      "code": "ARU-LORUVANI",
+      "parent_code": "ARU-EAST",
+      "name": "Parokia ya Loruvani",
+      "name_en": "Loruvani Parish",
+      "source_pages": [
+        16
+      ]
+    },
+    {
+      "code": "ARU-MAJI-YA-CHAI",
+      "parent_code": "ARU-ARUMERU",
+      "name": "Parokia ya Maji ya Chai",
+      "name_en": "Maji ya Chai Parish",
+      "source_pages": [
+        17,
+        18
+      ]
+    },
+    {
+      "code": "ARU-MALAMBO",
+      "parent_code": "ARU-NGORONGORO",
+      "name": "Parokia ya Malambo",
+      "name_en": "Malambo Parish",
+      "source_pages": [
+        18
+      ]
+    },
+    {
+      "code": "ARU-MANYIRE",
+      "parent_code": "ARU-ARUMERU",
+      "name": "Parokia ya Manyire",
+      "name_en": "Manyire Parish",
+      "source_pages": [
+        17,
+        18
+      ]
+    },
+    {
+      "code": "ARU-MATUI",
+      "parent_code": "ARU-KITETO",
+      "name": "Parokia ya Matui",
+      "name_en": "Matui Parish",
+      "source_pages": [
+        19
+      ]
+    },
+    {
+      "code": "ARU-MBUGUNI",
+      "parent_code": "ARU-ARUMERU",
+      "name": "Parokia ya Mbuguni",
+      "name_en": "Mbuguni Parish",
+      "source_pages": [
+        17,
+        18
+      ]
+    },
+    {
+      "code": "ARU-MIRERANI",
+      "parent_code": "ARU-ARUMERU",
+      "name": "Parokia ya Mirerani",
+      "name_en": "Mirerani Parish",
+      "source_pages": [
+        17,
+        18
+      ]
+    },
+    {
+      "code": "ARU-MOITA-BWAWANI",
+      "parent_code": "ARU-MONDULI",
+      "name": "Parokia ya Moita Bwawani",
+      "name_en": "Moita Bwawani Parish",
+      "source_pages": [
+        17
+      ]
+    },
+    {
+      "code": "ARU-MONDULI-JUU",
+      "parent_code": "ARU-MONDULI",
+      "name": "Parokia ya Monduli Juu",
+      "name_en": "Monduli Juu Parish",
+      "source_pages": [
+        17
+      ]
+    },
+    {
+      "code": "ARU-MONDULI-MJINI",
+      "parent_code": "ARU-MONDULI",
+      "name": "Parokia ya Monduli Mjini",
+      "name_en": "Monduli Mjini Parish",
+      "source_pages": [
+        17
+      ]
+    },
+    {
+      "code": "ARU-MOSHONO",
+      "parent_code": "ARU-EAST",
+      "name": "Parokia ya Moshono",
+      "name_en": "Moshono Parish",
+      "source_pages": [
+        16
+      ]
+    },
+    {
+      "code": "ARU-MTO-WA-MBU",
+      "parent_code": "ARU-MONDULI",
+      "name": "Parokia ya Mto wa Mbu",
+      "name_en": "Mto wa Mbu Parish",
+      "source_pages": [
+        17
+      ]
+    },
+    {
+      "code": "ARU-MURIET",
+      "parent_code": "ARU-EAST",
+      "name": "Parokia ya Muriet",
+      "name_en": "Muriet Parish",
+      "source_pages": [
+        16
+      ]
+    },
+    {
+      "code": "ARU-NAINOKANOKA",
+      "parent_code": "ARU-NGORONGORO",
+      "name": "Parokia ya Nainokanoka",
+      "name_en": "Nainokanoka Parish",
+      "source_pages": [
+        18
+      ]
+    },
+    {
+      "code": "ARU-NAMANGA",
+      "parent_code": "ARU-LONGIDO",
+      "name": "Parokia ya Namanga",
+      "name_en": "Namanga Parish",
+      "source_pages": [
+        20
+      ]
+    },
+    {
+      "code": "ARU-NAMBALA",
+      "parent_code": "ARU-ARUMERU",
+      "name": "Parokia ya Nambala",
+      "name_en": "Nambala Parish",
+      "source_pages": [
+        17,
+        18
+      ]
+    },
+    {
+      "code": "ARU-NGARAMTONI",
+      "parent_code": "ARU-LONGIDO",
+      "name": "Parokia ya Ngaramtoni",
+      "name_en": "Ngaramtoni Parish",
+      "source_pages": [
+        20
+      ]
+    },
+    {
+      "code": "ARU-NGARENARO",
+      "parent_code": "ARU-WEST",
+      "name": "Parokia ya Ngarenaro",
+      "name_en": "Ngarenaro Parish",
+      "source_pages": [
+        16
+      ]
+    },
+    {
+      "code": "ARU-NGORONGORO",
+      "parent_code": "ARU-NGORONGORO",
+      "name": "Parokia ya Ngorongoro",
+      "name_en": "Ngorongoro Parish",
+      "source_pages": [
+        18
+      ]
+    },
+    {
+      "code": "ARU-NGURDOTO",
+      "parent_code": "ARU-ARUMERU",
+      "name": "Parokia ya Ngurdoto",
+      "name_en": "Ngurdoto Parish",
+      "source_pages": [
+        17,
+        18
+      ]
+    },
+    {
+      "code": "ARU-NJIRO",
+      "parent_code": "ARU-EAST",
+      "name": "Parokia ya Njiro",
+      "name_en": "Njiro Parish",
+      "source_pages": [
+        16
+      ]
+    },
+    {
+      "code": "ARU-NYUMBA-YA-MUNGU",
+      "parent_code": "ARU-ARUMERU",
+      "name": "Parokia ya Nyumba ya Mungu",
+      "name_en": "Nyumba ya Mungu Parish",
+      "source_pages": [
+        17,
+        18
+      ]
+    },
+    {
+      "code": "ARU-OLASITI",
+      "parent_code": "ARU-WEST",
+      "name": "Parokia ya Olasiti",
+      "name_en": "Olasiti Parish",
+      "source_pages": [
+        16
+      ]
+    },
+    {
+      "code": "ARU-OLOSIPA",
+      "parent_code": "ARU-LONGIDO",
+      "name": "Parokia ya Olosipa",
+      "name_en": "Olosipa Parish",
+      "source_pages": [
+        20
+      ]
+    },
+    {
+      "code": "ARU-ORKESUMET",
+      "parent_code": "ARU-SIMANJIRO",
+      "name": "Parokia ya Orkesumet",
+      "name_en": "Orkesumet Parish",
+      "source_pages": [
+        19
+      ]
+    },
+    {
+      "code": "ARU-PATANDI",
+      "parent_code": "ARU-ARUMERU",
+      "name": "Parokia ya Patandi",
+      "name_en": "Patandi Parish",
+      "source_pages": [
+        17,
+        18
+      ]
+    },
+    {
+      "code": "ARU-POLISING-ISI",
+      "parent_code": "ARU-ARUMERU",
+      "name": "Parokia ya Polising’isi",
+      "name_en": "Polising’isi Parish",
+      "source_pages": [
+        17,
+        18
+      ]
+    },
+    {
+      "code": "ARU-SAKINA",
+      "parent_code": "ARU-WEST",
+      "name": "Parokia ya Sakina",
+      "name_en": "Sakina Parish",
+      "source_pages": [
+        16
+      ]
+    },
+    {
+      "code": "ARU-SINON",
+      "parent_code": "ARU-EAST",
+      "name": "Parokia ya Sinon",
+      "name_en": "Sinon Parish",
+      "source_pages": [
+        16
+      ]
+    },
+    {
+      "code": "ARU-SOMBETINI",
+      "parent_code": "ARU-WEST",
+      "name": "Parokia ya Sombetini",
+      "name_en": "Sombetini Parish",
+      "source_pages": [
+        16
+      ]
+    },
+    {
+      "code": "ARU-SUNYA",
+      "parent_code": "ARU-KITETO",
+      "name": "Parokia ya Sunya",
+      "name_en": "Sunya Parish",
+      "source_pages": [
+        19
+      ]
+    },
+    {
+      "code": "ARU-UNGA-LTD",
+      "parent_code": "ARU-EAST",
+      "name": "Parokia ya Unga Ltd",
+      "name_en": "Unga Ltd Parish",
+      "source_pages": [
+        16
+      ]
+    },
+    {
+      "code": "ARU-USA-RIVER",
+      "parent_code": "ARU-ARUMERU",
+      "name": "Parokia ya Usa River",
+      "name_en": "Usa River Parish",
+      "source_pages": [
+        17,
+        18
+      ]
+    },
+    {
+      "code": "KAH-BUKOMBE",
+      "parent_code": "KAH-MASUMBWE",
+      "name": "Parokia ya Bukombe",
+      "name_en": "Bukombe Parish",
+      "source_pages": [
+        113,
+        114
+      ]
+    },
+    {
+      "code": "KAH-BULUNGWA",
+      "parent_code": "KAH-IBOJA",
+      "name": "Parokia ya Bulungwa",
+      "name_en": "Bulungwa Parish",
+      "source_pages": [
+        113
+      ]
+    },
+    {
+      "code": "KAH-BUSOKA",
+      "parent_code": "KAH-TOWN",
+      "name": "Parokia ya Busoka",
+      "name_en": "Busoka Parish",
+      "source_pages": [
+        113
+      ]
+    },
+    {
+      "code": "KAH-CHONA",
+      "parent_code": "KAH-IBOJA",
+      "name": "Parokia ya Chona",
+      "name_en": "Chona Parish",
+      "source_pages": [
+        113
+      ]
+    },
+    {
+      "code": "KAH-IBOJA",
+      "parent_code": "KAH-IBOJA",
+      "name": "Parokia ya Iboja",
+      "name_en": "Iboja Parish",
+      "source_pages": [
+        113
+      ]
+    },
+    {
+      "code": "KAH-IFUNDE",
+      "parent_code": "KAH-IBOJA",
+      "name": "Parokia ya Ifunde",
+      "name_en": "Ifunde Parish",
+      "source_pages": [
+        113
+      ]
+    },
+    {
+      "code": "KAH-ILOGI",
+      "parent_code": "KAH-NGAYA",
+      "name": "Parokia ya Ilogi",
+      "name_en": "Ilogi Parish",
+      "source_pages": [
+        113
+      ]
+    },
+    {
+      "code": "KAH-IPONYA",
+      "parent_code": "KAH-MASUMBWE",
+      "name": "Parokia ya Iponya",
+      "name_en": "Iponya Parish",
+      "source_pages": [
+        113,
+        114
+      ]
+    },
+    {
+      "code": "KAH-ISAKA",
+      "parent_code": "KAH-TOWN",
+      "name": "Parokia ya Isaka",
+      "name_en": "Isaka Parish",
+      "source_pages": [
+        113
+      ]
+    },
+    {
+      "code": "KAH-ITIMBYA",
+      "parent_code": "KAH-MASUMBWE",
+      "name": "Parokia ya Itimbya",
+      "name_en": "Itimbya Parish",
+      "source_pages": [
+        113,
+        114
+      ]
+    },
+    {
+      "code": "KAH-KABUHIMA",
+      "parent_code": "KAH-USHIROMBO",
+      "name": "Parokia ya Kabuhima",
+      "name_en": "Kabuhima Parish",
+      "source_pages": [
+        113
+      ]
+    },
+    {
+      "code": "KAH-KAGONGWA",
+      "parent_code": "KAH-TOWN",
+      "name": "Parokia ya Kagongwa",
+      "name_en": "Kagongwa Parish",
+      "source_pages": [
+        113
+      ]
+    },
+    {
+      "code": "KAH-KANIHA",
+      "parent_code": "KAH-USHIROMBO",
+      "name": "Parokia ya Kaniha",
+      "name_en": "Kaniha Parish",
+      "source_pages": [
+        113
+      ]
+    },
+    {
+      "code": "KAH-LULEMBELA",
+      "parent_code": "KAH-USHIROMBO",
+      "name": "Parokia ya Lulembela",
+      "name_en": "Lulembela Parish",
+      "source_pages": [
+        113
+      ]
+    },
+    {
+      "code": "KAH-MAGANZO",
+      "parent_code": "KAH-USHIROMBO",
+      "name": "Parokia ya Maganzo",
+      "name_en": "Maganzo Parish",
+      "source_pages": [
+        113
+      ]
+    },
+    {
+      "code": "KAH-MAJENGO",
+      "parent_code": "KAH-TOWN",
+      "name": "Parokia ya Majengo",
+      "name_en": "Majengo Parish",
+      "source_pages": [
+        113
+      ]
+    },
+    {
+      "code": "KAH-MASUMBWE",
+      "parent_code": "KAH-MASUMBWE",
+      "name": "Parokia ya Masumbwe",
+      "name_en": "Masumbwe Parish",
+      "source_pages": [
+        113,
+        114
+      ]
+    },
+    {
+      "code": "KAH-MBULU",
+      "parent_code": "KAH-TOWN",
+      "name": "Parokia ya Mbulu",
+      "name_en": "Mbulu Parish",
+      "source_pages": [
+        113
+      ]
+    },
+    {
+      "code": "KAH-MHUNGULA",
+      "parent_code": "KAH-TOWN",
+      "name": "Parokia ya Mhungula",
+      "name_en": "Mhungula Parish",
+      "source_pages": [
+        113
+      ]
+    },
+    {
+      "code": "KAH-NAMONGE",
+      "parent_code": "KAH-USHIROMBO",
+      "name": "Parokia ya Namonge",
+      "name_en": "Namonge Parish",
+      "source_pages": [
+        113
+      ]
+    },
+    {
+      "code": "KAH-NGAYA",
+      "parent_code": "KAH-NGAYA",
+      "name": "Parokia ya Ngaya",
+      "name_en": "Ngaya Parish",
+      "source_pages": [
+        113
+      ]
+    },
+    {
+      "code": "KAH-NYAMILANGANO",
+      "parent_code": "KAH-IBOJA",
+      "name": "Parokia ya Nyamilangano",
+      "name_en": "Nyamilangano Parish",
+      "source_pages": [
+        113
+      ]
+    },
+    {
+      "code": "KAH-NYASUBI",
+      "parent_code": "KAH-TOWN",
+      "name": "Parokia ya Nyasubi",
+      "name_en": "Nyasubi Parish",
+      "source_pages": [
+        113
+      ]
+    },
+    {
+      "code": "KAH-SEGESE",
+      "parent_code": "KAH-NGAYA",
+      "name": "Parokia ya Segese",
+      "name_en": "Segese Parish",
+      "source_pages": [
+        113
+      ]
+    },
+    {
+      "code": "KAH-ST-CHARLES-LWANGA-CATHEDRAL",
+      "parent_code": "KAH-TOWN",
+      "name": "Parokia ya St. Charles Lwanga Cathedral",
+      "name_en": "St. Charles Lwanga Cathedral Parish",
+      "source_pages": [
+        113
+      ]
+    },
+    {
+      "code": "KAH-USHETU",
+      "parent_code": "KAH-IBOJA",
+      "name": "Parokia ya Ushetu",
+      "name_en": "Ushetu Parish",
+      "source_pages": [
+        113
+      ]
+    },
+    {
+      "code": "KAH-USHIROMBO",
+      "parent_code": "KAH-USHIROMBO",
+      "name": "Parokia ya Ushirombo",
+      "name_en": "Ushirombo Parish",
+      "source_pages": [
+        113
+      ]
+    },
+    {
+      "code": "MSH-AROPAGITA",
+      "parent_code": "MSH-VUNJO",
+      "name": "Parokia ya Aropagita",
+      "name_en": "Aropagita Parish",
+      "source_pages": [
+        219,
+        220
+      ]
+    },
+    {
+      "code": "MSH-CHEKERENI",
+      "parent_code": "MSH-MOSHI",
+      "name": "Parokia ya Chekereni",
+      "name_en": "Chekereni Parish",
+      "source_pages": [
+        217,
+        218,
+        219
+      ]
+    },
+    {
+      "code": "MSH-HAI-MJINI",
+      "parent_code": "MSH-HAI",
+      "name": "Parokia ya Hai Mjini",
+      "name_en": "Hai Mjini Parish",
+      "source_pages": [
+        216,
+        217
+      ]
+    },
+    {
+      "code": "MSH-HIMO",
+      "parent_code": "MSH-VUNJO",
+      "name": "Parokia ya Himo",
+      "name_en": "Himo Parish",
+      "source_pages": [
+        219,
+        220
+      ]
+    },
+    {
+      "code": "MSH-KARANGA",
+      "parent_code": "MSH-MOSHI",
+      "name": "Parokia ya Karanga",
+      "name_en": "Karanga Parish",
+      "source_pages": [
+        217,
+        218,
+        219
+      ]
+    },
+    {
+      "code": "MSH-KARMELI",
+      "parent_code": "MSH-VUNJO",
+      "name": "Parokia ya Karmeli",
+      "name_en": "Karmeli Parish",
+      "source_pages": [
+        219,
+        220
+      ]
+    },
+    {
+      "code": "MSH-KENI",
+      "parent_code": "MSH-ROMBO",
+      "name": "Parokia ya Keni",
+      "name_en": "Keni Parish",
+      "source_pages": [
+        220,
+        221
+      ]
+    },
+    {
+      "code": "MSH-KIBOSHO",
+      "parent_code": "MSH-MOSHI",
+      "name": "Parokia ya Kibosho",
+      "name_en": "Kibosho Parish",
+      "source_pages": [
+        217,
+        218,
+        219
+      ]
+    },
+    {
+      "code": "MSH-KIKELEWA",
+      "parent_code": "MSH-ROMBO",
+      "name": "Parokia ya Kikelewa",
+      "name_en": "Kikelewa Parish",
+      "source_pages": [
+        220,
+        221
+      ]
+    },
+    {
+      "code": "MSH-KILEMA",
+      "parent_code": "MSH-VUNJO",
+      "name": "Parokia ya Kilema",
+      "name_en": "Kilema Parish",
+      "source_pages": [
+        219,
+        220
+      ]
+    },
+    {
+      "code": "MSH-KIMANYATU",
+      "parent_code": "MSH-ROMBO",
+      "name": "Parokia ya Kimanyatu",
+      "name_en": "Kimanyatu Parish",
+      "source_pages": [
+        220,
+        221
+      ]
+    },
+    {
+      "code": "MSH-KINDI",
+      "parent_code": "MSH-HAI",
+      "name": "Parokia ya Kindi",
+      "name_en": "Kindi Parish",
+      "source_pages": [
+        216,
+        217
+      ]
+    },
+    {
+      "code": "MSH-KIRAENI",
+      "parent_code": "MSH-ROMBO",
+      "name": "Parokia ya Kiraeni",
+      "name_en": "Kiraeni Parish",
+      "source_pages": [
+        220,
+        221
+      ]
+    },
+    {
+      "code": "MSH-KIRIMA",
+      "parent_code": "MSH-HAI",
+      "name": "Parokia ya Kirima",
+      "name_en": "Kirima Parish",
+      "source_pages": [
+        216,
+        217
+      ]
+    },
+    {
+      "code": "MSH-KIROKOMU",
+      "parent_code": "MSH-ROMBO",
+      "name": "Parokia ya Kirokomu",
+      "name_en": "Kirokomu Parish",
+      "source_pages": [
+        220,
+        221
+      ]
+    },
+    {
+      "code": "MSH-KIRUWA-IWA",
+      "parent_code": "MSH-VUNJO",
+      "name": "Parokia ya Kiruwa Iwa",
+      "name_en": "Kiruwa Iwa Parish",
+      "source_pages": [
+        219,
+        220
+      ]
+    },
+    {
+      "code": "MSH-KISHUMUNDU",
+      "parent_code": "MSH-MOSHI",
+      "name": "Parokia ya Kishumundu",
+      "name_en": "Kishumundu Parish",
+      "source_pages": [
+        217,
+        218,
+        219
+      ]
+    },
+    {
+      "code": "MSH-KORONGONI",
+      "parent_code": "MSH-MOSHI",
+      "name": "Parokia ya Korongoni",
+      "name_en": "Korongoni Parish",
+      "source_pages": [
+        217,
+        218,
+        219
+      ]
+    },
+    {
+      "code": "MSH-KRISTO-MFALME",
+      "parent_code": "MSH-MOSHI",
+      "name": "Parokia ya Kristo Mfalme",
+      "name_en": "Kristo Mfalme Parish",
+      "source_pages": [
+        217,
+        218,
+        219
+      ]
+    },
+    {
+      "code": "MSH-LEGHO",
+      "parent_code": "MSH-VUNJO",
+      "name": "Parokia ya Legho",
+      "name_en": "Legho Parish",
+      "source_pages": [
+        219,
+        220
+      ]
+    },
+    {
+      "code": "MSH-LOWERERE",
+      "parent_code": "MSH-ROMBO",
+      "name": "Parokia ya Lowerere",
+      "name_en": "Lowerere Parish",
+      "source_pages": [
+        220,
+        221
+      ]
+    },
+    {
+      "code": "MSH-MAHIDA",
+      "parent_code": "MSH-ROMBO",
+      "name": "Parokia ya Mahida",
+      "name_en": "Mahida Parish",
+      "source_pages": [
+        220,
+        221
+      ]
+    },
+    {
+      "code": "MSH-MAILSITA",
+      "parent_code": "MSH-HAI",
+      "name": "Parokia ya Mailsita",
+      "name_en": "Mailsita Parish",
+      "source_pages": [
+        216,
+        217
+      ]
+    },
+    {
+      "code": "MSH-MANDAKA",
+      "parent_code": "MSH-VUNJO",
+      "name": "Parokia ya Mandaka",
+      "name_en": "Mandaka Parish",
+      "source_pages": [
+        219,
+        220
+      ]
+    },
+    {
+      "code": "MSH-MANGO",
+      "parent_code": "MSH-HAI",
+      "name": "Parokia ya Mango",
+      "name_en": "Mango Parish",
+      "source_pages": [
+        216,
+        217
+      ]
+    },
+    {
+      "code": "MSH-MANUSHI",
+      "parent_code": "MSH-HAI",
+      "name": "Parokia ya Manushi",
+      "name_en": "Manushi Parish",
+      "source_pages": [
+        216,
+        217
+      ]
+    },
+    {
+      "code": "MSH-MARANGU-MAKOMU",
+      "parent_code": "MSH-VUNJO",
+      "name": "Parokia ya Marangu Makomu",
+      "name_en": "Marangu Makomu Parish",
+      "source_pages": [
+        219,
+        220
+      ]
+    },
+    {
+      "code": "MSH-MASHATI",
+      "parent_code": "MSH-ROMBO",
+      "name": "Parokia ya Mashati",
+      "name_en": "Mashati Parish",
+      "source_pages": [
+        220,
+        221
+      ]
+    },
+    {
+      "code": "MSH-MATERUNI",
+      "parent_code": "MSH-MOSHI",
+      "name": "Parokia ya Materuni",
+      "name_en": "Materuni Parish",
+      "source_pages": [
+        217,
+        218,
+        219
+      ]
+    },
+    {
+      "code": "MSH-MAUA",
+      "parent_code": "MSH-VUNJO",
+      "name": "Parokia ya Maua",
+      "name_en": "Maua Parish",
+      "source_pages": [
+        219,
+        220
+      ]
+    },
+    {
+      "code": "MSH-MAWELLA",
+      "parent_code": "MSH-MOSHI",
+      "name": "Parokia ya Mawella",
+      "name_en": "Mawella Parish",
+      "source_pages": [
+        217,
+        218,
+        219
+      ]
+    },
+    {
+      "code": "MSH-MBOKOMU",
+      "parent_code": "MSH-MOSHI",
+      "name": "Parokia ya Mbokomu",
+      "name_en": "Mbokomu Parish",
+      "source_pages": [
+        217,
+        218,
+        219
+      ]
+    },
+    {
+      "code": "MSH-MBOSHO",
+      "parent_code": "MSH-HAI",
+      "name": "Parokia ya Mbosho",
+      "name_en": "Mbosho Parish",
+      "source_pages": [
+        216,
+        217
+      ]
+    },
+    {
+      "code": "MSH-MENGWE",
+      "parent_code": "MSH-ROMBO",
+      "name": "Parokia ya Mengwe",
+      "name_en": "Mengwe Parish",
+      "source_pages": [
+        220,
+        221
+      ]
+    },
+    {
+      "code": "MSH-MKUU",
+      "parent_code": "MSH-ROMBO",
+      "name": "Parokia ya Mkuu",
+      "name_en": "Mkuu Parish",
+      "source_pages": [
+        220,
+        221
+      ]
+    },
+    {
+      "code": "MSH-MRAO",
+      "parent_code": "MSH-ROMBO",
+      "name": "Parokia ya Mrao",
+      "name_en": "Mrao Parish",
+      "source_pages": [
+        220,
+        221
+      ]
+    },
+    {
+      "code": "MSH-MTIMHOO",
+      "parent_code": "MSH-ROMBO",
+      "name": "Parokia ya Mtimhoo",
+      "name_en": "Mtimhoo Parish",
+      "source_pages": [
+        220,
+        221
+      ]
+    },
+    {
+      "code": "MSH-MWEKA",
+      "parent_code": "MSH-MOSHI",
+      "name": "Parokia ya Mweka",
+      "name_en": "Mweka Parish",
+      "source_pages": [
+        217,
+        218,
+        219
+      ]
+    },
+    {
+      "code": "MSH-MWENGE-ST-JOSEPH",
+      "parent_code": "MSH-MOSHI",
+      "name": "Parokia ya Mwenge St. Joseph",
+      "name_en": "Mwenge St. Joseph Parish",
+      "source_pages": [
+        217,
+        218,
+        219
+      ]
+    },
+    {
+      "code": "MSH-NARUMU",
+      "parent_code": "MSH-HAI",
+      "name": "Parokia ya Narumu",
+      "name_en": "Narumu Parish",
+      "source_pages": [
+        216,
+        217
+      ]
+    },
+    {
+      "code": "MSH-NEWLAND",
+      "parent_code": "MSH-MOSHI",
+      "name": "Parokia ya Newland",
+      "name_en": "Newland Parish",
+      "source_pages": [
+        217,
+        218,
+        219
+      ]
+    },
+    {
+      "code": "MSH-NGARENAIROBI",
+      "parent_code": "MSH-HAI",
+      "name": "Parokia ya Ngarenairobi",
+      "name_en": "Ngarenairobi Parish",
+      "source_pages": [
+        216,
+        217
+      ]
+    },
+    {
+      "code": "MSH-NKOMBOLE",
+      "parent_code": "MSH-HAI",
+      "name": "Parokia ya Nkombole",
+      "name_en": "Nkombole Parish",
+      "source_pages": [
+        216,
+        217
+      ]
+    },
+    {
+      "code": "MSH-NTIRINI-KIMASHUKU",
+      "parent_code": "MSH-HAI",
+      "name": "Parokia ya Ntirini / Kimashuku",
+      "name_en": "Ntirini / Kimashuku Parish",
+      "source_pages": [
+        216,
+        217
+      ]
+    },
+    {
+      "code": "MSH-OLELE",
+      "parent_code": "MSH-ROMBO",
+      "name": "Parokia ya Olele",
+      "name_en": "Olele Parish",
+      "source_pages": [
+        220,
+        221
+      ]
+    },
+    {
+      "code": "MSH-REHA",
+      "parent_code": "MSH-ROMBO",
+      "name": "Parokia ya Reha",
+      "name_en": "Reha Parish",
+      "source_pages": [
+        220,
+        221
+      ]
+    },
+    {
+      "code": "MSH-RUNDUGAI",
+      "parent_code": "MSH-HAI",
+      "name": "Parokia ya Rundugai",
+      "name_en": "Rundugai Parish",
+      "source_pages": [
+        216,
+        217
+      ]
+    },
+    {
+      "code": "MSH-SABUKO",
+      "parent_code": "MSH-HAI",
+      "name": "Parokia ya Sabuko",
+      "name_en": "Sabuko Parish",
+      "source_pages": [
+        216,
+        217
+      ]
+    },
+    {
+      "code": "MSH-SAMANGA",
+      "parent_code": "MSH-VUNJO",
+      "name": "Parokia ya Samanga",
+      "name_en": "Samanga Parish",
+      "source_pages": [
+        219,
+        220
+      ]
+    },
+    {
+      "code": "MSH-SAMBARAI",
+      "parent_code": "MSH-HAI",
+      "name": "Parokia ya Sambarai",
+      "name_en": "Sambarai Parish",
+      "source_pages": [
+        216,
+        217
+      ]
+    },
+    {
+      "code": "MSH-SANYA-JUU",
+      "parent_code": "MSH-HAI",
+      "name": "Parokia ya Sanya Juu",
+      "name_en": "Sanya Juu Parish",
+      "source_pages": [
+        216,
+        217
+      ]
+    },
+    {
+      "code": "MSH-SHIMBI",
+      "parent_code": "MSH-ROMBO",
+      "name": "Parokia ya Shimbi",
+      "name_en": "Shimbi Parish",
+      "source_pages": [
+        220,
+        221
+      ]
+    },
+    {
+      "code": "MSH-SHIMBWE",
+      "parent_code": "MSH-MOSHI",
+      "name": "Parokia ya Shimbwe",
+      "name_en": "Shimbwe Parish",
+      "source_pages": [
+        217,
+        218,
+        219
+      ]
+    },
+    {
+      "code": "MSH-SINGACHINI",
+      "parent_code": "MSH-MOSHI",
+      "name": "Parokia ya Singachini",
+      "name_en": "Singachini Parish",
+      "source_pages": [
+        217,
+        218,
+        219
+      ]
+    },
+    {
+      "code": "MSH-TAREKEA",
+      "parent_code": "MSH-ROMBO",
+      "name": "Parokia ya Tarekea",
+      "name_en": "Tarekea Parish",
+      "source_pages": [
+        220,
+        221
+      ]
+    },
+    {
+      "code": "MSH-UCHIRA",
+      "parent_code": "MSH-VUNJO",
+      "name": "Parokia ya Uchira",
+      "name_en": "Uchira Parish",
+      "source_pages": [
+        219,
+        220
+      ]
+    },
+    {
+      "code": "MSH-UMBWE",
+      "parent_code": "MSH-HAI",
+      "name": "Parokia ya Umbwe",
+      "name_en": "Umbwe Parish",
+      "source_pages": [
+        216,
+        217
+      ]
+    },
+    {
+      "code": "MSH-UPARO",
+      "parent_code": "MSH-VUNJO",
+      "name": "Parokia ya Uparo",
+      "name_en": "Uparo Parish",
+      "source_pages": [
+        219,
+        220
+      ]
+    },
+    {
+      "code": "MSH-URU",
+      "parent_code": "MSH-MOSHI",
+      "name": "Parokia ya Uru",
+      "name_en": "Uru Parish",
+      "source_pages": [
+        217,
+        218,
+        219
+      ]
+    },
+    {
+      "code": "MSH-USHIRI",
+      "parent_code": "MSH-ROMBO",
+      "name": "Parokia ya Ushiri",
+      "name_en": "Ushiri Parish",
+      "source_pages": [
+        220,
+        221
+      ]
+    },
+    {
+      "code": "MSH-USSERI",
+      "parent_code": "MSH-ROMBO",
+      "name": "Parokia ya Usseri",
+      "name_en": "Usseri Parish",
+      "source_pages": [
+        220,
+        221
+      ]
+    },
+    {
+      "code": "MSH-UWOMBONI",
+      "parent_code": "MSH-VUNJO",
+      "name": "Parokia ya Uwomboni",
+      "name_en": "Uwomboni Parish",
+      "source_pages": [
+        219,
+        220
+      ]
+    },
+    {
+      "code": "MSH-WERUWERU",
+      "parent_code": "MSH-MOSHI",
+      "name": "Parokia ya Weruweru",
+      "name_en": "Weruweru Parish",
+      "source_pages": [
+        217,
+        218,
+        219
+      ]
+    },
+    {
+      "code": "MSH-YAMU",
+      "parent_code": "MSH-VUNJO",
+      "name": "Parokia ya Yamu",
+      "name_en": "Yamu Parish",
+      "source_pages": [
+        219,
+        220
+      ]
+    },
+    {
+      "code": "SUM-CATHEDRAL",
+      "parent_code": "SUM-CENTRAL",
+      "name": "Parokia ya Cathedral",
+      "name_en": "Cathedral Parish",
+      "source_pages": [
+        315,
+        316
+      ]
+    },
+    {
+      "code": "SUM-CHALA",
+      "parent_code": "SUM-NKANSI",
+      "name": "Parokia ya Chala",
+      "name_en": "Chala Parish",
+      "source_pages": [
+        316
+      ]
+    },
+    {
+      "code": "SUM-CHRIST-THE-KING",
+      "parent_code": "SUM-CENTRAL",
+      "name": "Parokia ya Christ the King",
+      "name_en": "Christ the King Parish",
+      "source_pages": [
+        315,
+        316
+      ]
+    },
+    {
+      "code": "SUM-HOLY-FAMILY",
+      "parent_code": "SUM-CENTRAL",
+      "name": "Parokia ya Holy Family",
+      "name_en": "Holy Family Parish",
+      "source_pages": [
+        315,
+        316
+      ]
+    },
+    {
+      "code": "SUM-HOLY-SPIRIT",
+      "parent_code": "SUM-CENTRAL",
+      "name": "Parokia ya Holy Spirit",
+      "name_en": "Holy Spirit Parish",
+      "source_pages": [
+        315,
+        316
+      ]
+    },
+    {
+      "code": "SUM-IPITO",
+      "parent_code": "SUM-CENTRAL",
+      "name": "Parokia ya Ipito",
+      "name_en": "Ipito Parish",
+      "source_pages": [
+        315,
+        316
+      ]
+    },
+    {
+      "code": "SUM-IZIMBA",
+      "parent_code": "SUM-CENTRAL",
+      "name": "Parokia ya Izimba",
+      "name_en": "Izimba Parish",
+      "source_pages": [
+        315,
+        316
+      ]
+    },
+    {
+      "code": "SUM-KAENGESA",
+      "parent_code": "SUM-SOUTHERN",
+      "name": "Parokia ya Kaengesa",
+      "name_en": "Kaengesa Parish",
+      "source_pages": [
+        316
+      ]
+    },
+    {
+      "code": "SUM-KALA",
+      "parent_code": "SUM-NKANSI",
+      "name": "Parokia ya Kala",
+      "name_en": "Kala Parish",
+      "source_pages": [
+        316
+      ]
+    },
+    {
+      "code": "SUM-KASANGA",
+      "parent_code": "SUM-KALAMBO",
+      "name": "Parokia ya Kasanga",
+      "name_en": "Kasanga Parish",
+      "source_pages": [
+        316
+      ]
+    },
+    {
+      "code": "SUM-KATE",
+      "parent_code": "SUM-NKANSI",
+      "name": "Parokia ya Kate",
+      "name_en": "Kate Parish",
+      "source_pages": [
+        316
+      ]
+    },
+    {
+      "code": "SUM-KIRANDO",
+      "parent_code": "SUM-NKANSI",
+      "name": "Parokia ya Kirando",
+      "name_en": "Kirando Parish",
+      "source_pages": [
+        316
+      ]
+    },
+    {
+      "code": "SUM-LAELA",
+      "parent_code": "SUM-SOUTHERN",
+      "name": "Parokia ya Laela",
+      "name_en": "Laela Parish",
+      "source_pages": [
+        316
+      ]
+    },
+    {
+      "code": "SUM-MATAI",
+      "parent_code": "SUM-KALAMBO",
+      "name": "Parokia ya Matai",
+      "name_en": "Matai Parish",
+      "source_pages": [
+        316
+      ]
+    },
+    {
+      "code": "SUM-MPUI",
+      "parent_code": "SUM-SOUTHERN",
+      "name": "Parokia ya Mpui",
+      "name_en": "Mpui Parish",
+      "source_pages": [
+        316
+      ]
+    },
+    {
+      "code": "SUM-MWAZYE",
+      "parent_code": "SUM-SOUTHERN",
+      "name": "Parokia ya Mwazye",
+      "name_en": "Mwazye Parish",
+      "source_pages": [
+        316
+      ]
+    },
+    {
+      "code": "SUM-NAMANYERE",
+      "parent_code": "SUM-NKANSI",
+      "name": "Parokia ya Namanyere",
+      "name_en": "Namanyere Parish",
+      "source_pages": [
+        316
+      ]
+    },
+    {
+      "code": "SUM-SOPA",
+      "parent_code": "SUM-KALAMBO",
+      "name": "Parokia ya Sopa",
+      "name_en": "Sopa Parish",
+      "source_pages": [
+        316
+      ]
+    },
+    {
+      "code": "SUM-ST-FRANCIS-OF-ASSISI",
+      "parent_code": "SUM-CENTRAL",
+      "name": "Parokia ya St. Francis of Assisi",
+      "name_en": "St. Francis of Assisi Parish",
+      "source_pages": [
+        315,
+        316
+      ]
+    },
+    {
+      "code": "SUM-TUNDUMA",
+      "parent_code": "SUM-SOUTHERN",
+      "name": "Parokia ya Tunduma",
+      "name_en": "Tunduma Parish",
+      "source_pages": [
+        316
+      ]
+    },
+    {
+      "code": "SUM-ULUMI",
+      "parent_code": "SUM-KALAMBO",
+      "name": "Parokia ya Ulumi",
+      "name_en": "Ulumi Parish",
+      "source_pages": [
+        316
+      ]
+    },
+    {
+      "code": "TAB-BONGOMELA",
+      "parent_code": "TAB-NZEGA",
+      "name": "Parokia ya Bongomela",
+      "name_en": "Bongomela Parish",
+      "source_pages": [
+        322,
+        323
+      ]
+    },
+    {
+      "code": "TAB-BUKENE",
+      "parent_code": "TAB-NZEGA",
+      "name": "Parokia ya Bukene",
+      "name_en": "Bukene Parish",
+      "source_pages": [
+        322,
+        323
+      ]
+    },
+    {
+      "code": "TAB-CHEYO",
+      "parent_code": "TAB-TABORA",
+      "name": "Parokia ya Cheyo",
+      "name_en": "Cheyo Parish",
+      "source_pages": [
+        322
+      ]
+    },
+    {
+      "code": "TAB-CHOMACHANKOLA",
+      "parent_code": "TAB-NZEGA",
+      "name": "Parokia ya Chomachankola",
+      "name_en": "Chomachankola Parish",
+      "source_pages": [
+        322,
+        323
+      ]
+    },
+    {
+      "code": "TAB-IGUMO",
+      "parent_code": "TAB-NZEGA",
+      "name": "Parokia ya Igumo",
+      "name_en": "Igumo Parish",
+      "source_pages": [
+        322,
+        323
+      ]
+    },
+    {
+      "code": "TAB-IGUNGA",
+      "parent_code": "TAB-NZEGA",
+      "name": "Parokia ya Igunga",
+      "name_en": "Igunga Parish",
+      "source_pages": [
+        322,
+        323
+      ]
+    },
+    {
+      "code": "TAB-IPULI",
+      "parent_code": "TAB-TABORA",
+      "name": "Parokia ya Ipuli",
+      "name_en": "Ipuli Parish",
+      "source_pages": [
+        322
+      ]
+    },
+    {
+      "code": "TAB-ITAGA",
+      "parent_code": "TAB-TABORA",
+      "name": "Parokia ya Itaga",
+      "name_en": "Itaga Parish",
+      "source_pages": [
+        322
+      ]
+    },
+    {
+      "code": "TAB-KALIUA",
+      "parent_code": "TAB-URAMBO",
+      "name": "Parokia ya Kaliua",
+      "name_en": "Kaliua Parish",
+      "source_pages": [
+        323
+      ]
+    },
+    {
+      "code": "TAB-KASHISHI",
+      "parent_code": "TAB-TABORA",
+      "name": "Parokia ya Kashishi",
+      "name_en": "Kashishi Parish",
+      "source_pages": [
+        322
+      ]
+    },
+    {
+      "code": "TAB-KIPALAPALA",
+      "parent_code": "TAB-TABORA",
+      "name": "Parokia ya Kipalapala",
+      "name_en": "Kipalapala Parish",
+      "source_pages": [
+        322
+      ]
+    },
+    {
+      "code": "TAB-KITANGILI",
+      "parent_code": "TAB-NZEGA",
+      "name": "Parokia ya Kitangili",
+      "name_en": "Kitangili Parish",
+      "source_pages": [
+        322,
+        323
+      ]
+    },
+    {
+      "code": "TAB-LUBUBU",
+      "parent_code": "TAB-NZEGA",
+      "name": "Parokia ya Lububu",
+      "name_en": "Lububu Parish",
+      "source_pages": [
+        322,
+        323
+      ]
+    },
+    {
+      "code": "TAB-MAGIRI",
+      "parent_code": "TAB-TABORA",
+      "name": "Parokia ya Magiri",
+      "name_en": "Magiri Parish",
+      "source_pages": [
+        322
+      ]
+    },
+    {
+      "code": "TAB-MAKOKOLA",
+      "parent_code": "TAB-TABORA",
+      "name": "Parokia ya Makokola",
+      "name_en": "Makokola Parish",
+      "source_pages": [
+        322
+      ]
+    },
+    {
+      "code": "TAB-MWANZUGI",
+      "parent_code": "TAB-NZEGA",
+      "name": "Parokia ya Mwanzugi",
+      "name_en": "Mwanzugi Parish",
+      "source_pages": [
+        322,
+        323
+      ]
+    },
+    {
+      "code": "TAB-NDALA",
+      "parent_code": "TAB-NZEGA",
+      "name": "Parokia ya Ndala",
+      "name_en": "Ndala Parish",
+      "source_pages": [
+        322,
+        323
+      ]
+    },
+    {
+      "code": "TAB-NDONO",
+      "parent_code": "TAB-URAMBO",
+      "name": "Parokia ya Ndono",
+      "name_en": "Ndono Parish",
+      "source_pages": [
+        323
+      ]
+    },
+    {
+      "code": "TAB-NZEGA",
+      "parent_code": "TAB-NZEGA",
+      "name": "Parokia ya Nzega",
+      "name_en": "Nzega Parish",
+      "source_pages": [
+        322,
+        323
+      ]
+    },
+    {
+      "code": "TAB-SIKONGE",
+      "parent_code": "TAB-TABORA",
+      "name": "Parokia ya Sikonge",
+      "name_en": "Sikonge Parish",
+      "source_pages": [
+        322
+      ]
+    },
+    {
+      "code": "TAB-ST-THERESA-CATHEDRAL",
+      "parent_code": "TAB-TABORA",
+      "name": "Parokia ya St. Theresa Cathedral",
+      "name_en": "St. Theresa Cathedral Parish",
+      "source_pages": [
+        322
+      ]
+    },
+    {
+      "code": "TAB-TONGI",
+      "parent_code": "TAB-NZEGA",
+      "name": "Parokia ya Tongi",
+      "name_en": "Tongi Parish",
+      "source_pages": [
+        322,
+        323
+      ]
+    },
+    {
+      "code": "TAB-ULYANKULU",
+      "parent_code": "TAB-URAMBO",
+      "name": "Parokia ya Ulyankulu",
+      "name_en": "Ulyankulu Parish",
+      "source_pages": [
+        323
+      ]
+    },
+    {
+      "code": "TAB-URAMBO",
+      "parent_code": "TAB-URAMBO",
+      "name": "Parokia ya Urambo",
+      "name_en": "Urambo Parish",
+      "source_pages": [
+        323
+      ]
+    },
+    {
+      "code": "TAB-USSONGO",
+      "parent_code": "TAB-NZEGA",
+      "name": "Parokia ya Ussongo",
+      "name_en": "Ussongo Parish",
+      "source_pages": [
+        322,
+        323
+      ]
+    },
+    {
+      "code": "TAN-AMANI",
+      "parent_code": "TAN-TANGA",
+      "name": "Parokia ya Amani",
+      "name_en": "Amani Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-DONGE",
+      "parent_code": "TAN-TANGA",
+      "name": "Parokia ya Donge",
+      "name_en": "Donge Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-GARE",
+      "parent_code": "TAN-LUSHOTO",
+      "name": "Parokia ya Gare",
+      "name_en": "Gare Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-HALE",
+      "parent_code": "TAN-KOROGWE",
+      "name": "Parokia ya Hale",
+      "name_en": "Hale Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-HANDENI",
+      "parent_code": "TAN-HANDENI",
+      "name": "Parokia ya Handeni",
+      "name_en": "Handeni Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-KABUKU",
+      "parent_code": "TAN-HANDENI",
+      "name": "Parokia ya Kabuku",
+      "name_en": "Kabuku Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-KIFUNGILO",
+      "parent_code": "TAN-LUSHOTO",
+      "name": "Parokia ya Kifungilo",
+      "name_en": "Kifungilo Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-KILOLE",
+      "parent_code": "TAN-KOROGWE",
+      "name": "Parokia ya Kilole",
+      "name_en": "Kilole Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-KONGOI",
+      "parent_code": "TAN-LUSHOTO",
+      "name": "Parokia ya Kongoi",
+      "name_en": "Kongoi Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-KWAI",
+      "parent_code": "TAN-LUSHOTO",
+      "name": "Parokia ya Kwai",
+      "name_en": "Kwai Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-KWALUKONGE",
+      "parent_code": "TAN-KOROGWE",
+      "name": "Parokia ya Kwalukonge",
+      "name_en": "Kwalukonge Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-KWEDIBOMA",
+      "parent_code": "TAN-HANDENI",
+      "name": "Parokia ya Kwediboma",
+      "name_en": "Kwediboma Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-LUSHOTO",
+      "parent_code": "TAN-LUSHOTO",
+      "name": "Parokia ya Lushoto",
+      "name_en": "Lushoto Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-MABUGHAI",
+      "parent_code": "TAN-LUSHOTO",
+      "name": "Parokia ya Mabughai",
+      "name_en": "Mabughai Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-MAGOMA",
+      "parent_code": "TAN-KOROGWE",
+      "name": "Parokia ya Magoma",
+      "name_en": "Magoma Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-MALINDI",
+      "parent_code": "TAN-LUSHOTO",
+      "name": "Parokia ya Malindi",
+      "name_en": "Malindi Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-MANUNDU",
+      "parent_code": "TAN-KOROGWE",
+      "name": "Parokia ya Manundu",
+      "name_en": "Manundu Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-MARAMBA",
+      "parent_code": "TAN-TANGA",
+      "name": "Parokia ya Maramba",
+      "name_en": "Maramba Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-MAZINDE-NGUA",
+      "parent_code": "TAN-KOROGWE",
+      "name": "Parokia ya Mazinde Ngua",
+      "name_en": "Mazinde Ngua Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-MISOZWE",
+      "parent_code": "TAN-TANGA",
+      "name": "Parokia ya Misozwe",
+      "name_en": "Misozwe Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-MKALAMO",
+      "parent_code": "TAN-HANDENI",
+      "name": "Parokia ya Mkalamo",
+      "name_en": "Mkalamo Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-MKUZI",
+      "parent_code": "TAN-LUSHOTO",
+      "name": "Parokia ya Mkuzi",
+      "name_en": "Mkuzi Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-MLINGANO",
+      "parent_code": "TAN-TANGA",
+      "name": "Parokia ya Mlingano",
+      "name_en": "Mlingano Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-MOMBO",
+      "parent_code": "TAN-KOROGWE",
+      "name": "Parokia ya Mombo",
+      "name_en": "Mombo Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-MTINDIRO",
+      "parent_code": "TAN-TANGA",
+      "name": "Parokia ya Mtindiro",
+      "name_en": "Mtindiro Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-MUHEZA",
+      "parent_code": "TAN-TANGA",
+      "name": "Parokia ya Muheza",
+      "name_en": "Muheza Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-PANGANI",
+      "parent_code": "TAN-TANGA",
+      "name": "Parokia ya Pangani",
+      "name_en": "Pangani Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-POTWE",
+      "parent_code": "TAN-KOROGWE",
+      "name": "Parokia ya Potwe",
+      "name_en": "Potwe Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-RANGWI",
+      "parent_code": "TAN-LUSHOTO",
+      "name": "Parokia ya Rangwi",
+      "name_en": "Rangwi Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-SAKHRANI",
+      "parent_code": "TAN-LUSHOTO",
+      "name": "Parokia ya Sakhrani",
+      "name_en": "Sakhrani Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-SONI",
+      "parent_code": "TAN-LUSHOTO",
+      "name": "Parokia ya Soni",
+      "name_en": "Soni Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-ST-ANTHONY-S-CATHEDRAL-CHUMBAGENI",
+      "parent_code": "TAN-TANGA",
+      "name": "Parokia ya St. Anthony’s Cathedral - Chumbageni",
+      "name_en": "St. Anthony’s Cathedral - Chumbageni Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-ST-JOSEPH-S-MUKASA-AMBONI",
+      "parent_code": "TAN-TANGA",
+      "name": "Parokia ya St. Joseph’s Mukasa - Amboni",
+      "name_en": "St. Joseph’s Mukasa - Amboni Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-ST-MATHIAS-MULUMBA-SAHARE",
+      "parent_code": "TAN-TANGA",
+      "name": "Parokia ya St. Mathias Mulumba - Sahare",
+      "name_en": "St. Mathias Mulumba - Sahare Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-ST-PETER-S-SARUJI",
+      "parent_code": "TAN-TANGA",
+      "name": "Parokia ya St. Peter’s Saruji",
+      "name_en": "St. Peter’s Saruji Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-ST-THERESA-BARABARA-YA-20",
+      "parent_code": "TAN-TANGA",
+      "name": "Parokia ya St. Theresa - Barabara ya 20",
+      "name_en": "St. Theresa - Barabara ya 20 Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "TAN-TEKWA",
+      "parent_code": "TAN-LUSHOTO",
+      "name": "Parokia ya Tekwa",
+      "name_en": "Tekwa Parish",
+      "source_pages": [
+        335
+      ]
+    },
+    {
+      "code": "MBL-AYALAGAY",
+      "name": "AYALAGAY",
+      "name_en": "Ayalagay Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-BABATI",
+      "name": "BABATI",
+      "name_en": "Babati Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-BASHANET",
+      "name": "BASHANET",
+      "name_en": "Bashanet Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-BASHAY",
+      "name": "BASHAY",
+      "name_en": "Bashay Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-BASHAY-LAMBO",
+      "name": "BASHAY LAMBO",
+      "name_en": "Bashay Lambo Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-BASSODAWISH",
+      "name": "BASSODAWISH",
+      "name_en": "Bassodawish Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-BASSOTU",
+      "name": "BASSOTU",
+      "name_en": "Bassotu Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-BOAY",
+      "name": "BOAY",
+      "name_en": "Boay Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-BALANGDALALU",
+      "name": "BALANGDALALU",
+      "name_en": "Balangdalalu Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-DAREDA",
+      "name": "DAREDA",
+      "name_en": "Dareda Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-DAWDI",
+      "name": "DAWDI",
+      "name_en": "Dawdi Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-DONGOBESH",
+      "name": "DONGOBESH",
+      "name_en": "Dongobesh Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-ENDABASH",
+      "name": "ENDABASH",
+      "name_en": "Endabash Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-ENDAMARARIEK",
+      "name": "ENDAMARARIEK",
+      "name_en": "Endamarariek Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-ENDASAK",
+      "name": "ENDASAK",
+      "name_en": "Endasak Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-GALAPO",
+      "name": "GALAPO",
+      "name_en": "Galapo Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-GITING",
+      "name": "GITING",
+      "name_en": "Giting Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-GUNYODA",
+      "name": "GUNYODA",
+      "name_en": "Gunyoda Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-GYEKRUM-LAMBO",
+      "name": "GYEKRUM LAMBO",
+      "name_en": "Gyekrum Lambo Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-HAYDARER",
+      "name": "HAYDARER",
+      "name_en": "Haydarer Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-HAYDOM",
+      "name": "HAYDOM",
+      "name_en": "Haydom Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-HIMIT",
+      "name": "HIMIT",
+      "name_en": "Himit Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-KAMBI-YA-SIMBA",
+      "name": "KAMBI YA SIMBA",
+      "name_en": "Kambi Ya Simba Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-KARATU",
+      "name": "KARATU",
+      "name_en": "Karatu Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-KAYNAM",
+      "name": "KAYNAM",
+      "name_en": "Kaynam Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-KAYNAM-RHOTIA",
+      "name": "KAYNAM RHOTIA",
+      "name_en": "Kaynam Rhotia Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-KILIMAMOJA",
+      "name": "KILIMAMOJA",
+      "name_en": "Kilimamoja Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-KIRU",
+      "name": "KIRU",
+      "name_en": "Kiru Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-KITETE",
+      "name": "KITETE",
+      "name_en": "Kitete Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-KWERMUSL",
+      "name": "KWERMUSL",
+      "name_en": "Kwermusl Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-MADUNGA",
+      "name": "MADUNGA",
+      "name_en": "Madunga Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-MAGUGU",
+      "name": "MAGUGU",
+      "name_en": "Magugu Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-MAISAKA",
+      "name": "MAISAKA",
+      "name_en": "Maisaka Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-MANDI",
+      "name": "MANDI",
+      "name_en": "Mandi Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-MANGOLA-CHANI",
+      "name": "MANGOLA CHANI",
+      "name_en": "Mangola Chani Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-MASAKTA",
+      "name": "MASAKTA",
+      "name_en": "Masakta Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-MAQANGW",
+      "name": "MAQANGW",
+      "name_en": "Maqangw Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-MBUGWE",
+      "name": "MBUGWE",
+      "name_en": "Mbugwe Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-MEASKRON",
+      "name": "MEASKRON",
+      "name_en": "Measkron Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-NANGWA",
+      "name": "NANGWA",
+      "name_en": "Nangwa Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-QAIRO",
+      "name": "QAIRO",
+      "name_en": "Qairo Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-QAMEY",
+      "name": "QAMEY",
+      "name_en": "Qamey Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-QATESH",
+      "name": "QATESH",
+      "name_en": "Qatesh Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-OLDEANI",
+      "name": "OLDEANI",
+      "name_en": "Oldeani Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-ORBESH",
+      "name": "ORBESH",
+      "name_en": "Orbesh Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-RHOTIA",
+      "name": "RHOTIA",
+      "name_en": "Rhotia Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-RIRODA",
+      "name": "RIRODA",
+      "name_en": "Riroda Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-SANU-CATHEDRAL",
+      "name": "SANU CATHEDRAL",
+      "name_en": "Sanu Cathedral Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-TUMATI",
+      "name": "TUMATI",
+      "name_en": "Tumati Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "MBL-TLAWI",
+      "name": "TLAWI",
+      "name_en": "Tlawi Parish",
+      "source_pages": [
+        188
+      ]
+    },
+    {
+      "code": "SAM-KILOMENI",
+      "name": "KILOMENI",
+      "name_en": "Kilomeni Parish",
+      "source_pages": [
+        282
+      ]
+    },
+    {
+      "code": "SAM-MANOLO",
+      "name": "MANOLO",
+      "name_en": "Manolo Parish",
+      "source_pages": [
+        282
+      ]
+    },
+    {
+      "code": "SAM-GONJA-KIGHARE",
+      "name": "GONJA KIGHARE",
+      "name_en": "Gonja Kighare Parish",
+      "source_pages": [
+        282
+      ]
+    },
+    {
+      "code": "SAM-BWAMBO",
+      "name": "BWAMBO",
+      "name_en": "Bwambo Parish",
+      "source_pages": [
+        282
+      ]
+    },
+    {
+      "code": "SAM-SAME",
+      "name": "SAME",
+      "name_en": "Same Parish",
+      "source_pages": [
+        282
+      ]
+    },
+    {
+      "code": "SAM-CHABARU",
+      "name": "CHABARU",
+      "name_en": "Chabaru Parish",
+      "source_pages": [
+        282
+      ]
+    },
+    {
+      "code": "SAM-UGWENO",
+      "name": "UGWENO",
+      "name_en": "Ugweno Parish",
+      "source_pages": [
+        282
+      ]
+    },
+    {
+      "code": "SAM-KISANGARA-JUU",
+      "name": "KISANGARA JUU",
+      "name_en": "Kisangara Juu Parish",
+      "source_pages": [
+        282
+      ]
+    },
+    {
+      "code": "SAM-KISIWANI",
+      "name": "KISIWANI",
+      "name_en": "Kisiwani Parish",
+      "source_pages": [
+        282
+      ]
+    },
+    {
+      "code": "SAM-CHANJALE",
+      "name": "CHANJALE",
+      "name_en": "Chanjale Parish",
+      "source_pages": [
+        282
+      ]
+    },
+    {
+      "code": "SAM-DIDO",
+      "name": "DIDO",
+      "name_en": "Dido Parish",
+      "source_pages": [
+        282
+      ]
+    },
+    {
+      "code": "SAM-NGULU",
+      "name": "NGULU",
+      "name_en": "Ngulu Parish",
+      "source_pages": [
+        282
+      ]
+    },
+    {
+      "code": "SAM-HEDARU",
+      "name": "HEDARU",
+      "name_en": "Hedaru Parish",
+      "source_pages": [
+        282
+      ]
+    },
+    {
+      "code": "SAM-USANGI",
+      "name": "USANGI",
+      "name_en": "Usangi Parish",
+      "source_pages": [
+        282
+      ]
+    },
+    {
+      "code": "SAM-VUMARI",
+      "name": "VUMARI",
+      "name_en": "Vumari Parish",
+      "source_pages": [
+        282
+      ]
+    },
+    {
+      "code": "SAM-NJORO",
+      "name": "NJORO",
+      "name_en": "Njoro Parish",
+      "source_pages": [
+        282
+      ]
+    },
+    {
+      "code": "SAM-MYOMBO",
+      "name": "MYOMBO",
+      "name_en": "Myombo Parish",
+      "source_pages": [
+        282
+      ]
+    },
+    {
+      "code": "SAM-NDUNGU",
+      "name": "NDUNGU",
+      "name_en": "Ndungu Parish",
+      "source_pages": [
+        282
+      ]
+    },
+    {
+      "code": "SAM-VUDEE-JUU",
+      "name": "VUDEE JUU",
+      "name_en": "Vudee Juu Parish",
+      "source_pages": [
+        282
+      ]
+    },
+    {
+      "code": "SAM-MAKANYA",
+      "name": "MAKANYA",
+      "name_en": "Makanya Parish",
+      "source_pages": [
+        282
+      ]
+    },
+    {
+      "code": "SAM-KIRONGWE",
+      "name": "KIRONGWE",
+      "name_en": "Kirongwe Parish",
+      "source_pages": [
+        282
+      ]
+    },
+    {
+      "code": "SAM-KIRANGARE",
+      "name": "KIRANGARE",
+      "name_en": "Kirangare Parish",
+      "source_pages": [
+        282
+      ]
+    },
+    {
+      "code": "SAM-KIFARU",
+      "name": "KIFARU",
+      "name_en": "Kifaru Parish",
+      "source_pages": [
+        282
+      ]
+    },
+    {
+      "code": "SAM-MAVANJA",
+      "name": "MAVANJA",
+      "name_en": "Mavanja Parish",
+      "source_pages": [
+        282
+      ]
+    },
+    {
+      "code": "SAM-MGAGAO",
+      "name": "MGAGAO",
+      "name_en": "Mgagao Parish",
+      "source_pages": [
+        282
+      ]
+    }
+  ]
+}

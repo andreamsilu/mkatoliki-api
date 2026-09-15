@@ -1,0 +1,87 @@
+stages: [test, build, deploy]
+
+variables:
+  MYSQL_DATABASE: catholic_api_test
+  MYSQL_USER: catholic_api
+  MYSQL_PASSWORD: ci-test-only-password
+  MYSQL_ROOT_PASSWORD: ci-test-only-root-password
+  DB_CONNECTION: mysql
+  DB_HOST: mysql
+  DB_DATABASE: catholic_api_test
+  DB_USERNAME: catholic_api
+  DB_PASSWORD: ci-test-only-password
+  CACHE_STORE: array
+  SESSION_DRIVER: array
+  QUEUE_CONNECTION: sync
+  APP_ENV: testing
+  APP_KEY: base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
+  COMPOSER_CACHE_DIR: $CI_PROJECT_DIR/.composer-cache
+
+validate:
+  stage: test
+  image: php:8.3-cli
+  services:
+    - name: mysql:8.0
+      alias: mysql
+  cache:
+    key:
+      files: [composer.lock]
+    paths: [.composer-cache/]
+  before_script:
+    - apt-get update && apt-get install -y git unzip libzip-dev libicu-dev libonig-dev libsqlite3-dev
+    - docker-php-ext-install pdo_mysql pdo_sqlite intl mbstring zip
+    - curl -fsSL https://getcomposer.org/installer -o /tmp/composer-setup.php
+    - php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
+    - composer install --prefer-dist --no-interaction --no-progress
+  script:
+    - vendor/bin/pint --test
+    - composer validate --strict
+    - composer audit --locked
+    - php vendor/bin/phpunit --log-junit report.xml
+    - php artisan route:cache
+    - php artisan config:cache
+  artifacts:
+    when: always
+    reports:
+      junit: report.xml
+
+build:
+  stage: build
+  image: docker:27-cli
+  services: [docker:27-dind]
+  variables:
+    DOCKER_TLS_CERTDIR: /certs
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login "$CI_REGISTRY" --username "$CI_REGISTRY_USER" --password-stdin
+  script:
+    - docker build --target production --tag "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA" .
+    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "develop"'
+
+.deploy:
+  stage: deploy
+  image: alpine:3.22
+  before_script:
+    - apk add --no-cache openssh-client
+    - install -m 700 -d ~/.ssh
+    - install -m 600 "$DEPLOY_SSH_KEY" ~/.ssh/id_ed25519
+    - install -m 600 "$DEPLOY_KNOWN_HOSTS" ~/.ssh/known_hosts
+  script:
+    - ssh "$DEPLOY_USER@$DEPLOY_HOST" "$DEPLOY_SCRIPT" "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA"
+
+deploy_staging:
+  extends: .deploy
+  environment: staging
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+      when: manual
+
+deploy_production:
+  extends: .deploy
+  environment: production
+  resource_group: production
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: manual
+  allow_failure: false
