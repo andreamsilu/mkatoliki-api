@@ -25,11 +25,6 @@ class DirectoryPolicy
         return $user->hasPermission('directory.write') && $user->tokenCan('directory:write') && $this->scope->contains($user, $entity);
     }
 
-    public function verify(User $user, DirectoryEntity $entity): bool
-    {
-        return $user->hasPermission('directory.verify') && $this->update($user, $entity);
-    }
-
     public function transfer(User $user, DirectoryEntity $entity): bool
     {
         return $user->hasPermission('directory.transfer') && $this->update($user, $entity);

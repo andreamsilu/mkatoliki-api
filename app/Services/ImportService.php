@@ -71,7 +71,7 @@ final class ImportService
                 $existing = $model->newQuery()->where('code', $row['code'])->lockForUpdate()->first();
                 $data = Validator::make($row, $this->rules($batch->entity_type, $existing?->id))->validated();
                 $data['source_id'] = $batch->source_id;
-                $this->directory->save($batch->entity_type, $data, $reviewer, $existing?->id, importing: true);
+                $this->directory->save($batch->entity_type, $data, $reviewer, $existing?->id);
             }
             $batch->update(['status' => 'committed', 'reviewed_by' => $reviewer->id, 'reviewed_at' => now(), 'report' => $report]);
             $this->audit->record($reviewer, 'import.committed', 'import_batches', $batch->id, new: ['entity_type' => $batch->entity_type, 'report' => $report]);

@@ -7,7 +7,6 @@ use App\Models\DirectoryEntity;
 use App\Models\Parish;
 use App\Models\ParishHistory;
 use App\Models\User;
-use App\Models\VerificationRecord;
 use App\Support\EntityRegistry;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Cache;
@@ -58,7 +57,7 @@ final class DirectoryService
 
     public function publiclyVisible(Builder $query): void
     {
-        $query->where('status', 'active')->where('verification_status', 'verified');
+        $query->where('status', 'active');
         $entity = EntityRegistry::key($query->getModel());
         $parent = match ($entity) {
             'provinces' => null, 'dioceses' => 'province', 'deaneries' => 'diocese',
@@ -87,9 +86,9 @@ final class DirectoryService
         return null;
     }
 
-    public function save(string $entity, array $attributes, User $actor, ?int $id = null, bool $importing = false): DirectoryEntity
+    public function save(string $entity, array $attributes, User $actor, ?int $id = null): DirectoryEntity
     {
-        return DB::transaction(function () use ($entity, $attributes, $actor, $id, $importing): DirectoryEntity {
+        return DB::transaction(function () use ($entity, $attributes, $actor, $id): DirectoryEntity {
             $model = EntityRegistry::model($entity);
             if ($id) {
                 $model = $model->newQuery()->lockForUpdate()->findOrFail($id);
@@ -107,44 +106,12 @@ final class DirectoryService
             if ($id && $model->isDirty(array_keys(EntityRegistry::definition($entity)['parents']))) {
                 Gate::forUser($actor)->authorize('create', $model);
             }
-            if (EntityRegistry::definition($entity)['public']) {
-                if (! $id || $model->isDirty(array_diff($model->getFillable(), ['status', 'verification_status', 'verified_at']))) {
-                    $model->verification_status = 'pending';
-                    $model->verified_at = null;
-                }
-                if ($importing) {
-                    $model->status = 'needs_verification';
-                    $model->verification_status = 'pending';
-                    $model->verified_at = null;
-                }
+            if (! $id && EntityRegistry::definition($entity)['public']) {
+                $model->verification_status = 'verified';
+                $model->verified_at = now();
             }
             $model->save();
             $this->audit->record($actor, $id ? 'updated' : 'created', $entity, $model->id, $before, $model->attributesToArray());
-            DB::afterCommit(fn () => $this->invalidateCache());
-
-            return $model->refresh();
-        }, 3);
-    }
-
-    public function verify(string $entity, int $id, array $attributes, User $actor): DirectoryEntity
-    {
-        abort_unless(EntityRegistry::definition($entity)['public'], 404);
-
-        return DB::transaction(function () use ($entity, $id, $attributes, $actor): DirectoryEntity {
-            $model = EntityRegistry::model($entity)->newQuery()->lockForUpdate()->findOrFail($id);
-            Gate::forUser($actor)->authorize('verify', $model);
-            $before = $model->attributesToArray();
-            VerificationRecord::create($attributes + [
-                'entity_type' => $entity, 'entity_id' => $id, 'verified_by' => $actor->id, 'verified_at' => now(),
-            ]);
-            $model->verification_status = $attributes['status'];
-            $model->source_id = $attributes['source_id'];
-            $model->verified_at = $attributes['status'] === 'verified' ? now() : null;
-            if ($attributes['status'] === 'verified' && in_array($model->status, ['pending', 'needs_verification'], true)) {
-                $model->status = 'active';
-            }
-            $model->save();
-            $this->audit->record($actor, 'verification.'.$attributes['status'], $entity, $id, $before, $model->attributesToArray());
             DB::afterCommit(fn () => $this->invalidateCache());
 
             return $model->refresh();
@@ -170,7 +137,7 @@ final class DirectoryService
                 'parish_id' => $id, 'old_deanery_id' => $parish->deanery_id,
                 'old_diocese_id' => $parish->deanery?->diocese_id, 'new_diocese_id' => $destination->diocese_id,
             ]);
-            $parish->update(['deanery_id' => $destination->id, 'source_id' => $attributes['source_id'], 'verification_status' => 'needs_review', 'verified_at' => null]);
+            $parish->update(['deanery_id' => $destination->id, 'source_id' => $attributes['source_id']]);
             $this->audit->record($actor, 'transferred', 'parishes', $id, $before, $parish->attributesToArray());
             DB::afterCommit(fn () => $this->invalidateCache());
 

@@ -81,14 +81,23 @@ class DirectoryController extends Controller
     public function structure(Request $request, string $id): JsonResponse
     {
         return $this->cached($request, function () use ($request, $id): JsonResponse {
-            $parish = $this->directory->query('parishes')->findOrFail($id);
+            $actor = $this->actor($request);
+            $parish = $this->directory->query('parishes', user: $actor)->findOrFail($id);
+            if ($actor) {
+                Gate::authorize('view', $parish);
+            }
             $data = ['parish' => (new DirectoryResource($parish))->resolve($request)];
             $meta = [];
-            foreach (['outstations', 'zones', 'jumuiyas', 'associations', 'choirs', 'ministries'] as $entity) {
-                $query = $this->directory->query($entity, ['parish_id' => $id]);
+            $entities = ['outstations', 'zones', 'jumuiyas', 'associations', 'choirs', 'ministries'];
+            if ($actor) {
+                $entities = array_merge($entities, ['families', 'members']);
+            }
+            $routePrefix = $actor ? 'api.v1.admin.' : 'api.v1.';
+            foreach ($entities as $entity) {
+                $query = $this->directory->query($entity, ['parish_id' => $id], $actor);
                 $total = (clone $query)->count();
                 $data[$entity] = DirectoryResource::collection($query->limit(100)->get())->resolve($request);
-                $meta[$entity] = ['total' => $total, 'truncated' => $total > 100, 'url' => route('api.v1.'.$entity.'.index', ['parish_id' => $id])];
+                $meta[$entity] = ['total' => $total, 'truncated' => $total > 100, 'url' => route($routePrefix.$entity.'.index', ['parish_id' => $id])];
             }
 
             return ApiResponse::success($data, meta: $meta);

@@ -8,6 +8,16 @@ use Illuminate\Validation\Rule;
 
 class DirectoryWriteRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        $user = $this->user();
+        if ($this->isMethod('post') && ! $this->exists('parish_id')
+            && $user?->role?->name === 'parish_admin' && $user->parish_id
+            && array_key_exists('parish_id', EntityRegistry::definition($this->route('entity'))['parents'])) {
+            $this->merge(['parish_id' => $user->parish_id]);
+        }
+    }
+
     public function authorize(): bool
     {
         return $this->user()?->hasPermission('directory.write') && $this->user()->tokenCan('directory:write');
@@ -30,9 +40,13 @@ class DirectoryWriteRequest extends FormRequest
         foreach ($definition['parents'] as $field => $parent) {
             $rules[$field] = [$parent['nullable'] ? 'sometimes' : $required, $parent['nullable'] ? 'nullable' : 'required', 'integer', Rule::exists((new $parent['model'])->getTable(), 'id')];
         }
-        $codeField = match ($entity) { 'families' => 'family_code', 'members' => 'member_code', default => 'code' };
+        $codeField = match ($entity) {
+            'families' => 'family_code', 'members' => 'member_code', default => 'code'
+        };
         $rules[$codeField] = [$required, 'required', 'string', 'max:64', 'regex:/^[A-Z0-9][A-Z0-9._-]*$/', Rule::unique($model->getTable(), $codeField)->ignore($id)];
-        foreach (match ($entity) { 'families' => ['family_name'], 'members' => ['first_name', 'last_name'], default => ['name'] } as $field) {
+        foreach (match ($entity) {
+            'families' => ['family_name'], 'members' => ['first_name', 'last_name'], default => ['name']
+        } as $field) {
             $rules[$field] = [$required, 'required', 'string', 'max:255'];
         }
         $rules['status'] = ['sometimes', 'required', Rule::in(EntityRegistry::STATUSES)];

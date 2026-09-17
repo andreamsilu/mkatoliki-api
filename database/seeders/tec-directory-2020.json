@@ -13,9 +13,9 @@
     "provinces": "All seven metropolitan provinces listed on page 5.",
     "dioceses": "All 34 dioceses, including seven archdioceses, listed on pages 3 and 5.",
     "deaneries": "Only explicitly named deaneries in the accessible 2020 transcription; not a complete national list.",
-    "parishes": "All explicitly listed parish entries in the accessible TEC 2020 transcription; deanery-linked where TEC provides an assignment, otherwise deanery_id is NULL pending verification.",
+    "parishes": "All explicitly listed parish entries in the accessible TEC 2020 transcription; deanery-linked where TEC provides an assignment, otherwise deanery_id is NULL until a later correction supplies it.",
     "notes": [
-      "Historical 2020 baseline. Every new record requires verification before public API publication.",
+      "Historical 2020 baseline. Records are published while active and can be corrected when newer information becomes available.",
       "The publisher PDF URL returned HTTP 404 at retrieval; names and printed page references were transcribed from the publicly readable mirror.",
       "Names use parish locations where a dedication is masked as [Link] in the accessible transcription. No missing dedication has been guessed.",
       "Codes are application identifiers, not identifiers assigned by TEC. Parish codes do not contain deanery codes, so transfers preserve identity.",
@@ -169,7 +169,7 @@
           188,
           189
         ],
-        "reason": "TEC lists the 55 Mbulu parishes but does not state a parish-to-deanery assignment. The relational seed requires a verified deanery for every parish."
+        "reason": "TEC lists the 55 Mbulu parishes but does not state a parish-to-deanery assignment. The relational seed requires an assigned deanery for public hierarchy traversal."
       },
       {
         "diocese_code": "SAM",

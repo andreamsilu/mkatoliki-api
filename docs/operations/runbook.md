@@ -4,7 +4,7 @@
 
 Probe `/health` every minute and alert on non-200 responses. It checks both database connectivity and cache read/write. Use `/up` for application liveness. Collect Nginx errors, structured Laravel request logs, failed jobs, authentication failure counts, 5xx/429 rates, latency percentiles, CPU/RAM/disk, MySQL connections and slow queries, Redis memory/evictions, queue age, and backup age. Correlate API incidents with `X-Request-ID`; do not ask clients to send bearer tokens or private payloads into an incident channel.
 
-Log retention and access need organizational policy. Audit records contain redacted modification snapshots, actor and request identity. Public verification/history and private operational auditing have separate access controls. Avoid enabling verbose SQL binding logs or request-body capture in monitoring agents.
+Log retention and access need organizational policy. Audit records contain redacted modification snapshots, actor and request identity. Public source provenance and private operational auditing have separate access controls. Avoid enabling verbose SQL binding logs or request-body capture in monitoring agents.
 
 ## Encrypted backups
 

@@ -8,27 +8,23 @@ use App\Models\EcclesiasticalProvince;
 use App\Models\ImportBatch;
 use App\Models\Parish;
 use App\Models\ParishHistory;
-use App\Models\VerificationRecord;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
 
 class GovernanceTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_verification_publishes_records_and_edits_require_new_review(): void
+    public function test_active_records_publish_immediately_and_edits_remain_public(): void
     {
         $this->administrator();
-        $source = DataSource::factory()->create();
-        $id = $this->postJson('/api/v1/admin/provinces', ['code' => 'ARU', 'name' => 'Jimbo Kuu la Arusha'])->assertCreated()->json('data.id');
-        $this->getJson('/api/v1/provinces')->assertOk()->assertJsonCount(0, 'data');
-        $this->postJson("/api/v1/admin/provinces/$id/verify", ['source_id' => $source->id, 'status' => 'verified'])->assertOk()->assertJsonPath('data.verification_status', 'verified');
+        $id = $this->postJson('/api/v1/admin/provinces', ['code' => 'ARU', 'name' => 'Jimbo Kuu la Arusha'])
+            ->assertCreated()->assertJsonMissingPath('data.verification_status')->json('data.id');
         $this->getJson('/api/v1/provinces')->assertOk()->assertJsonCount(1, 'data');
-        $this->patchJson("/api/v1/admin/provinces/$id", ['name' => 'Updated name'])->assertOk()->assertJsonPath('data.verification_status', 'pending');
-        $this->getJson('/api/v1/provinces')->assertOk()->assertJsonCount(0, 'data');
-        $this->getJson("/api/v1/admin/provinces/$id/verifications")->assertOk()->assertJsonCount(1, 'data');
-        $this->assertDatabaseCount('verification_records', 1);
+        $this->patchJson("/api/v1/admin/provinces/$id", ['name' => 'Updated name'])->assertOk();
+        $this->getJson('/api/v1/provinces')->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.name', 'Updated name');
+        $this->postJson("/api/v1/admin/provinces/$id/verify", [])->assertNotFound();
+        $this->assertDatabaseCount('verification_records', 0);
     }
 
     public function test_parish_transfer_preserves_history_and_checks_both_scopes(): void
@@ -51,7 +47,7 @@ class GovernanceTest extends TestCase
         $this->postJson("/api/v1/admin/parishes/{$parish->id}/transfer", $payload)->assertUnprocessable();
     }
 
-    public function test_import_is_staged_reviewed_idempotent_and_requires_verification_before_publication(): void
+    public function test_reviewed_import_is_published_when_committed(): void
     {
         $this->administrator();
         $source = DataSource::factory()->create();
@@ -67,9 +63,7 @@ class GovernanceTest extends TestCase
         $province = EcclesiasticalProvince::firstOrFail();
         $this->assertSame('ARU', $province->code);
         $this->assertSame($source->id, $province->source_id);
-        $this->assertSame('needs_verification', $province->status);
-        $this->getJson('/api/v1/provinces')->assertOk()->assertJsonCount(0, 'data');
-        $this->postJson("/api/v1/admin/provinces/{$province->id}/verify", ['source_id' => $source->id, 'status' => 'verified'])->assertOk();
+        $this->assertSame('active', $province->status);
         $this->getJson('/api/v1/provinces')->assertOk()->assertJsonCount(1, 'data');
     }
 

@@ -16,7 +16,7 @@ class DataSourceSeeder extends Seeder
             'type' => $source['type'],
             'publisher' => $source['publisher'],
             'reference' => $source['reference']."\n".$source['transcription_reference'],
-            'description' => 'Historical 2020 baseline. Requires review and verification before publication. '
+            'description' => 'Historical 2020 baseline that can be corrected as newer information becomes available. '
                 .'Printed page references and coverage gaps: database/seeders/tec-directory-2020.json. '
                 .'Public transcription retrieved '.$source['retrieved_at'].'; publisher PDF unavailable. '
                 .'Transcription SHA-256: '.$source['transcription_sha256'],

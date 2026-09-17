@@ -16,14 +16,14 @@ class TecDirectorySeederTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_default_seeding_loads_the_documented_2020_hierarchy_without_duplicates_or_automatic_publication(): void
+    public function test_default_seeding_loads_and_publishes_the_documented_2020_hierarchy_without_duplicates(): void
     {
         $this->seed(DatabaseSeeder::class);
         $originalParishIds = Parish::query()->orderBy('code')->pluck('id', 'code')->all();
         $this->seed(DatabaseSeeder::class);
 
         $this->assertDatabaseCount('roles', 5);
-        $this->assertDatabaseCount('permissions', 7);
+        $this->assertDatabaseCount('permissions', 6);
         $this->assertDatabaseCount('data_sources', 1);
         $this->assertDatabaseCount('ecclesiastical_provinces', 7);
         $this->assertDatabaseCount('dioceses', 34);
@@ -39,9 +39,9 @@ class TecDirectorySeederTest extends TestCase
 
         foreach ([EcclesiasticalProvince::class, Diocese::class, Deanery::class, Parish::class] as $modelClass) {
             $this->assertSame(0, $modelClass::query()->where('source_id', '!=', $source->id)->count());
-            $this->assertSame(0, $modelClass::query()->where('status', '!=', 'needs_verification')->count());
-            $this->assertSame(0, $modelClass::query()->where('verification_status', '!=', 'pending')->count());
-            $this->assertSame(0, $modelClass::query()->whereNotNull('verified_at')->count());
+            $this->assertSame(0, $modelClass::query()->where('status', '!=', 'active')->count());
+            $this->assertSame(0, $modelClass::query()->where('verification_status', '!=', 'verified')->count());
+            $this->assertSame(0, $modelClass::query()->whereNull('verified_at')->count());
         }
 
         foreach ([
@@ -67,12 +67,12 @@ class TecDirectorySeederTest extends TestCase
         $this->assertDatabaseMissing('parishes', ['code' => 'MSH-KCMC-CHAPLAINCY']);
         $this->assertDatabaseMissing('parishes', ['code' => 'ARU-KIKUNDE']);
 
-        foreach (['provinces', 'dioceses', 'deaneries', 'parishes'] as $entity) {
-            $this->getJson('/api/v1/'.$entity)->assertOk()->assertJsonCount(0, 'data');
+        foreach (['provinces' => 7, 'dioceses' => 34, 'deaneries' => 45, 'parishes' => 229] as $entity => $total) {
+            $this->getJson('/api/v1/'.$entity)->assertOk()->assertJsonPath('meta.total', $total);
         }
     }
 
-    public function test_reseeding_preserves_a_later_parish_transfer_corrections_and_verification(): void
+    public function test_reseeding_preserves_a_later_parish_transfer_and_corrections(): void
     {
         $this->seed(TecDirectorySeeder::class);
         $this->administrator();
@@ -87,10 +87,6 @@ class TecDirectorySeederTest extends TestCase
             'reason' => 'Reviewed parish transfer',
         ])->assertOk();
         $this->patchJson('/api/v1/admin/parishes/'.$parish->id, ['name' => 'Reviewed Kijenge Parish'])->assertOk();
-        $this->postJson('/api/v1/admin/parishes/'.$parish->id.'/verify', [
-            'source_id' => $source->id,
-            'status' => 'verified',
-        ])->assertOk();
         $reviewedAttributes = $parish->refresh()->getAttributes();
 
         $this->seed(TecDirectorySeeder::class);
@@ -98,7 +94,7 @@ class TecDirectorySeederTest extends TestCase
         $this->assertSame($reviewedAttributes, $parish->refresh()->getAttributes());
         $this->assertDatabaseCount('parishes', 304);
         $this->assertDatabaseCount('parish_history', 1);
-        $this->assertDatabaseCount('verification_records', 1);
+        $this->assertDatabaseCount('verification_records', 0);
         $this->assertDatabaseHas('parish_history', ['parish_id' => $parish->id, 'new_deanery_id' => $destination->id]);
     }
 

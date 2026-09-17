@@ -6,13 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\DirectoryListRequest;
 use App\Http\Requests\ImportRequest;
 use App\Http\Requests\TransferParishRequest;
-use App\Http\Requests\VerificationRequest;
 use App\Http\Resources\DirectoryResource;
 use App\Models\AuditLog;
 use App\Models\DataSource;
 use App\Models\ImportBatch;
 use App\Models\ParishHistory;
-use App\Models\VerificationRecord;
 use App\Services\AuditService;
 use App\Services\DirectoryService;
 use App\Services\ImportService;
@@ -26,18 +24,6 @@ use Illuminate\Validation\Rule;
 
 class GovernanceController extends Controller
 {
-    public function verify(VerificationRequest $request, string $id, string $entity, DirectoryService $directory): JsonResponse
-    {
-        return ApiResponse::success((new DirectoryResource($directory->verify($entity, (int) $id, $request->validated(), $request->user())))->resolve($request));
-    }
-
-    public function verifications(DirectoryListRequest $request, string $id, string $entity): JsonResponse
-    {
-        Gate::authorize('view', EntityRegistry::model($entity)->newQuery()->findOrFail($id));
-
-        return ApiResponse::page(VerificationRecord::where(['entity_type' => $entity, 'entity_id' => $id])->latest('id')->paginate($request->integer('per_page', 25)));
-    }
-
     public function transfer(TransferParishRequest $request, string $id, DirectoryService $directory): JsonResponse
     {
         return ApiResponse::success((new DirectoryResource($directory->transfer((int) $id, $request->validated(), $request->user())))->resolve($request));

@@ -34,6 +34,7 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
             Route::match(['put', 'patch'], "$entity/{id}", [DirectoryController::class, 'update'])->whereNumber('id')->defaults('entity', $entity)->name("$entity.update");
         }
         Route::prefix('admin')->name('admin.')->group(function (): void {
+            Route::get('parishes/{id}/structure', [DirectoryController::class, 'structure'])->whereNumber('id')->name('parishes.structure');
             Route::get('data-sources', [GovernanceController::class, 'sources'])->name('sources.index');
             Route::post('data-sources', [GovernanceController::class, 'storeSource'])->name('sources.store');
             Route::get('audit-logs', [GovernanceController::class, 'audits'])->name('audits');
@@ -43,15 +44,11 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
             Route::post('imports/{id}/commit', [GovernanceController::class, 'commitImport'])->whereNumber('id')->name('imports.commit');
             Route::post('parishes/{id}/transfer', [GovernanceController::class, 'transfer'])->whereNumber('id')->name('parishes.transfer');
             Route::get('parishes/{id}/history', [GovernanceController::class, 'history'])->whereNumber('id')->name('parishes.history');
-            foreach (EntityRegistry::ENTITIES as $entity => $definition) {
+            foreach (array_keys(EntityRegistry::ENTITIES) as $entity) {
                 Route::get($entity, [DirectoryController::class, 'index'])->defaults('entity', $entity)->name("$entity.index");
                 Route::get("$entity/{id}", [DirectoryController::class, 'show'])->whereNumber('id')->defaults('entity', $entity)->name("$entity.show");
                 Route::post($entity, [DirectoryController::class, 'store'])->defaults('entity', $entity)->name("$entity.store");
                 Route::match(['put', 'patch'], "$entity/{id}", [DirectoryController::class, 'update'])->whereNumber('id')->defaults('entity', $entity)->name("$entity.update");
-                if ($definition['public']) {
-                    Route::post("$entity/{id}/verify", [GovernanceController::class, 'verify'])->whereNumber('id')->defaults('entity', $entity)->name("$entity.verify");
-                    Route::get("$entity/{id}/verifications", [GovernanceController::class, 'verifications'])->whereNumber('id')->defaults('entity', $entity)->name("$entity.verifications");
-                }
             }
         });
     });

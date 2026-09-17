@@ -79,16 +79,16 @@ class DirectoryApiTest extends TestCase
         $this->getJson('/api/v1/parishes?status=unknown')->assertUnprocessable();
     }
 
-    public function test_unverified_inactive_and_hidden_ancestor_records_are_not_public(): void
+    public function test_verification_does_not_gate_publication_but_inactive_records_and_hidden_ancestors_do(): void
     {
         $pending = Parish::factory()->create(['verification_status' => 'pending']);
         Parish::factory()->create(['status' => 'inactive']);
         $hidden = Parish::factory()->create();
         $hidden->deanery->update(['status' => 'suppressed']);
         Zone::factory()->create(['parish_id' => $pending->id]);
-        $this->getJson('/api/v1/parishes')->assertOk()->assertJsonCount(0, 'data');
-        $this->getJson('/api/v1/zones')->assertOk()->assertJsonCount(0, 'data');
-        $this->getJson("/api/v1/parishes/{$pending->id}")->assertNotFound()->assertJsonPath('error.code', 'PARISH_NOT_FOUND');
+        $this->getJson('/api/v1/parishes')->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.id', $pending->id);
+        $this->getJson('/api/v1/zones')->assertOk()->assertJsonCount(1, 'data');
+        $this->getJson("/api/v1/parishes/{$pending->id}")->assertOk()->assertJsonPath('data.id', $pending->id);
     }
 
     public function test_family_and_member_routes_require_authentication_even_without_accept_header(): void

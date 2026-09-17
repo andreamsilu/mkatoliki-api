@@ -33,7 +33,7 @@ final class EntityRegistry
         'ministries' => ['model' => Ministry::class, 'public' => true, 'parents' => ['parish_id' => ['model' => Parish::class, 'nullable' => false], 'outstation_id' => ['model' => Outstation::class, 'nullable' => true]]],
     ];
 
-    public const STATUSES = ['active', 'inactive', 'pending', 'needs_verification', 'transferred', 'merged', 'suppressed'];
+    public const STATUSES = ['active', 'inactive', 'pending', 'transferred', 'merged', 'suppressed'];
 
     public static function definition(string $entity): array
     {

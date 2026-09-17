@@ -63,6 +63,17 @@ class ApiInfrastructureTest extends TestCase
         $this->get('/api/openapi.json')->assertOk()->assertHeader('Content-Type', 'application/json');
     }
 
+    public function test_swagger_ui_loads_the_openapi_contract_and_supports_authorization(): void
+    {
+        $this->get('/swagger')->assertOk()
+            ->assertSee('SwaggerUIBundle', false)
+            ->assertSee(str_replace('/', '\\/', route('openapi')), false)
+            ->assertSee('persistAuthorization: true', false);
+        $this->get('/')->assertOk()
+            ->assertJsonPath('documentation', route('swagger'))
+            ->assertJsonPath('openapi', route('openapi'));
+    }
+
     public function test_invalid_methods_and_unknown_resources_are_json_even_without_accept_header(): void
     {
         $this->get('/api/v1/missing')->assertNotFound()->assertJsonPath('success', false);

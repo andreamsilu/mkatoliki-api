@@ -30,7 +30,7 @@ class TecDirectorySeeder extends Seeder
             $this->seedRows(Parish::class, $snapshot['parishes'], $source->id, 'deanery_id', $deaneryIds);
         });
 
-        $this->command?->info('TEC 2020 baseline loaded; existing records preserved and new records pending verification.');
+        $this->command?->info('TEC 2020 baseline loaded and published; existing records and corrections preserved.');
         $this->command?->line('Parish mapping coverage: Arusha, Kahama, Moshi, Sumbawanga, Tabora and Tanga. See the snapshot coverage notes for gaps.');
     }
 
@@ -47,9 +47,9 @@ class TecDirectorySeeder extends Seeder
         foreach ($rows as $row) {
             $attributes = Arr::only($row, ['name', 'name_en', 'type']) + [
                 'source_id' => $sourceId,
-                'status' => 'needs_verification',
-                'verification_status' => 'pending',
-                'verified_at' => null,
+                'status' => 'active',
+                'verification_status' => 'verified',
+                'verified_at' => now(),
             ];
 
             if ($parentField !== null) {
