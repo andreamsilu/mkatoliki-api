@@ -33,14 +33,16 @@ class GovernanceController extends Controller
     {
         Gate::authorize('view', EntityRegistry::model('parishes')->newQuery()->findOrFail($id));
 
-        return ApiResponse::page(ParishHistory::where('parish_id', $id)->latest('id')->paginate($request->integer('per_page', 25)));
+        return ApiResponse::page(ParishHistory::where('parish_id', $id)->latest('id')
+            ->paginate(perPage: $request->integer('per_page', 25), page: $request->integer('page', 1)));
     }
 
     public function sources(DirectoryListRequest $request): JsonResponse
     {
         Gate::authorize('sources.manage');
 
-        return ApiResponse::page(DataSource::orderBy('name')->orderBy('id')->paginate($request->integer('per_page', 25)));
+        return ApiResponse::page(DataSource::orderBy('name')->orderBy('id')
+            ->paginate(perPage: $request->integer('per_page', 25), page: $request->integer('page', 1)));
     }
 
     public function storeSource(Request $request, AuditService $audit): JsonResponse
@@ -66,14 +68,16 @@ class GovernanceController extends Controller
     {
         Gate::authorize('audit.read');
 
-        return ApiResponse::page(AuditLog::latest('id')->paginate($request->integer('per_page', 25)));
+        return ApiResponse::page(AuditLog::latest('id')
+            ->paginate(perPage: $request->integer('per_page', 25), page: $request->integer('page', 1)));
     }
 
     public function imports(DirectoryListRequest $request): JsonResponse
     {
         Gate::authorize('imports.manage');
 
-        return ApiResponse::page(ImportBatch::select(['id', 'source_id', 'entity_type', 'status', 'created_by', 'reviewed_by', 'reviewed_at', 'created_at'])->latest('id')->paginate($request->integer('per_page', 25)));
+        return ApiResponse::page(ImportBatch::select(['id', 'source_id', 'entity_type', 'status', 'created_by', 'reviewed_by', 'reviewed_at', 'created_at'])->latest('id')
+            ->paginate(perPage: $request->integer('per_page', 25), page: $request->integer('page', 1)));
     }
 
     public function stageImport(ImportRequest $request, ImportService $imports): JsonResponse

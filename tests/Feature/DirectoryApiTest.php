@@ -30,8 +30,8 @@ class DirectoryApiTest extends TestCase
     {
         $class = EntityRegistry::definition($entity)['model'];
         $record = $class::factory()->create();
-        $this->getJson('/api/v1/'.$entity)->assertOk()->assertJsonPath('success', true)->assertJsonPath('data.0.id', $record->id)->assertJsonPath('meta.total', 1);
-        $this->getJson('/api/v1/'.$entity.'/'.$record->id)->assertOk()->assertJsonPath('data.id', $record->id)->assertHeader('X-Request-ID');
+        $this->postJson('/api/v1/'.$entity.'/search')->assertOk()->assertJsonPath('success', true)->assertJsonPath('data.0.id', $record->id)->assertJsonPath('meta.total', 1);
+        $this->postJson('/api/v1/'.$entity.'/'.$record->id)->assertOk()->assertJsonPath('data.id', $record->id)->assertHeader('X-Request-ID');
     }
 
     public function test_nested_lists_are_bound_to_the_parent_even_with_conflicting_filters(): void
@@ -39,12 +39,12 @@ class DirectoryApiTest extends TestCase
         $parish = Parish::factory()->create();
         $zone = Zone::factory()->create(['parish_id' => $parish->id]);
         $other = Zone::factory()->create();
-        $this->getJson("/api/v1/parishes/{$parish->id}/zones")->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.id', $zone->id);
-        $this->getJson("/api/v1/parishes/{$parish->id}/zones?parish_id={$other->parish_id}")->assertOk()->assertJsonCount(0, 'data');
-        $this->getJson('/api/v1/parishes/999999/zones')->assertNotFound();
-        $this->getJson("/api/v1/provinces/{$parish->deanery->diocese->ecclesiastical_province_id}/dioceses")->assertOk()->assertJsonPath('data.0.id', $parish->deanery->diocese_id);
-        $this->getJson("/api/v1/dioceses/{$parish->deanery->diocese_id}/deaneries")->assertOk()->assertJsonPath('data.0.id', $parish->deanery_id);
-        $this->getJson("/api/v1/deaneries/{$parish->deanery_id}/parishes")->assertOk()->assertJsonPath('data.0.id', $parish->id);
+        $this->postJson("/api/v1/parishes/{$parish->id}/zones")->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.id', $zone->id);
+        $this->postJson("/api/v1/parishes/{$parish->id}/zones", ['parish_id' => $other->parish_id])->assertOk()->assertJsonCount(0, 'data');
+        $this->postJson('/api/v1/parishes/999999/zones')->assertNotFound();
+        $this->postJson("/api/v1/provinces/{$parish->deanery->diocese->ecclesiastical_province_id}/dioceses")->assertOk()->assertJsonPath('data.0.id', $parish->deanery->diocese_id);
+        $this->postJson("/api/v1/dioceses/{$parish->deanery->diocese_id}/deaneries")->assertOk()->assertJsonPath('data.0.id', $parish->deanery_id);
+        $this->postJson("/api/v1/deaneries/{$parish->deanery_id}/parishes")->assertOk()->assertJsonPath('data.0.id', $parish->id);
     }
 
     public function test_context_and_structure_exclude_personal_data(): void
@@ -58,11 +58,11 @@ class DirectoryApiTest extends TestCase
         foreach ([Association::class, Choir::class, Ministry::class] as $class) {
             $class::factory()->create(['parish_id' => $parish->id]);
         }
-        $this->getJson("/api/v1/parishes/{$parish->id}/context")->assertOk()->assertJsonPath('data.diocese.id', $parish->deanery->diocese_id)->assertJsonMissingPath('data.parish.phone');
-        $response = $this->getJson("/api/v1/parishes/{$parish->id}/structure")->assertOk()->assertJsonCount(1, 'data.zones')->assertJsonCount(1, 'data.choirs')->assertJsonMissingPath('data.families')->assertJsonMissingPath('data.members');
+        $this->postJson("/api/v1/parishes/{$parish->id}/context")->assertOk()->assertJsonPath('data.diocese.id', $parish->deanery->diocese_id)->assertJsonMissingPath('data.parish.phone');
+        $response = $this->postJson("/api/v1/parishes/{$parish->id}/structure")->assertOk()->assertJsonCount(1, 'data.zones')->assertJsonCount(1, 'data.choirs')->assertJsonMissingPath('data.families')->assertJsonMissingPath('data.members');
         $this->assertStringNotContainsString('SECRET-', $response->getContent());
         $this->assertStringNotContainsString('private@example.test', $response->getContent());
-        $this->getJson("/api/v1/zones/{$zone->id}/jumuiyas")->assertOk()->assertJsonCount(1, 'data');
+        $this->postJson("/api/v1/zones/{$zone->id}/jumuiyas")->assertOk()->assertJsonCount(1, 'data');
     }
 
     public function test_filters_search_and_pagination_are_consistent(): void
@@ -70,13 +70,13 @@ class DirectoryApiTest extends TestCase
         $parish = Parish::factory()->create(['name' => 'Parokia ya Kijenge']);
         Parish::factory()->create(['name' => 'Another parish']);
         Member::factory()->create(['first_name' => 'Kijenge', 'parish_id' => $parish->id]);
-        $this->getJson('/api/v1/parishes?diocese_id='.$parish->deanery->diocese_id)->assertOk()->assertJsonCount(1, 'data');
-        $this->getJson('/api/v1/parishes?per_page=1&page=2')->assertOk()->assertJsonPath('meta.total', 2)->assertJsonPath('meta.current_page', 2);
-        $this->getJson('/api/v1/search?q=kijenge')->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.entity_type', 'parishes');
-        $this->getJson('/api/v1/search?q=%25%25')->assertOk()->assertJsonCount(0, 'data');
-        $this->getJson('/api/v1/search')->assertUnprocessable()->assertJsonPath('error.code', 'VALIDATION_ERROR');
-        $this->getJson('/api/v1/parishes?per_page=101')->assertUnprocessable();
-        $this->getJson('/api/v1/parishes?status=unknown')->assertUnprocessable();
+        $this->postJson('/api/v1/parishes/search', ['diocese_id' => $parish->deanery->diocese_id])->assertOk()->assertJsonCount(1, 'data');
+        $this->postJson('/api/v1/parishes/search', ['per_page' => 1, 'page' => 2])->assertOk()->assertJsonPath('meta.total', 2)->assertJsonPath('meta.current_page', 2);
+        $this->postJson('/api/v1/search', ['q' => 'kijenge'])->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.entity_type', 'parishes');
+        $this->postJson('/api/v1/search', ['q' => '%%'])->assertOk()->assertJsonCount(0, 'data');
+        $this->postJson('/api/v1/search')->assertUnprocessable()->assertJsonPath('error.code', 'VALIDATION_ERROR');
+        $this->postJson('/api/v1/parishes/search', ['per_page' => 101])->assertUnprocessable();
+        $this->postJson('/api/v1/parishes/search', ['status' => 'unknown'])->assertUnprocessable();
     }
 
     public function test_verification_does_not_gate_publication_but_inactive_records_and_hidden_ancestors_do(): void
@@ -86,15 +86,15 @@ class DirectoryApiTest extends TestCase
         $hidden = Parish::factory()->create();
         $hidden->deanery->update(['status' => 'suppressed']);
         Zone::factory()->create(['parish_id' => $pending->id]);
-        $this->getJson('/api/v1/parishes')->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.id', $pending->id);
-        $this->getJson('/api/v1/zones')->assertOk()->assertJsonCount(1, 'data');
-        $this->getJson("/api/v1/parishes/{$pending->id}")->assertOk()->assertJsonPath('data.id', $pending->id);
+        $this->postJson('/api/v1/parishes/search')->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.id', $pending->id);
+        $this->postJson('/api/v1/zones/search')->assertOk()->assertJsonCount(1, 'data');
+        $this->postJson("/api/v1/parishes/{$pending->id}")->assertOk()->assertJsonPath('data.id', $pending->id);
     }
 
     public function test_family_and_member_routes_require_authentication_even_without_accept_header(): void
     {
         foreach (['families', 'members', 'admin/parishes'] as $entity) {
-            $this->get('/api/v1/'.$entity)->assertUnauthorized()->assertJsonPath('error.code', 'UNAUTHENTICATED');
+            $this->post('/api/v1/'.$entity.'/search')->assertUnauthorized()->assertJsonPath('error.code', 'UNAUTHENTICATED');
         }
     }
 }

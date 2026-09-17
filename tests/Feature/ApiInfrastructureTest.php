@@ -26,9 +26,9 @@ class ApiInfrastructureTest extends TestCase
     public function test_public_rate_limit_has_standard_json_errors(): void
     {
         config(['core.public_rate_limit' => 2]);
-        $this->getJson('/api/v1/provinces')->assertOk();
-        $this->getJson('/api/v1/provinces')->assertOk();
-        $this->getJson('/api/v1/provinces')->assertStatus(429)->assertJsonPath('error.code', 'RATE_LIMIT_EXCEEDED')->assertHeader('Retry-After')->assertHeader('X-Request-ID');
+        $this->postJson('/api/v1/provinces/search')->assertOk();
+        $this->postJson('/api/v1/provinces/search')->assertOk();
+        $this->postJson('/api/v1/provinces/search')->assertStatus(429)->assertJsonPath('error.code', 'RATE_LIMIT_EXCEEDED')->assertHeader('Retry-After')->assertHeader('X-Request-ID');
     }
 
     public function test_transitive_ancestry_cannot_be_hidden_by_nullable_links(): void
@@ -77,6 +77,6 @@ class ApiInfrastructureTest extends TestCase
     public function test_invalid_methods_and_unknown_resources_are_json_even_without_accept_header(): void
     {
         $this->get('/api/v1/missing')->assertNotFound()->assertJsonPath('success', false);
-        $this->post('/api/v1/parishes')->assertStatus(405)->assertJsonPath('error.code', 'METHOD_NOT_ALLOWED');
+        $this->get('/api/v1/search')->assertStatus(405)->assertJsonPath('error.code', 'METHOD_NOT_ALLOWED');
     }
 }

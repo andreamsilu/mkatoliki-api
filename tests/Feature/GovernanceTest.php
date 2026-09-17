@@ -20,9 +20,9 @@ class GovernanceTest extends TestCase
         $this->administrator();
         $id = $this->postJson('/api/v1/admin/provinces', ['code' => 'ARU', 'name' => 'Jimbo Kuu la Arusha'])
             ->assertCreated()->assertJsonMissingPath('data.verification_status')->json('data.id');
-        $this->getJson('/api/v1/provinces')->assertOk()->assertJsonCount(1, 'data');
+        $this->postJson('/api/v1/provinces/search')->assertOk()->assertJsonCount(1, 'data');
         $this->patchJson("/api/v1/admin/provinces/$id", ['name' => 'Updated name'])->assertOk();
-        $this->getJson('/api/v1/provinces')->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.name', 'Updated name');
+        $this->postJson('/api/v1/provinces/search')->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.name', 'Updated name');
         $this->postJson("/api/v1/admin/provinces/$id/verify", [])->assertNotFound();
         $this->assertDatabaseCount('verification_records', 0);
     }
@@ -43,7 +43,7 @@ class GovernanceTest extends TestCase
         $this->assertSame($parish->deanery_id, $history->old_deanery_id);
         $this->assertSame($destination->diocese_id, $history->new_diocese_id);
         $this->assertDatabaseHas('audit_logs', ['entity_id' => $parish->id, 'action' => 'transferred']);
-        $this->getJson("/api/v1/admin/parishes/{$parish->id}/history")->assertOk()->assertJsonCount(1, 'data');
+        $this->postJson("/api/v1/admin/parishes/{$parish->id}/history")->assertOk()->assertJsonCount(1, 'data');
         $this->postJson("/api/v1/admin/parishes/{$parish->id}/transfer", $payload)->assertUnprocessable();
     }
 
@@ -64,7 +64,7 @@ class GovernanceTest extends TestCase
         $this->assertSame('ARU', $province->code);
         $this->assertSame($source->id, $province->source_id);
         $this->assertSame('active', $province->status);
-        $this->getJson('/api/v1/provinces')->assertOk()->assertJsonCount(1, 'data');
+        $this->postJson('/api/v1/provinces/search')->assertOk()->assertJsonCount(1, 'data');
     }
 
     public function test_import_reports_duplicate_codes_missing_names_and_missing_parents(): void
@@ -99,7 +99,7 @@ class GovernanceTest extends TestCase
     {
         $parish = Parish::factory()->create();
         $this->administrator('parish_admin', ['parish_id' => $parish->id]);
-        $this->getJson('/api/v1/admin/imports')->assertForbidden();
+        $this->postJson('/api/v1/admin/imports/search')->assertForbidden();
         $this->postJson('/api/v1/admin/imports', [])->assertForbidden();
         $this->postJson('/api/v1/admin/data-sources', [])->assertForbidden();
     }

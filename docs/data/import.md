@@ -4,7 +4,7 @@
 2. Normalize and review spelling, codes and organizational relationships. Register the source and edition through `/api/v1/admin/data-sources`.
 3. Import in dependency order: provinces → dioceses → deaneries → parishes → outstations/zones → jumuiyas → associations/choirs/ministries. Parent fields contain existing database IDs; resolve them by the directory's unique codes first.
 4. Stage each entity type with `POST /api/v1/admin/imports`. Nothing enters the directory yet.
-5. Inspect `GET /api/v1/admin/imports/{id}`. It returns normalized rows and a per-row report. Correct invalid batches and stage them again.
+5. Inspect `POST /api/v1/admin/imports/{id}`. It returns normalized rows and a per-row report. Correct invalid batches and stage them again.
 6. After human review, commit a valid batch with `POST /api/v1/admin/imports/{id}/commit` and `{"reviewed": true}`. Validation runs again inside the commit transaction. A failure rolls back the entire batch.
 7. Committed records publish immediately when their status and ancestry are active. Correct them later through the normal administrative endpoints when newer information becomes available.
 

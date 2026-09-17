@@ -14,8 +14,10 @@ Obtain the API origin from your provider. The versioned base URL is **`https://Y
 export API_BASE_URL='https://YOUR_API_HOST/api/v1'
 
 curl --fail-with-body --silent --show-error \
-  "$API_BASE_URL/provinces?per_page=25" \
-  -H 'Accept: application/json'
+  "$API_BASE_URL/provinces/search" \
+  -H 'Accept: application/json' \
+  -H 'Content-Type: application/json' \
+  --data '{"per_page":25}'
 ```
 
 A successful empty directory is a valid response:
@@ -72,7 +74,7 @@ Send `Accept: application/json`. For JSON request bodies, also send `Content-Typ
 
 Success responses have `success`, `data`, and `meta`. `data` is an object for details and an array for collections. Non-paginated responses normally use `meta: {}`; parish structure uses additional metadata.
 
-Example `GET /parishes/42` response (`200 OK`):
+Example `POST /parishes/42` response (`200 OK`):
 
 ```json
 {
@@ -102,16 +104,17 @@ The versioned routes return a server-generated `X-Request-ID` for tracing. Captu
 
 | Method | Meaning | Normal success status |
 | --- | --- | --- |
-| `GET` | Read a collection or record | `200` |
+| `GET` | Read the parameter-free current-user view | `200` |
+| `POST` to `/search`, an ID URL, `/{entity}/search`, or a nested collection | Read parameterized data | `200` |
 | `POST` to a collection | Create a record or stage an import | `201` |
 | `PUT`, `PATCH` | Partially update a record | `200` |
-| `POST` to login, logout, verify, transfer, or commit | Execute the named action | `200` |
+| `POST` to login, logout, transfer, or commit | Execute the named action | `200` |
 
 Both `PUT` and `PATCH` accept partial updates: omitted fields retain their values. Send `null` only for nullable fields. There are no `DELETE` operations; retire directory records by changing `status`.
 
 ## Pagination, filters, and search
 
-Directory collection endpoints and the nested collections below accept these query parameters:
+Directory search endpoints and the nested collections below accept these fields in a JSON request body:
 
 | Parameter | Type and limits | Behavior |
 | --- | --- | --- |
@@ -121,16 +124,14 @@ Directory collection endpoints and the nested collections below accept these que
 | `status` | A directory status | Exact status; public visibility still applies |
 | Ancestor ID | Positive integer | Restrict to records belonging to that ancestor |
 
-Accepted ancestor parameter names are `ecclesiastical_province_id`, `diocese_id`, `deanery_id`, `parish_id`, `outstation_id`, `zone_id`, `jumuiya_id`, and `family_id`. Use only ancestors of the resource being queried: `/parishes?diocese_id=5` follows the deanery's diocese. A filter that is not an ancestor of that resource is ignored. These are relationship filters, not filters on the resource's own ID. Use `/parishes/42` to select parish 42.
+Accepted ancestor field names are `ecclesiastical_province_id`, `diocese_id`, `deanery_id`, `parish_id`, `outstation_id`, `zone_id`, `jumuiya_id`, and `family_id`. Use only ancestors of the resource being queried: `POST /parishes/search` with `{"diocese_id":5}` follows the deanery's diocese. A filter that is not an ancestor of that resource is ignored. These are relationship filters, not filters on the resource's own ID. Use `POST /parishes/42` to select parish 42.
 
 ```bash
-curl --fail-with-body --silent --show-error --get \
-  "$API_BASE_URL/parishes" \
+curl --fail-with-body --silent --show-error \
+  "$API_BASE_URL/parishes/search" \
   -H 'Accept: application/json' \
-  --data-urlencode 'diocese_id=5' \
-  --data-urlencode 'q=Mfano' \
-  --data-urlencode 'per_page=50' \
-  --data-urlencode 'page=1'
+  -H 'Content-Type: application/json' \
+  --data '{"diocese_id":5,"q":"Mfano","per_page":50,"page":1}'
 ```
 
 Collections are ordered by `name`, then `id`. Families use `family_name`; members use `last_name`. There are no sort, include, or field-selection parameters. Search matches names, English names when available, and codes. Family search matches `family_name` and `family_code`; member search matches name components and `member_code`. `%` and `_` are treated literally, not as search wildcards.
@@ -139,7 +140,7 @@ Pagination metadata contains `current_page`, `per_page`, `total`, and `last_page
 
 ### Search across the directory
 
-`GET /search?q=Mfano` requires `q` and returns paginated matches from provinces, dioceses, deaneries, parishes, outstations, zones, and jumuiyas. Associations, choirs, and ministries have their own searchable list endpoints. Families and members are excluded from global search.
+`POST /search` with `{"q":"Mfano"}` requires `q` and returns paginated matches from provinces, dioceses, deaneries, parishes, outstations, zones, and jumuiyas. Associations, choirs, and ministries have their own search endpoints. Families and members are excluded from global search.
 
 Each search item contains only `id`, `code`, `name`, `name_en`, and `entity_type`:
 
@@ -163,35 +164,37 @@ Fetch `/{entity_type}/{id}` for the full public record. Global search orders res
 
 ## Public endpoints
 
-For each of the ten public resource types in the directory table, use `GET /{entity}` for a paginated list and `GET /{entity}/{id}` for a single record.
+For each of the ten public resource types in the directory table, use `POST /{entity}/search` with a JSON body for a paginated list and `POST /{entity}/{id}` for a single record. An empty JSON object returns the first page without filters.
 
 ### Browse children
 
 | Endpoint | Result |
 | --- | --- |
-| `GET /provinces/{id}/dioceses` | Dioceses in a province |
-| `GET /dioceses/{id}/deaneries` | Deaneries in a diocese |
-| `GET /deaneries/{id}/parishes` | Parishes in a deanery |
-| `GET /parishes/{id}/outstations` | Outstations in a parish |
-| `GET /parishes/{id}/zones` | Zones in a parish |
-| `GET /parishes/{id}/jumuiyas` | Jumuiyas in a parish |
-| `GET /zones/{id}/jumuiyas` | Jumuiyas in a zone |
+| `POST /provinces/{id}/dioceses` | Dioceses in a province |
+| `POST /dioceses/{id}/deaneries` | Deaneries in a diocese |
+| `POST /deaneries/{id}/parishes` | Parishes in a deanery |
+| `POST /parishes/{id}/outstations` | Outstations in a parish |
+| `POST /parishes/{id}/zones` | Zones in a parish |
+| `POST /parishes/{id}/jumuiyas` | Jumuiyas in a parish |
+| `POST /zones/{id}/jumuiyas` | Jumuiyas in a zone |
 
-Each returns the ordinary paginated envelope. The parent must be publicly visible; otherwise the result is `404`. Conflicting parent query parameters produce no matches. For associations, choirs, and ministries, use their root collection with `parish_id`, for example `/choirs?parish_id=42`.
+Each accepts pagination fields in a JSON body and returns the ordinary paginated envelope. The parent must be publicly visible; otherwise the result is `404`. Conflicting parent body fields produce no matches. For associations, choirs, and ministries, use their search endpoint with `parish_id`, for example `POST /choirs/search` with `{"parish_id":42}`.
 
 ### Parish context
 
-`GET /parishes/{id}/context` returns an object with `parish`, `deanery`, `diocese`, and `ecclesiastical_province`. Each is a full public record of that type. It has the standard success envelope and `meta: {}`.
+`POST /parishes/{id}/context` returns an object with `parish`, `deanery`, `diocese`, and `ecclesiastical_province`. Each is a full public record of that type. It has the standard success envelope and `meta: {}`.
 
 ### Parish structure
 
-`GET /parishes/{id}/structure` returns `data.parish` and six arrays: `outstations`, `zones`, `jumuiyas`, `associations`, `choirs`, and `ministries`. Each array contains at most 100 public records. Its corresponding `meta` entry contains:
+`POST /parishes/{id}/structure` returns `data.parish` and six arrays: `outstations`, `zones`, `jumuiyas`, `associations`, `choirs`, and `ministries`. Each array contains at most 100 public records. Its corresponding `meta` entry contains:
 
 | Field | Meaning |
 | --- | --- |
 | `total` | Number of visible records of this type in the parish |
 | `truncated` | `true` when there are more than 100 |
-| `url` | Absolute URL of the filtered collection, e.g. `https://YOUR_API_HOST/api/v1/zones?parish_id=42` |
+| `method` | HTTP method for the complete collection; always `POST` |
+| `url` | Absolute URL of the search endpoint, e.g. `https://YOUR_API_HOST/api/v1/zones/search` |
+| `body` | JSON filters for the request, e.g. `{"parish_id":42}` |
 
 If `truncated` is true, fetch the linked collection from page 1 and paginate it independently. Treat that collection as the complete result rather than appending it to the first 100 records. Structure does not accept pagination parameters and never includes families or members.
 
@@ -272,8 +275,8 @@ All twelve resource types support these protected administrative operations:
 
 | Endpoint | Behavior |
 | --- | --- |
-| `GET /admin/{entity}` | Paginated records within scope, including inactive records |
-| `GET /admin/{entity}/{id}` | Full record within scope |
+| `POST /admin/{entity}/search` | Paginated records within scope, including inactive records; filters are sent as JSON |
+| `POST /admin/{entity}/{id}` | Full record within scope |
 | `POST /admin/{entity}` | Create a record |
 | `PUT /admin/{entity}/{id}` | Partial update |
 | `PATCH /admin/{entity}/{id}` | Partial update |
@@ -282,7 +285,7 @@ Families and members additionally support the same operations without `/admin`, 
 
 Parish administrators can update their own parish profile and enter its outstations, zones, jumuiyas, families, members, associations, choirs, and ministries. On creation, they may omit `parish_id`; the server supplies the parish assigned to their account. An explicit `null` is invalid, and another parish's ID is forbidden. Other administrator roles must supply `parish_id`. Updates retain existing relationships unless explicitly changed and authorized.
 
-Use `GET /admin/parishes/{id}/structure` for the private parish workspace. It includes pending and inactive records, parish contacts, families, and members, and works even before the parish has a deanery assignment. Each collection contains at most 100 records; its `meta` entry provides the total, a truncation flag, and a protected list URL for pagination. Access remains limited to the administrator's organizational scope. The public `/parishes/{id}/structure` endpoint continues to exclude personal and unpublished data, even with a bearer token.
+Use `POST /admin/parishes/{id}/structure` for the private parish workspace. It includes inactive records, parish contacts, families, and members, and works even before the parish has a deanery assignment. Each collection contains at most 100 records; its `meta` entry provides the total, a truncation flag, and the protected POST search method, URL, and JSON body for pagination. Access remains limited to the administrator's organizational scope. The public `/parishes/{id}/structure` endpoint continues to exclude personal and inactive data, even with a bearer token.
 
 ### Required creation fields
 
@@ -370,7 +373,7 @@ Changing a parish's deanery, including assigning a previously unassigned parish,
 
 ### Register provenance
 
-National administrators can list `GET /admin/data-sources` and create `POST /admin/data-sources`. Listing supports `page` and `per_page`; directory search and ancestor filters do not filter this collection.
+National administrators can list with `POST /admin/data-sources/search` and create with `POST /admin/data-sources`. The search body supports `page` and `per_page`; directory search and ancestor filters do not filter this collection.
 
 | Source field | Requirement |
 | --- | --- |
@@ -413,7 +416,7 @@ The destination deanery must exist, differ from the current deanery, and be with
 
 The `200` response contains the updated parish. The move is visible immediately when the parish and its new ancestry are active. Its descendants remain linked to the same parish ID.
 
-`GET /admin/parishes/{id}/history` returns a paginated history ordered newest first by ID. Each item includes `parish_id`, old/new deanery and diocese IDs, `effective_date`, `reason`, `source_id`, and `created_at`. Previous hierarchy IDs may be null when the parish was previously unassigned.
+`POST /admin/parishes/{id}/history` returns a paginated history ordered newest first by ID. Send `page` and `per_page` in the JSON body. Each item includes `parish_id`, old/new deanery and diocese IDs, `effective_date`, `reason`, `source_id`, and `created_at`. Previous hierarchy IDs may be null when the parish was previously unassigned.
 
 ## Import workflow
 
@@ -421,7 +424,7 @@ Imports require national import permissions and accept the ten public organizati
 
 1. Register or select a source.
 2. Stage a batch with `POST /admin/imports`.
-3. Inspect its `status` and row report with `GET /admin/imports/{id}`.
+3. Inspect its `status` and row report with `POST /admin/imports/{id}`.
 4. Correct invalid data and stage a new batch.
 5. After review, commit a valid batch with `POST /admin/imports/{id}/commit` and `{"reviewed": true}`.
 6. Committed active organizations publish immediately when their ancestry is active.
@@ -453,7 +456,7 @@ Example `data.report` for a valid batch:
 }
 ```
 
-Invalid row reports contain `row`, `valid: false`, and an `errors` object mapping field names to message arrays. Row numbers start at 1. The batch detail also includes normalized `rows`, `source_id`, `entity_type`, `checksum`, creator/reviewer IDs, review time, and timestamps. `GET /admin/imports` returns paginated summaries without the rows, report, or checksum.
+Invalid row reports contain `row`, `valid: false`, and an `errors` object mapping field names to message arrays. Row numbers start at 1. The batch detail also includes normalized `rows`, `source_id`, `entity_type`, `checksum`, creator/reviewer IDs, review time, and timestamps. `POST /admin/imports/search` returns paginated summaries without the rows, report, or checksum.
 
 Every row must contain all required creation fields, including for updates. Omit `status` and `source_id` from rows; the batch controls provenance. Strings are trimmed and codes uppercased. Duplicate codes within a batch are invalid. An existing code causes an update when committed; a new code creates a record.
 
@@ -461,7 +464,7 @@ The same source, entity type, and normalized payload returns the existing batch.
 
 ## Audit logs
 
-`GET /admin/audit-logs` requires national audit permission and returns a paginated list ordered newest first by ID. Use `page` and `per_page`; there are no action, entity, date, or user filters on this endpoint.
+`POST /admin/audit-logs/search` requires national audit permission and returns a paginated list ordered newest first by ID. Send `page` and `per_page` in the JSON body; there are no action, entity, date, or user filters on this endpoint.
 
 Items contain `id`, `user_id`, `action`, `entity_type`, `entity_id`, `old_values`, `new_values`, `ip_address`, `user_agent`, `request_id`, and `created_at`. Values can be null where no actor, request, or previous state exists. The audit record's `request_id` can be matched to a versioned API response's `X-Request-ID`.
 

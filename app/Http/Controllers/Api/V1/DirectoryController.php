@@ -23,7 +23,8 @@ class DirectoryController extends Controller
     public function index(DirectoryListRequest $request, string $entity): JsonResponse
     {
         return $this->cached($request, function () use ($request, $entity): JsonResponse {
-            $page = $this->directory->query($entity, $request->validated(), $this->actor($request))->paginate($request->integer('per_page', 25));
+            $page = $this->directory->query($entity, $request->validated(), $this->actor($request))
+                ->paginate(perPage: $request->integer('per_page', 25), page: $request->integer('page', 1));
 
             return ApiResponse::page($page, DirectoryResource::collection($page->getCollection())->resolve($request));
         });
@@ -62,7 +63,7 @@ class DirectoryController extends Controller
             $foreignKey = collect(EntityRegistry::definition($child)['parents'])->search(fn (array $definition) => $parent instanceof $definition['model']);
             abort_unless($foreignKey, 404);
             $query = $this->directory->query($child, $request->validated())->where($foreignKey, $parent->id);
-            $page = $query->paginate($request->integer('per_page', 25));
+            $page = $query->paginate(perPage: $request->integer('per_page', 25), page: $request->integer('page', 1));
 
             return ApiResponse::page($page, DirectoryResource::collection($page->getCollection())->resolve($request));
         });
@@ -97,7 +98,13 @@ class DirectoryController extends Controller
                 $query = $this->directory->query($entity, ['parish_id' => $id], $actor);
                 $total = (clone $query)->count();
                 $data[$entity] = DirectoryResource::collection($query->limit(100)->get())->resolve($request);
-                $meta[$entity] = ['total' => $total, 'truncated' => $total > 100, 'url' => route($routePrefix.$entity.'.index', ['parish_id' => $id])];
+                $meta[$entity] = [
+                    'total' => $total,
+                    'truncated' => $total > 100,
+                    'method' => 'POST',
+                    'url' => route($routePrefix.$entity.'.index'),
+                    'body' => ['parish_id' => (int) $id],
+                ];
             }
 
             return ApiResponse::success($data, meta: $meta);
@@ -113,7 +120,8 @@ class DirectoryController extends Controller
                     ->select(['id', 'code', 'name', 'name_en'])->selectRaw('? as entity_type', [$entity])->toBase();
                 $union = $union ? $union->unionAll($query) : $query;
             }
-            $page = DB::query()->fromSub($union, 'directory_search')->orderBy('name')->orderBy('entity_type')->orderBy('id')->paginate($request->integer('per_page', 25));
+            $page = DB::query()->fromSub($union, 'directory_search')->orderBy('name')->orderBy('entity_type')->orderBy('id')
+                ->paginate(perPage: $request->integer('per_page', 25), page: $request->integer('page', 1));
 
             return ApiResponse::page($page);
         });
@@ -129,9 +137,9 @@ class DirectoryController extends Controller
         if ($this->actor($request)) {
             return $callback();
         }
-        $query = $request->query();
-        ksort($query);
-        $key = 'directory:'.Cache::get('directory:revision', 'initial').':'.hash('sha256', $request->path().json_encode($query));
+        $parameters = $request->all();
+        ksort($parameters);
+        $key = 'directory:'.Cache::get('directory:revision', 'initial').':'.hash('sha256', $request->path().json_encode($parameters));
         $payload = Cache::remember($key, now()->addSeconds(config('core.cache_ttl')), fn () => $callback()->getData(true));
 
         return response()->json($payload);

@@ -68,7 +68,7 @@ class TecDirectorySeederTest extends TestCase
         $this->assertDatabaseMissing('parishes', ['code' => 'ARU-KIKUNDE']);
 
         foreach (['provinces' => 7, 'dioceses' => 34, 'deaneries' => 45, 'parishes' => 229] as $entity => $total) {
-            $this->getJson('/api/v1/'.$entity)->assertOk()->assertJsonPath('meta.total', $total);
+            $this->postJson('/api/v1/'.$entity.'/search')->assertOk()->assertJsonPath('meta.total', $total);
         }
     }
 

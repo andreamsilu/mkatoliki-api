@@ -34,8 +34,8 @@ class AuthorizationTest extends TestCase
             'parish_id' => $own->parish_id, 'deanery_id' => $own->parish->deanery_id, 'diocese_id' => $own->parish->deanery->diocese_id
         };
         $this->administrator($role, [$scope => $scopeId]);
-        $this->getJson('/api/v1/members')->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.id', $own->id);
-        $this->getJson("/api/v1/members/{$other->id}")->assertNotFound();
+        $this->postJson('/api/v1/members/search')->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.id', $own->id);
+        $this->postJson("/api/v1/members/{$other->id}")->assertNotFound();
         $this->patchJson("/api/v1/members/{$other->id}", ['first_name' => 'Changed'])->assertForbidden();
         $this->patchJson("/api/v1/members/{$own->id}", ['first_name' => 'Allowed'])->assertOk();
         $this->patchJson("/api/v1/members/{$own->id}", ['parish_id' => $other->parish_id])->assertForbidden();
@@ -47,10 +47,10 @@ class AuthorizationTest extends TestCase
     {
         $member = Member::factory()->create();
         $this->administrator('parish_admin');
-        $this->getJson('/api/v1/members')->assertOk()->assertJsonCount(0, 'data');
+        $this->postJson('/api/v1/members/search')->assertOk()->assertJsonCount(0, 'data');
         $this->patchJson("/api/v1/members/{$member->id}", ['first_name' => 'Blocked'])->assertForbidden();
         $this->administrator('super_admin', abilities: ['directory:read']);
-        $this->getJson('/api/v1/members')->assertOk()->assertJsonCount(1, 'data');
+        $this->postJson('/api/v1/members/search')->assertOk()->assertJsonCount(1, 'data');
         $this->patchJson("/api/v1/members/{$member->id}", ['first_name' => 'Blocked'])->assertForbidden();
     }
 
@@ -63,7 +63,7 @@ class AuthorizationTest extends TestCase
         $audit = AuditLog::where('entity_type', 'members')->firstOrFail();
         $this->assertSame('[REDACTED]', $audit->new_values['first_name']);
         $this->assertStringNotContainsString('PrivateFirst', $audit->toJson());
-        $this->getJson('/api/v1/admin/audit-logs')->assertForbidden();
+        $this->postJson('/api/v1/admin/audit-logs/search')->assertForbidden();
         $this->deleteJson('/api/v1/members/1')->assertStatus(405);
     }
 

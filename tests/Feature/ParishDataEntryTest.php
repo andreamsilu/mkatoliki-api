@@ -53,7 +53,7 @@ class ParishDataEntryTest extends TestCase
 
         $this->assertDatabaseHas((new $modelClass)->getTable(), ['id' => $id, 'parish_id' => $parish->id] + $attributes);
         $this->assertDatabaseHas('audit_logs', ['user_id' => $administrator->id, 'entity_type' => $entity, 'entity_id' => $id, 'action' => 'created']);
-        $this->getJson('/api/v1/admin/'.$entity)->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.id', $id);
+        $this->postJson('/api/v1/admin/'.$entity.'/search')->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.id', $id);
         $this->patchJson('/api/v1/admin/'.$entity.'/'.$id, [$nameField => 'Updated record'])
             ->assertOk()->assertJsonPath('data.'.$nameField, 'Updated record');
         $this->assertDatabaseHas((new $modelClass)->getTable(), ['id' => $id, 'parish_id' => $parish->id, $nameField => 'Updated record']);
@@ -73,8 +73,8 @@ class ParishDataEntryTest extends TestCase
         $this->administrator('parish_admin', ['parish_id' => $parish->id]);
 
         $this->postJson('/api/v1/admin/'.$entity, $attributes + ['parish_id' => $otherParish->id])->assertForbidden();
-        $this->getJson('/api/v1/admin/'.$entity.'?parish_id='.$otherParish->id)->assertOk()->assertJsonCount(0, 'data');
-        $this->getJson('/api/v1/admin/'.$entity.'/'.$otherRecord->id)->assertNotFound();
+        $this->postJson('/api/v1/admin/'.$entity.'/search', ['parish_id' => $otherParish->id])->assertOk()->assertJsonCount(0, 'data');
+        $this->postJson('/api/v1/admin/'.$entity.'/'.$otherRecord->id)->assertNotFound();
         $this->patchJson('/api/v1/admin/'.$entity.'/'.$otherRecord->id, [$nameField => 'Unauthorized change'])->assertForbidden();
 
         $this->assertDatabaseHas($otherRecord->getTable(), ['id' => $otherRecord->id, $nameField => $otherRecord->{$nameField}]);
@@ -143,7 +143,7 @@ class ParishDataEntryTest extends TestCase
         Family::factory()->create(['parish_id' => $otherParish->id]);
         $this->administrator('parish_admin', ['parish_id' => $parish->id]);
 
-        $response = $this->getJson('/api/v1/admin/parishes/'.$parish->id.'/structure?parish_id='.$otherParish->id)
+        $response = $this->postJson('/api/v1/admin/parishes/'.$parish->id.'/structure')
             ->assertOk()->assertJsonPath('data.parish.id', $parish->id)
             ->assertJsonPath('data.parish.phone', '+255712345678')
             ->assertJsonPath('data.families.0.phone', 'PRIVATE-FAMILY')
@@ -152,11 +152,13 @@ class ParishDataEntryTest extends TestCase
         foreach ($records as $entity => $record) {
             $response->assertJsonCount(1, 'data.'.$entity)->assertJsonPath('data.'.$entity.'.0.id', $record->id)
                 ->assertJsonPath('meta.'.$entity.'.total', 1)->assertJsonPath('meta.'.$entity.'.truncated', false)
-                ->assertJsonPath('meta.'.$entity.'.url', url('/api/v1/admin/'.$entity).'?parish_id='.$parish->id);
+                ->assertJsonPath('meta.'.$entity.'.method', 'POST')
+                ->assertJsonPath('meta.'.$entity.'.url', url('/api/v1/admin/'.$entity.'/search'))
+                ->assertJsonPath('meta.'.$entity.'.body.parish_id', $parish->id);
         }
-        $this->getJson('/api/v1/admin/parishes/'.$otherParish->id.'/structure')->assertNotFound();
+        $this->postJson('/api/v1/admin/parishes/'.$otherParish->id.'/structure')->assertNotFound();
         $this->administrator('parish_admin', ['parish_id' => $otherParish->id]);
-        $this->getJson('/api/v1/admin/parishes/'.$parish->id.'/structure')->assertNotFound();
+        $this->postJson('/api/v1/admin/parishes/'.$parish->id.'/structure')->assertNotFound();
     }
 
     public static function supervisingRoles(): array
@@ -175,7 +177,7 @@ class ParishDataEntryTest extends TestCase
         };
         $this->administrator($role, $scope);
 
-        $this->getJson('/api/v1/admin/parishes/'.$parish->id.'/structure')
+        $this->postJson('/api/v1/admin/parishes/'.$parish->id.'/structure')
             ->assertOk()->assertJsonPath('data.parish.id', $parish->id);
     }
 
@@ -184,17 +186,17 @@ class ParishDataEntryTest extends TestCase
         $parish = Parish::factory()->create();
         $url = '/api/v1/admin/parishes/'.$parish->id.'/structure';
 
-        $this->getJson($url)->assertUnauthorized();
+        $this->postJson($url)->assertUnauthorized();
         $this->administrator('parish_admin');
-        $this->getJson($url)->assertNotFound();
+        $this->postJson($url)->assertNotFound();
         $this->administrator('parish_admin', ['parish_id' => $parish->id], ['directory:write']);
-        $this->getJson($url)->assertForbidden();
+        $this->postJson($url)->assertForbidden();
         $user = $this->administrator('parish_admin', ['parish_id' => $parish->id], ['directory:read']);
-        $this->getJson($url)->assertOk();
+        $this->postJson($url)->assertOk();
         $this->postJson('/api/v1/admin/outstations', ['code' => 'READ-ONLY', 'name' => 'Kigango'])->assertForbidden();
         $user->is_active = false;
         $user->save();
-        $this->getJson($url)->assertForbidden();
+        $this->postJson($url)->assertForbidden();
         $this->assertDatabaseCount('outstations', 0);
     }
 
@@ -205,13 +207,15 @@ class ParishDataEntryTest extends TestCase
         Member::factory()->create(['parish_id' => $parish->id]);
         Zone::factory()->create(['parish_id' => $parish->id]);
         $this->administrator('parish_admin', ['parish_id' => $parish->id]);
-        $this->getJson('/api/v1/admin/parishes/'.$parish->id.'/structure')->assertOk()->assertJsonCount(1, 'data.members');
+        $this->postJson('/api/v1/admin/parishes/'.$parish->id.'/structure')->assertOk()->assertJsonCount(1, 'data.members');
 
-        $this->getJson('/api/v1/parishes/'.$parish->id.'/structure')->assertOk()
+        $this->postJson('/api/v1/parishes/'.$parish->id.'/structure')->assertOk()
             ->assertJsonMissingPath('data.families')->assertJsonMissingPath('data.members')
             ->assertJsonMissingPath('data.parish.phone')->assertJsonCount(1, 'data.zones')
             ->assertJsonMissingPath('meta.members')
-            ->assertJsonPath('meta.zones.url', url('/api/v1/zones').'?parish_id='.$parish->id);
+            ->assertJsonPath('meta.zones.method', 'POST')
+            ->assertJsonPath('meta.zones.url', url('/api/v1/zones/search'))
+            ->assertJsonPath('meta.zones.body.parish_id', $parish->id);
     }
 
     public function test_large_private_structures_provide_scoped_pagination_links_and_accurate_totals(): void
@@ -221,11 +225,11 @@ class ParishDataEntryTest extends TestCase
         Family::factory()->create();
         $this->administrator('parish_admin', ['parish_id' => $parish->id]);
 
-        $response = $this->getJson('/api/v1/admin/parishes/'.$parish->id.'/structure')->assertOk()
+        $response = $this->postJson('/api/v1/admin/parishes/'.$parish->id.'/structure')->assertOk()
             ->assertJsonCount(100, 'data.families')->assertJsonPath('meta.families.total', 101)
             ->assertJsonPath('meta.families.truncated', true);
 
-        $this->getJson($response->json('meta.families.url').'&per_page=100&page=2')->assertOk()
+        $this->postJson($response->json('meta.families.url'), $response->json('meta.families.body') + ['per_page' => 100, 'page' => 2])->assertOk()
             ->assertJsonPath('meta.total', 101)->assertJsonCount(1, 'data')
             ->assertJsonPath('data.0.id', $families->last()->id);
     }
