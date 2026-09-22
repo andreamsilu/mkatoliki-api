@@ -5,10 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['parish_id', 'outstation_id', 'zone_id', 'jumuiya_id', 'family_code', 'family_name', 'address', 'phone', 'status'])]
+#[Fillable(['parish_id', 'outstation_id', 'zone_id', 'jumuiya_id', 'family_code', 'family_name', 'address', 'phone', 'email', 'head_member_id', 'status'])]
 class Family extends DirectoryEntity
 {
+    use SoftDeletes;
+
     protected $table = 'families';
 
     public function parish(): BelongsTo
@@ -29,6 +32,11 @@ class Family extends DirectoryEntity
     public function jumuiya(): BelongsTo
     {
         return $this->belongsTo(Jumuiya::class, 'jumuiya_id');
+    }
+
+    public function head(): BelongsTo
+    {
+        return $this->belongsTo(Member::class, 'head_member_id');
     }
 
     public function members(): HasMany

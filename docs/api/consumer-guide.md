@@ -74,7 +74,7 @@ Send `Accept: application/json`. For JSON request bodies, also send `Content-Typ
 
 Success responses have `success`, `data`, and `meta`. `data` is an object for details and an array for collections. Non-paginated responses normally use `meta: {}`; parish structure uses additional metadata.
 
-Example `POST /parishes/42` response (`200 OK`):
+Example `GET /parishes/42` response (`200 OK`):
 
 ```json
 {
@@ -104,17 +104,18 @@ The versioned routes return a server-generated `X-Request-ID` for tracing. Captu
 
 | Method | Meaning | Normal success status |
 | --- | --- | --- |
-| `GET` | Read the parameter-free current-user view | `200` |
-| `POST` to `/search`, an ID URL, `/{entity}/search`, or a nested collection | Read parameterized data | `200` |
+| `GET` | Read canonical Phase 1 details and collections; collection filters use the query string | `200` |
+| `POST` to `/search`, an ID URL, or a legacy nested collection | Read compatibility and parameterized data | `200` |
 | `POST` to a collection | Create a record or stage an import | `201` |
 | `PUT`, `PATCH` | Partially update a record | `200` |
+| `DELETE` | Soft-delete an empty parish, zone, jumuiya, or family | `204` |
 | `POST` to login, logout, transfer, or commit | Execute the named action | `200` |
 
-Both `PUT` and `PATCH` accept partial updates: omitted fields retain their values. Send `null` only for nullable fields. There are no `DELETE` operations; retire directory records by changing `status`.
+Both `PUT` and `PATCH` accept partial updates: omitted fields retain their values. Send `null` only for nullable fields. Prefer a status change for reversible retirement. DELETE is audited, soft-deletes the resource, and returns `422` while dependent records or assigned administrator accounts exist.
 
 ## Pagination, filters, and search
 
-Directory search endpoints and the nested collections below accept these fields in a JSON request body:
+Directory search endpoints accept these fields in a JSON request body. Canonical GET collections accept the same fields as query parameters:
 
 | Parameter | Type and limits | Behavior |
 | --- | --- | --- |
@@ -124,7 +125,7 @@ Directory search endpoints and the nested collections below accept these fields 
 | `status` | A directory status | Exact status; public visibility still applies |
 | Ancestor ID | Positive integer | Restrict to records belonging to that ancestor |
 
-Accepted ancestor field names are `ecclesiastical_province_id`, `diocese_id`, `deanery_id`, `parish_id`, `outstation_id`, `zone_id`, `jumuiya_id`, and `family_id`. Use only ancestors of the resource being queried: `POST /parishes/search` with `{"diocese_id":5}` follows the deanery's diocese. A filter that is not an ancestor of that resource is ignored. These are relationship filters, not filters on the resource's own ID. Use `POST /parishes/42` to select parish 42.
+Accepted ancestor field names are `ecclesiastical_province_id`, `diocese_id`, `deanery_id`, `parish_id`, `outstation_id`, `zone_id`, `jumuiya_id`, and `family_id`. Use only ancestors of the resource being queried: `POST /parishes/search` with `{"diocese_id":5}` follows the deanery's diocese. A filter that is not an ancestor of that resource is ignored. These are relationship filters, not filters on the resource's own ID. Use `GET /parishes/42` to select parish 42.
 
 ```bash
 curl --fail-with-body --silent --show-error \
@@ -164,7 +165,7 @@ Fetch `/{entity_type}/{id}` for the full public record. Global search orders res
 
 ## Public endpoints
 
-For each of the ten public resource types in the directory table, use `POST /{entity}/search` with a JSON body for a paginated list and `POST /{entity}/{id}` for a single record. An empty JSON object returns the first page without filters.
+For each of the ten public resource types in the directory table, the compatibility API uses `POST /{entity}/search` with a JSON body for a paginated list and `POST /{entity}/{id}` for a single record. Phase 1 additionally provides canonical GET reads for parishes, zones, and jumuiyas. `GET /parishes` is paginated; zone and jumuiya collections are nested below their parents.
 
 ### Browse children
 
@@ -174,11 +175,11 @@ For each of the ten public resource types in the directory table, use `POST /{en
 | `POST /dioceses/{id}/deaneries` | Deaneries in a diocese |
 | `POST /deaneries/{id}/parishes` | Parishes in a deanery |
 | `POST /parishes/{id}/outstations` | Outstations in a parish |
-| `POST /parishes/{id}/zones` | Zones in a parish |
+| `GET /parishes/{id}/zones` | Zones in a parish |
 | `POST /parishes/{id}/jumuiyas` | Jumuiyas in a parish |
-| `POST /zones/{id}/jumuiyas` | Jumuiyas in a zone |
+| `GET /zones/{id}/jumuiyas` | Jumuiyas in a zone |
 
-Each accepts pagination fields in a JSON body and returns the ordinary paginated envelope. The parent must be publicly visible; otherwise the result is `404`. Conflicting parent body fields produce no matches. For associations, choirs, and ministries, use their search endpoint with `parish_id`, for example `POST /choirs/search` with `{"parish_id":42}`.
+GET collections accept pagination fields in the query string; legacy POST collections accept them in a JSON body. Each returns the ordinary paginated envelope. The parent must be publicly visible; otherwise the result is `404`. For associations, choirs, and ministries, use their search endpoint with `parish_id`, for example `POST /choirs/search` with `{"parish_id":42}`.
 
 ### Parish context
 
@@ -234,9 +235,12 @@ Example response:
       "name": "Example Administrator",
       "email": "admin@example.org",
       "role": "parish_admin",
+      "ecclesiastical_province_id": null,
       "diocese_id": null,
       "deanery_id": null,
-      "parish_id": 42
+      "parish_id": 42,
+      "zone_id": null,
+      "jumuiya_id": null
     }
   },
   "meta": {}
@@ -261,13 +265,16 @@ curl --fail-with-body --silent --show-error \
 | Default role | Directory scope | Sources, imports, and audit logs |
 | --- | --- | --- |
 | `super_admin`, `tec_admin` | National directory | Allowed |
+| `province_admin` | Assigned ecclesiastical province and descendants | Not allowed |
 | `diocesan_admin` | Assigned diocese and descendants | Not allowed |
 | `deanery_admin` | Assigned deanery and descendants | Not allowed |
 | `parish_admin` | Assigned parish and descendants | Not allowed |
+| `zone_leader` | Assigned zone and descendants | Not allowed |
+| `jumuiya_leader` | Assigned Jumuiya and descendants | Not allowed |
 
 Access also depends on active-account status, permissions, and token abilities. Read operations require `directory:read`; writes require `directory:write`. Transfers require an additional permission. A scoped account without its assigned scope has no directory record access. Administrative lists filter to the caller's scope; an out-of-scope detail read can return `404`, while a forbidden write or governance action can return `403`.
 
-Scoped administrators cannot read ancestors above their assigned scope through `/admin`; use public endpoints for published ancestor data. Parish transfers check access to both the parish and the destination deanery, so a parish-scoped administrator cannot perform a transfer under the default scope rules.
+Scoped administrators cannot read ancestors above their assigned scope or records in neighboring branches through `/admin`; use public endpoints for published ancestor data. Each scoped account can update its assigned organization and manage descendants, but cannot create another record at its own level. Parish transfers check access to both the parish and the destination deanery, so parish-, zone-, and Jumuiya-scoped accounts cannot perform a transfer under the default scope rules.
 
 ## Create and update records
 
@@ -281,9 +288,23 @@ All twelve resource types support these protected administrative operations:
 | `PUT /admin/{entity}/{id}` | Partial update |
 | `PATCH /admin/{entity}/{id}` | Partial update |
 
-Families and members additionally support the same operations without `/admin`, such as `POST /families` and `PATCH /members/{id}`. These shorter routes remain protected. Public organization paths do not accept writes.
+Families and members additionally support the same operations without `/admin`, such as `POST /families` and `PATCH /members/{id}`. Phase 1 also exposes protected canonical writes and private reads:
 
-Parish administrators can update their own parish profile and enter its outstations, zones, jumuiyas, families, members, associations, choirs, and ministries. On creation, they may omit `parish_id`; the server supplies the parish assigned to their account. An explicit `null` is invalid, and another parish's ID is forbidden. Other administrator roles must supply `parish_id`. Updates retain existing relationships unless explicitly changed and authorized.
+| Endpoint | Behavior |
+| --- | --- |
+| `POST /parishes` | Create a parish |
+| `POST /parishes/{id}/zones` | Create a zone; `parish_id` is derived from the URL |
+| `POST /zones/{id}/jumuiyas` | Create a jumuiya; parish and zone are derived from the URL |
+| `POST /jumuiyas/{id}/families` | Create a family with inherited parish hierarchy |
+| `POST /parishes/{id}/members` | Register a parish member |
+| `POST /families/{id}/members` | Register a member with inherited family hierarchy |
+| `GET /jumuiyas/{id}/families` | List private families in a jumuiya |
+| `GET /parishes/{id}/members`, `GET /jumuiyas/{id}/members`, `GET /families/{id}/members` | List scoped members |
+| `GET /families/{id}`, `GET /members/{id}` | Read a private record within scope |
+
+`PUT` and `PATCH` are available directly for parishes, zones, jumuiyas, families, and members. DELETE is available for parishes, zones, jumuiyas, and families subject to dependent-record checks. All these routes require an active administrator, write permission for mutations, token ability, and matching organizational scope.
+
+Each scoped account can update its assigned organization and create records below it. When the new record directly references the account's scope, that scope ID may be omitted and the server supplies it; an explicit `null` remains invalid, and another branch's ID is forbidden. Nested routes derive the complete ancestry from their URL parent. Generic administrative creates must still provide any other required ancestor IDs. Updates retain existing relationships unless explicitly changed and authorized.
 
 Use `POST /admin/parishes/{id}/structure` for the private parish workspace. It includes inactive records, parish contacts, families, and members, and works even before the parish has a deanery assignment. Each collection contains at most 100 records; its `meta` entry provides the total, a truncation flag, and the protected POST search method, URL, and JSON body for pagination. Access remains limited to the administrator's organizational scope. The public `/parishes/{id}/structure` endpoint continues to exclude personal and inactive data, even with a bearer token.
 
@@ -313,16 +334,17 @@ All directory records accept `status`. Public organization types also accept nul
 | `provinces` | `name_en`, `description` |
 | `dioceses` | `name_en`, `established_at` |
 | `deaneries` | `name_en` |
-| `parishes` | `name_en`, `address`, `phone`, `email`, `latitude`, `longitude` |
+| `parishes` | `name_en`, `patron_saint`, `established_at`, `address`, `phone`, `email`, `latitude`, `longitude` |
 | `outstations` | `name_en`, `address`, `latitude`, `longitude` |
-| `zones`, `jumuiyas` | `name_en`, `description` |
-| `families` | `address`, `phone` |
-| `members` | `middle_name`, `date_of_birth`, `phone`, `email` |
+| `zones` | `name_en`, `description`, `phone`, `email`, `leader_member_id` |
+| `jumuiyas` | `name_en`, `description`, `phone`, `email`, `leader_member_id`, `secretary_member_id` |
+| `families` | `address`, `phone`, `email`, `head_member_id` |
+| `members` | `middle_name`, `date_of_birth`, `membership_started_at`, `family_relationship`, `phone`, `email` |
 | `associations`, `choirs`, `ministries` | `description` |
 
 Names are at most 255 characters. Codes are at most 64 characters, must be unique per type, and match `^[A-Z0-9][A-Z0-9._-]*$`. Submit uppercase codes for ordinary writes; only the import workflow uppercases codes for you. Descriptions and addresses allow 5000 characters, phones 32, and emails 255. Latitude is between -90 and 90; longitude between -180 and 180.
 
-Diocese `type` is `archdiocese` or `diocese`. Member `gender` is `male`, `female`, or `unspecified`. Birth and establishment dates cannot be in the future. Directory `status` is one of `active`, `inactive`, `pending`, `transferred`, `merged`, or `suppressed`; it defaults to `active` on ordinary creation.
+Diocese `type` is `archdiocese` or `diocese`. Member `gender` is `male`, `female`, or `unspecified`. Birth, membership-start, and establishment dates cannot be in the future. A leader, secretary, or family head must already be a member of that exact zone, jumuiya, or family; assign these IDs after the organization and member exist. Directory `status` is one of `active`, `inactive`, `pending`, `transferred`, `merged`, or `suppressed`; it defaults to `active` on ordinary creation.
 
 `id`, `created_at`, and `updated_at` are response fields. Use only documented writable fields.
 

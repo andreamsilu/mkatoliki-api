@@ -76,7 +76,20 @@ class ApiInfrastructureTest extends TestCase
 
     public function test_invalid_methods_and_unknown_resources_are_json_even_without_accept_header(): void
     {
-        $this->get('/api/v1/missing')->assertNotFound()->assertJsonPath('success', false);
-        $this->get('/api/v1/search')->assertStatus(405)->assertJsonPath('error.code', 'METHOD_NOT_ALLOWED');
+        $this->get('/api/v1/missing')
+            ->assertNotFound()
+            ->assertHeader('Content-Type', 'application/json')
+            ->assertJsonPath('success', false)
+            ->assertJsonPath('error.code', 'NOT_FOUND');
+        $this->get('/api/v1/search')
+            ->assertStatus(405)
+            ->assertHeader('Content-Type', 'application/json')
+            ->assertJsonPath('success', false)
+            ->assertJsonPath('error.code', 'METHOD_NOT_ALLOWED');
+        $this->post('/api/v1/auth/login')
+            ->assertUnprocessable()
+            ->assertHeader('Content-Type', 'application/json')
+            ->assertJsonPath('success', false)
+            ->assertJsonPath('error.code', 'VALIDATION_ERROR');
     }
 }

@@ -3,7 +3,7 @@
   "info": {
     "title": "Catholic Tanzania Core API",
     "version": "1.0.0",
-    "description": "Catholic organizational and community directory for Tanzania. Swahili names are primary. Public reads expose active organizations with active primary ancestors, even when a bearer token is supplied. Authorized corrections take effect immediately. Private and administrative operations require an active administrator, permissions, token abilities, and organizational scope. Default limits: public 60/minute/IP; protected 120/minute/user. Tokens expire after eight hours by default. Versioned responses include X-Request-ID. PUT and PATCH are partial updates; DELETE is unavailable. See the consumer guide at /docs on the API origin."
+    "description": "Catholic organizational and community directory for Tanzania. Swahili names are primary. Public reads expose active organizations with active primary ancestors, even when a bearer token is supplied. Authorized corrections take effect immediately. Private and administrative operations require an active administrator, permissions, token abilities, and organizational scope. Default limits: public 60/minute/IP; protected 120/minute/user. Tokens expire after eight hours by default. Versioned responses include X-Request-ID. PUT and PATCH are partial updates. Phase 1 parish-operation resources support audited soft deletion when no dependents exist. Canonical Phase 1 reads use GET while the earlier POST read/search operations remain available for compatibility. See the consumer guide at /docs on the API origin."
   },
   "servers": [
     {
@@ -19,6 +19,9 @@
     },
     {
       "name": "Administration"
+    },
+    {
+      "name": "Parish Operations"
     }
   ],
   "paths": {
@@ -1169,6 +1172,267 @@
             }
           }
         ]
+      },
+      "get": {
+        "summary": "Show a parish",
+        "operationId": "get_parishes_id",
+        "tags": [
+          "Directory"
+        ],
+        "description": "",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "description": "Request trace identifier"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/PublicParish"
+                    },
+                    "meta": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/schemas/Error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      },
+      "put": {
+        "summary": "Update a parish",
+        "operationId": "put_parishes_id_canonical",
+        "tags": [
+          "Parish Operations"
+        ],
+        "description": "",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "description": "Request trace identifier"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Parish"
+                    },
+                    "meta": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/schemas/Error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ParishPatch"
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update a parish",
+        "operationId": "patch_parishes_id_canonical",
+        "tags": [
+          "Parish Operations"
+        ],
+        "description": "",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "description": "Request trace identifier"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Parish"
+                    },
+                    "meta": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/schemas/Error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ParishPatch"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a parish",
+        "operationId": "delete_parishes_id",
+        "tags": [
+          "Parish Operations"
+        ],
+        "description": "Soft-deletes an empty record. Records with dependents must be reassigned or retired before deletion.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Resource deleted",
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "description": "Request trace identifier"
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/schemas/Error"
+          }
+        }
       }
     },
     "/admin/parishes": {
@@ -1891,6 +2155,267 @@
             }
           }
         ]
+      },
+      "get": {
+        "summary": "Show a zone",
+        "operationId": "get_zones_id",
+        "tags": [
+          "Directory"
+        ],
+        "description": "",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "description": "Request trace identifier"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/PublicZone"
+                    },
+                    "meta": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/schemas/Error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      },
+      "put": {
+        "summary": "Update a zone",
+        "operationId": "put_zones_id_canonical",
+        "tags": [
+          "Parish Operations"
+        ],
+        "description": "",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "description": "Request trace identifier"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Zone"
+                    },
+                    "meta": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/schemas/Error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ZonePatch"
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update a zone",
+        "operationId": "patch_zones_id_canonical",
+        "tags": [
+          "Parish Operations"
+        ],
+        "description": "",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "description": "Request trace identifier"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Zone"
+                    },
+                    "meta": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/schemas/Error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ZonePatch"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a zone",
+        "operationId": "delete_zones_id",
+        "tags": [
+          "Parish Operations"
+        ],
+        "description": "Soft-deletes an empty record. Records with dependents must be reassigned or retired before deletion.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Resource deleted",
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "description": "Request trace identifier"
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/schemas/Error"
+          }
+        }
       }
     },
     "/admin/zones": {
@@ -2252,6 +2777,267 @@
             }
           }
         ]
+      },
+      "get": {
+        "summary": "Show a Jumuiya",
+        "operationId": "get_jumuiyas_id",
+        "tags": [
+          "Directory"
+        ],
+        "description": "",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "description": "Request trace identifier"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/PublicJumuiya"
+                    },
+                    "meta": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/schemas/Error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      },
+      "put": {
+        "summary": "Update a Jumuiya",
+        "operationId": "put_jumuiyas_id_canonical",
+        "tags": [
+          "Parish Operations"
+        ],
+        "description": "",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "description": "Request trace identifier"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Jumuiya"
+                    },
+                    "meta": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/schemas/Error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JumuiyaPatch"
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update a Jumuiya",
+        "operationId": "patch_jumuiyas_id_canonical",
+        "tags": [
+          "Parish Operations"
+        ],
+        "description": "",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "description": "Request trace identifier"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Jumuiya"
+                    },
+                    "meta": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/schemas/Error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JumuiyaPatch"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a Jumuiya",
+        "operationId": "delete_jumuiyas_id",
+        "tags": [
+          "Parish Operations"
+        ],
+        "description": "Soft-deletes an empty record. Records with dependents must be reassigned or retired before deletion.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Resource deleted",
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "description": "Request trace identifier"
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/schemas/Error"
+          }
+        }
       }
     },
     "/admin/jumuiyas": {
@@ -2842,6 +3628,115 @@
             }
           }
         ]
+      },
+      "get": {
+        "summary": "Show a family",
+        "operationId": "get_families_id",
+        "tags": [
+          "Parish Operations"
+        ],
+        "description": "",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "description": "Request trace identifier"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Family"
+                    },
+                    "meta": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/schemas/Error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete a family",
+        "operationId": "delete_families_id",
+        "tags": [
+          "Parish Operations"
+        ],
+        "description": "Soft-deletes an empty record. Records with dependents must be reassigned or retired before deletion.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Resource deleted",
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "description": "Request trace identifier"
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/schemas/Error"
+          }
+        }
       }
     },
     "/admin/families": {
@@ -3419,6 +4314,74 @@
           },
           "default": {
             "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      },
+      "get": {
+        "summary": "Show a member",
+        "operationId": "get_members_id",
+        "tags": [
+          "Parish Operations"
+        ],
+        "description": "",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "description": "Request trace identifier"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Member"
+                    },
+                    "meta": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/schemas/Error"
           }
         },
         "parameters": [
@@ -9854,9 +10817,9 @@
       }
     },
     "/parishes/{id}/zones": {
-      "post": {
-        "summary": "List zones of parishes",
-        "operationId": "search_parishes_id_zones",
+      "get": {
+        "summary": "List zones in a parish",
+        "operationId": "get_parishes_id_zones",
         "tags": [
           "Directory"
         ],
@@ -9905,7 +10868,118 @@
             }
           },
           "default": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/schemas/Error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 100
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "active",
+                "inactive",
+                "pending",
+                "transferred",
+                "merged",
+                "suppressed"
+              ]
+            }
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create a zone in a parish",
+        "operationId": "post_parishes_id_zones",
+        "tags": [
+          "Parish Operations"
+        ],
+        "description": "",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Resource created",
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "description": "Request trace identifier"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Zone"
+                    },
+                    "meta": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/schemas/Error"
           }
         },
         "parameters": [
@@ -9920,26 +10994,11 @@
           }
         ],
         "requestBody": {
-          "required": false,
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "page": {
-                    "type": "integer",
-                    "minimum": 1,
-                    "maximum": 100000,
-                    "default": 1
-                  },
-                  "per_page": {
-                    "type": "integer",
-                    "minimum": 1,
-                    "maximum": 100,
-                    "default": 25
-                  }
-                },
-                "additionalProperties": false
+                "$ref": "#/components/schemas/ZoneInput"
               }
             }
           }
@@ -10040,9 +11099,9 @@
       }
     },
     "/zones/{id}/jumuiyas": {
-      "post": {
-        "summary": "List jumuiyas of zones",
-        "operationId": "search_zones_id_jumuiyas",
+      "get": {
+        "summary": "List Jumuiya in a zone",
+        "operationId": "get_zones_id_jumuiyas",
         "tags": [
           "Directory"
         ],
@@ -10091,7 +11150,118 @@
             }
           },
           "default": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/schemas/Error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 100
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "active",
+                "inactive",
+                "pending",
+                "transferred",
+                "merged",
+                "suppressed"
+              ]
+            }
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create a Jumuiya in a zone",
+        "operationId": "post_zones_id_jumuiyas",
+        "tags": [
+          "Parish Operations"
+        ],
+        "description": "",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Resource created",
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "description": "Request trace identifier"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Jumuiya"
+                    },
+                    "meta": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/schemas/Error"
           }
         },
         "parameters": [
@@ -10106,28 +11276,935 @@
           }
         ],
         "requestBody": {
-          "required": false,
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "page": {
-                    "type": "integer",
-                    "minimum": 1,
-                    "maximum": 100000,
-                    "default": 1
-                  },
-                  "per_page": {
-                    "type": "integer",
-                    "minimum": 1,
-                    "maximum": 100,
-                    "default": 25
-                  }
-                },
-                "additionalProperties": false
+                "$ref": "#/components/schemas/NestedJumuiyaInput"
               }
             }
+          }
+        }
+      }
+    },
+    "/parishes": {
+      "get": {
+        "summary": "List parishes",
+        "operationId": "get_parishes",
+        "tags": [
+          "Directory"
+        ],
+        "description": "",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "description": "Request trace identifier"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PublicParish"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/schemas/Error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 100
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "active",
+                "inactive",
+                "pending",
+                "transferred",
+                "merged",
+                "suppressed"
+              ]
+            }
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create a parish",
+        "operationId": "post_parishes_canonical",
+        "tags": [
+          "Parish Operations"
+        ],
+        "description": "",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Resource created",
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "description": "Request trace identifier"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Parish"
+                    },
+                    "meta": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/schemas/Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ParishInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jumuiyas/{id}/families": {
+      "get": {
+        "summary": "List families in a Jumuiya",
+        "operationId": "get_jumuiyas_id_families",
+        "tags": [
+          "Parish Operations"
+        ],
+        "description": "",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "description": "Request trace identifier"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Family"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/schemas/Error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 100
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "active",
+                "inactive",
+                "pending",
+                "transferred",
+                "merged",
+                "suppressed"
+              ]
+            }
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create a family in a Jumuiya",
+        "operationId": "post_jumuiyas_id_families",
+        "tags": [
+          "Parish Operations"
+        ],
+        "description": "",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Resource created",
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "description": "Request trace identifier"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Family"
+                    },
+                    "meta": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/schemas/Error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FamilyInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jumuiyas/{id}/members": {
+      "get": {
+        "summary": "List members in a Jumuiya",
+        "operationId": "get_jumuiyas_id_members",
+        "tags": [
+          "Parish Operations"
+        ],
+        "description": "",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "description": "Request trace identifier"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Member"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/schemas/Error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 100
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "active",
+                "inactive",
+                "pending",
+                "transferred",
+                "merged",
+                "suppressed"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "/families/{id}/members": {
+      "get": {
+        "summary": "List members in a family",
+        "operationId": "get_families_id_members",
+        "tags": [
+          "Parish Operations"
+        ],
+        "description": "",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "description": "Request trace identifier"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Member"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/schemas/Error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 100
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "active",
+                "inactive",
+                "pending",
+                "transferred",
+                "merged",
+                "suppressed"
+              ]
+            }
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create a member in a family",
+        "operationId": "post_families_id_members",
+        "tags": [
+          "Parish Operations"
+        ],
+        "description": "",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Resource created",
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "description": "Request trace identifier"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Member"
+                    },
+                    "meta": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/schemas/Error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MemberInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/parishes/{id}/members": {
+      "get": {
+        "summary": "List members in a parish",
+        "operationId": "get_parishes_id_members",
+        "tags": [
+          "Parish Operations"
+        ],
+        "description": "",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "description": "Request trace identifier"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Member"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/schemas/Error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 100
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "active",
+                "inactive",
+                "pending",
+                "transferred",
+                "merged",
+                "suppressed"
+              ]
+            }
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create a member in a parish",
+        "operationId": "post_parishes_id_members",
+        "tags": [
+          "Parish Operations"
+        ],
+        "description": "",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Resource created",
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "description": "Request trace identifier"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Member"
+                    },
+                    "meta": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/schemas/Error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MemberInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/dashboard": {
+      "post": {
+        "summary": "Show the administrator dashboard",
+        "operationId": "post_admin_dashboard",
+        "tags": [
+          "Parish Operations"
+        ],
+        "description": "",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "description": "Request trace identifier"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/DashboardSummary"
+                    },
+                    "meta": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/schemas/Error"
           }
         }
       }
@@ -10406,6 +12483,10 @@
           "role": {
             "type": "string"
           },
+          "ecclesiastical_province_id": {
+            "type": "integer",
+            "nullable": true
+          },
           "diocese_id": {
             "type": "integer",
             "nullable": true
@@ -10415,6 +12496,14 @@
             "nullable": true
           },
           "parish_id": {
+            "type": "integer",
+            "nullable": true
+          },
+          "zone_id": {
+            "type": "integer",
+            "nullable": true
+          },
+          "jumuiya_id": {
             "type": "integer",
             "nullable": true
           }
@@ -11142,6 +13231,16 @@
           "source_id": {
             "type": "integer",
             "nullable": true
+          },
+          "patron_saint": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 255
+          },
+          "established_at": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
           }
         },
         "description": "Optional parent selections must have consistent ancestry within one parish. Updates validate the merged record. Reparenting entities with descendants is rejected; parish moves use the transfer endpoint."
@@ -11214,6 +13313,16 @@
           },
           "source_id": {
             "type": "integer",
+            "nullable": true
+          },
+          "patron_saint": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 255
+          },
+          "established_at": {
+            "type": "string",
+            "format": "date",
             "nullable": true
           }
         }
@@ -11299,6 +13408,16 @@
           "updated_at": {
             "type": "string",
             "format": "date-time"
+          },
+          "patron_saint": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 255
+          },
+          "established_at": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
           }
         }
       },
@@ -11367,6 +13486,16 @@
           "updated_at": {
             "type": "string",
             "format": "date-time"
+          },
+          "patron_saint": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 255
+          },
+          "established_at": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
           }
         }
       },
@@ -11691,6 +13820,22 @@
           "source_id": {
             "type": "integer",
             "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 32
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "nullable": true,
+            "maxLength": 255
+          },
+          "leader_member_id": {
+            "type": "integer",
+            "minimum": 1,
+            "nullable": true
           }
         },
         "description": "Optional parent selections must have consistent ancestry within one parish. Updates validate the merged record. Reparenting entities with descendants is rejected; parish moves use the transfer endpoint."
@@ -11745,6 +13890,22 @@
           },
           "source_id": {
             "type": "integer",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 32
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "nullable": true,
+            "maxLength": 255
+          },
+          "leader_member_id": {
+            "type": "integer",
+            "minimum": 1,
             "nullable": true
           }
         }
@@ -11812,6 +13973,22 @@
           "updated_at": {
             "type": "string",
             "format": "date-time"
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 32
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "nullable": true,
+            "maxLength": 255
+          },
+          "leader_member_id": {
+            "type": "integer",
+            "minimum": 1,
+            "nullable": true
           }
         }
       },
@@ -11939,6 +14116,27 @@
           "source_id": {
             "type": "integer",
             "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 32
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "nullable": true,
+            "maxLength": 255
+          },
+          "leader_member_id": {
+            "type": "integer",
+            "minimum": 1,
+            "nullable": true
+          },
+          "secretary_member_id": {
+            "type": "integer",
+            "minimum": 1,
+            "nullable": true
           }
         },
         "description": "Optional parent selections must have consistent ancestry within one parish. Updates validate the merged record. Reparenting entities with descendants is rejected; parish moves use the transfer endpoint."
@@ -11999,6 +14197,27 @@
           },
           "source_id": {
             "type": "integer",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 32
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "nullable": true,
+            "maxLength": 255
+          },
+          "leader_member_id": {
+            "type": "integer",
+            "minimum": 1,
+            "nullable": true
+          },
+          "secretary_member_id": {
+            "type": "integer",
+            "minimum": 1,
             "nullable": true
           }
         }
@@ -12072,6 +14291,27 @@
           "updated_at": {
             "type": "string",
             "format": "date-time"
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 32
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "nullable": true,
+            "maxLength": 255
+          },
+          "leader_member_id": {
+            "type": "integer",
+            "minimum": 1,
+            "nullable": true
+          },
+          "secretary_member_id": {
+            "type": "integer",
+            "minimum": 1,
+            "nullable": true
           }
         }
       },
@@ -12206,6 +14446,17 @@
               "suppressed"
             ],
             "default": "active"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "nullable": true,
+            "maxLength": 255
+          },
+          "head_member_id": {
+            "type": "integer",
+            "minimum": 1,
+            "nullable": true
           }
         },
         "description": "Optional parent selections must have consistent ancestry within one parish. Updates validate the merged record. Reparenting entities with descendants is rejected; parish moves use the transfer endpoint."
@@ -12269,6 +14520,17 @@
               "suppressed"
             ],
             "default": "active"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "nullable": true,
+            "maxLength": 255
+          },
+          "head_member_id": {
+            "type": "integer",
+            "minimum": 1,
+            "nullable": true
           }
         }
       },
@@ -12343,6 +14605,17 @@
           "updated_at": {
             "type": "string",
             "format": "date-time"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "nullable": true,
+            "maxLength": 255
+          },
+          "head_member_id": {
+            "type": "integer",
+            "minimum": 1,
+            "nullable": true
           }
         }
       },
@@ -12443,6 +14716,16 @@
               "suppressed"
             ],
             "default": "active"
+          },
+          "family_relationship": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 64
+          },
+          "membership_started_at": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
           }
         },
         "description": "Optional parent selections must have consistent ancestry within one parish. Updates validate the merged record. Reparenting entities with descendants is rejected; parish moves use the transfer endpoint."
@@ -12537,6 +14820,16 @@
               "suppressed"
             ],
             "default": "active"
+          },
+          "family_relationship": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 64
+          },
+          "membership_started_at": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
           }
         }
       },
@@ -12642,6 +14935,16 @@
           "updated_at": {
             "type": "string",
             "format": "date-time"
+          },
+          "family_relationship": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 64
+          },
+          "membership_started_at": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
           }
         }
       },
@@ -13440,6 +15743,158 @@
           "created_at": {
             "type": "string",
             "format": "date-time"
+          }
+        }
+      },
+      "NestedJumuiyaInput": {
+        "type": "object",
+        "required": [
+          "code",
+          "name"
+        ],
+        "properties": {
+          "parish_id": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": false,
+            "minimum": 1,
+            "description": "Required for creation unless the caller is a parish_admin with an assigned parish. If omitted by that administrator, the server supplies their parish ID. Explicit null is invalid; another parish is forbidden."
+          },
+          "zone_id": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": false,
+            "minimum": 1
+          },
+          "outstation_id": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true,
+            "minimum": 1
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 64,
+            "pattern": "^[A-Z0-9][A-Z0-9._-]*$",
+            "description": "Globally unique within this entity type."
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 255,
+            "nullable": false
+          },
+          "name_en": {
+            "type": "string",
+            "maxLength": 255,
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 5000,
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "inactive",
+              "pending",
+              "transferred",
+              "merged",
+              "suppressed"
+            ],
+            "default": "active"
+          },
+          "source_id": {
+            "type": "integer",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 32
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "nullable": true,
+            "maxLength": 255
+          },
+          "leader_member_id": {
+            "type": "integer",
+            "minimum": 1,
+            "nullable": true
+          },
+          "secretary_member_id": {
+            "type": "integer",
+            "minimum": 1,
+            "nullable": true
+          }
+        },
+        "description": "Optional parent selections must have consistent ancestry within one parish. Updates validate the merged record. Reparenting entities with descendants is rejected; parish moves use the transfer endpoint."
+      },
+      "DashboardSummary": {
+        "type": "object",
+        "required": [
+          "counts",
+          "scope"
+        ],
+        "properties": {
+          "counts": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "description": "Scope-aware counts keyed by registered directory entity."
+          },
+          "scope": {
+            "type": "object",
+            "required": [
+              "role",
+              "ecclesiastical_province_id",
+              "diocese_id",
+              "deanery_id",
+              "parish_id",
+              "zone_id",
+              "jumuiya_id"
+            ],
+            "properties": {
+              "role": {
+                "type": "string",
+                "nullable": true
+              },
+              "ecclesiastical_province_id": {
+                "type": "integer",
+                "minimum": 1,
+                "nullable": true
+              },
+              "diocese_id": {
+                "type": "integer",
+                "minimum": 1,
+                "nullable": true
+              },
+              "deanery_id": {
+                "type": "integer",
+                "minimum": 1,
+                "nullable": true
+              },
+              "parish_id": {
+                "type": "integer",
+                "minimum": 1,
+                "nullable": true
+              },
+              "zone_id": {
+                "type": "integer",
+                "minimum": 1,
+                "nullable": true
+              },
+              "jumuiya_id": {
+                "type": "integer",
+                "minimum": 1,
+                "nullable": true
+              }
+            }
           }
         }
       }

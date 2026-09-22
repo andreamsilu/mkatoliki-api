@@ -49,6 +49,17 @@ class AuthController extends Controller
 
     private function profile(User $user): array
     {
-        return ['id' => $user->id, 'name' => $user->name, 'email' => $user->email, 'role' => $user->role?->name, 'diocese_id' => $user->diocese_id, 'deanery_id' => $user->deanery_id, 'parish_id' => $user->parish_id];
+        return [
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'role' => $user->role?->name,
+            'ecclesiastical_province_id' => $user->ecclesiastical_province_id,
+            'diocese_id' => $user->diocese_id,
+            'deanery_id' => $user->deanery_id,
+            'parish_id' => $user->parish_id,
+            'zone_id' => $user->zone_id,
+            'jumuiya_id' => $user->jumuiya_id,
+        ];
     }
 }

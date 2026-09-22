@@ -20,7 +20,7 @@ php artisan core:create-admin admin@example.org --name="TEC Administrator" --rol
 php artisan serve
 ```
 
-The administrator command prompts for a password without exposing it in shell history. No default accounts are seeded. Scoped accounts use `--role=diocesan_admin|deanery_admin|parish_admin --scope=ID`.
+The administrator command prompts for a password without exposing it in shell history. No default accounts are seeded. Scoped accounts use `--role=province_admin|diocesan_admin|deanery_admin|parish_admin|zone_leader|jumuiya_leader --scope=ID`.
 
 `php artisan db:seed` loads and publishes the TEC 2020 baseline: 7 ecclesiastical provinces, 34 dioceses (including 7 archdioceses), 45 explicitly named deaneries, and 304 explicitly listed parishes. Parishes without a documented deanery assignment are loaded with `deanery_id: null` and can be assigned later. Reseeding preserves existing IDs, corrections, and transfers.
 
@@ -38,9 +38,9 @@ The [versioned seed data](database/seeders/tec-directory-2020.json) retains prin
 
 Public listings, detail, search, parish context, and parish structure return **active** organizational records whose primary ancestors are also active. Personal contact information and administrative descriptions are excluded. Public responses never include families or members, even when the caller supplies a token.
 
-`POST /families/search` and `POST /members/search` provide authenticated filtered lists; their collection URLs create records, and their ID URLs support POST reads plus PUT and PATCH updates. All twelve entity types follow the same pattern under `/api/v1/admin`. National administrators manage the full directory; diocesan, deanery and parish administrators are limited to their assigned organizations. The role, permission, token ability, and organization must all permit the action. Accounts without a required scope have no record access.
+Phase 1 parish operations use canonical REST routes for parish → zone → jumuiya → family → member workflows. Public clients can `GET /parishes`, parish details, parish zones, zone details and jumuiyas, and jumuiya details. Authenticated administrators can create through the nested collection routes and read private families and members through their parish hierarchy. The earlier POST read/search operations remain available for compatibility. All twelve entity types also retain the administrative pattern under `/api/v1/admin`. National administrators manage the full directory. Province, diocese, deanery, parish, zone, and Jumuiya accounts are limited to their assigned organization and its descendants; they cannot use administrative routes to read ancestors or neighboring branches. The role, permission, token ability, and organization must all permit the action. Accounts without the scope required by their role have no record access.
 
-Use status changes (`inactive`, `suppressed`, etc.) to retire records. DELETE is intentionally unavailable. PUT and PATCH both accept partial updates. Codes are uppercase and globally unique within each entity type. Pagination defaults to 25, with a maximum of 100. Send `page`, `per_page`, `q`, status, and ancestor ID filters in JSON to the applicable POST search endpoint. Structure responses contain at most 100 records per type and include totals plus a POST search request for larger structures.
+Use status changes (`inactive`, `suppressed`, etc.) for reversible retirement. Parish, zone, jumuiya, and family DELETE routes perform audited soft deletion and reject records that still have dependents or assigned administrator accounts. PUT and PATCH both accept partial updates. Codes are uppercase and globally unique within each entity type. Pagination defaults to 25, with a maximum of 100. Send filters as query parameters to canonical GET collections or as JSON to POST search endpoints. Structure responses contain at most 100 records per type and include totals plus a POST search request for larger structures.
 
 ## Provenance and imports
 

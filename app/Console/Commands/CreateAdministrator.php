@@ -13,7 +13,7 @@ use Illuminate\Validation\Rules\Password;
 
 class CreateAdministrator extends Command
 {
-    protected $signature = 'core:create-admin {email} {--name=} {--role=super_admin} {--scope= : Diocese, deanery, or parish ID for a scoped role}';
+    protected $signature = 'core:create-admin {email} {--name=} {--role=super_admin} {--scope= : Province, diocese, deanery, parish, zone, or Jumuiya ID for a scoped role}';
 
     protected $description = 'Create an administrator with a securely prompted password and an explicit organizational scope';
 
@@ -26,9 +26,12 @@ class CreateAdministrator extends Command
             return self::FAILURE;
         }
         $scope = match ($role->name) {
+            'province_admin' => ['ecclesiastical_province_id', 'ecclesiastical_provinces'],
             'diocesan_admin' => ['diocese_id', 'dioceses'],
             'deanery_admin' => ['deanery_id', 'deaneries'],
             'parish_admin' => ['parish_id', 'parishes'],
+            'zone_leader' => ['zone_id', 'zones'],
+            'jumuiya_leader' => ['jumuiya_id', 'jumuiyas'],
             'super_admin', 'tec_admin' => null,
             default => false,
         };

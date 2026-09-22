@@ -14,10 +14,10 @@ abstract class DirectoryEntity extends Model
         return [
             'established_at' => 'date:Y-m-d',
             'date_of_birth' => 'date:Y-m-d',
+            'membership_started_at' => 'date:Y-m-d',
             'verified_at' => 'datetime',
             'latitude' => 'float',
             'longitude' => 'float',
         ];
     }
 }
-

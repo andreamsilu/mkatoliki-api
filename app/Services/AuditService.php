@@ -10,7 +10,7 @@ final class AuditService
 {
     public function record(?User $actor, string $action, string $type, int $id, array $old = [], array $new = []): AuditLog
     {
-        $sensitive = ['password', 'remember_token', 'token', 'first_name', 'middle_name', 'last_name', 'family_name', 'address', 'phone', 'email', 'date_of_birth', 'gender', 'rows', 'notes'];
+        $sensitive = ['password', 'remember_token', 'token', 'first_name', 'middle_name', 'last_name', 'family_name', 'family_relationship', 'address', 'phone', 'email', 'date_of_birth', 'membership_started_at', 'gender', 'rows', 'notes'];
         $redact = static function (array $values) use ($sensitive): array {
             foreach (array_intersect(array_keys($values), $sensitive) as $field) {
                 $values[$field] = '[REDACTED]';

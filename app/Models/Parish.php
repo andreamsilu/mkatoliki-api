@@ -5,10 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['deanery_id', 'code', 'name', 'name_en', 'address', 'phone', 'email', 'latitude', 'longitude', 'status', 'source_id', 'verification_status', 'verified_at'])]
+#[Fillable(['deanery_id', 'code', 'name', 'name_en', 'patron_saint', 'established_at', 'address', 'phone', 'email', 'latitude', 'longitude', 'status', 'source_id', 'verification_status', 'verified_at'])]
 class Parish extends DirectoryEntity
 {
+    use SoftDeletes;
+
     protected $table = 'parishes';
 
     public function deanery(): BelongsTo

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DirectoryListRequest;
 use App\Http\Requests\DirectoryWriteRequest;
+use App\Http\Requests\NestedDirectoryWriteRequest;
 use App\Http\Resources\DirectoryResource;
 use App\Models\User;
 use App\Services\DirectoryService;
@@ -49,6 +50,15 @@ class DirectoryController extends Controller
         return ApiResponse::success((new DirectoryResource($model))->resolve($request), 201);
     }
 
+    public function storeChild(NestedDirectoryWriteRequest $request, string $id, string $parent, string $entity): JsonResponse
+    {
+        $parentModel = $this->directory->query($parent, user: $request->user())->findOrFail($id);
+        Gate::authorize('view', $parentModel);
+        $model = $this->directory->save($entity, $request->validated(), $request->user());
+
+        return ApiResponse::success((new DirectoryResource($model))->resolve($request), 201);
+    }
+
     public function update(DirectoryWriteRequest $request, string $id, string $entity): JsonResponse
     {
         $model = $this->directory->save($entity, $request->validated(), $request->user(), (int) $id);
@@ -56,13 +66,24 @@ class DirectoryController extends Controller
         return ApiResponse::success((new DirectoryResource($model))->resolve($request));
     }
 
+    public function destroy(Request $request, string $id, string $entity): JsonResponse
+    {
+        $this->directory->delete($entity, (int) $id, $request->user());
+
+        return response()->json(status: 204);
+    }
+
     public function children(DirectoryListRequest $request, string $id, string $entity, string $child): JsonResponse
     {
         return $this->cached($request, function () use ($request, $entity, $id, $child): JsonResponse {
-            $parent = $this->directory->query($entity)->findOrFail($id);
+            $actor = $this->actor($request);
+            $parent = $this->directory->query($entity, user: $actor)->findOrFail($id);
+            if ($actor) {
+                Gate::authorize('view', $parent);
+            }
             $foreignKey = collect(EntityRegistry::definition($child)['parents'])->search(fn (array $definition) => $parent instanceof $definition['model']);
             abort_unless($foreignKey, 404);
-            $query = $this->directory->query($child, $request->validated())->where($foreignKey, $parent->id);
+            $query = $this->directory->query($child, $request->validated(), $actor)->where($foreignKey, $parent->id);
             $page = $query->paginate(perPage: $request->integer('per_page', 25), page: $request->integer('page', 1));
 
             return ApiResponse::page($page, DirectoryResource::collection($page->getCollection())->resolve($request));

@@ -39,9 +39,9 @@ class DirectoryApiTest extends TestCase
         $parish = Parish::factory()->create();
         $zone = Zone::factory()->create(['parish_id' => $parish->id]);
         $other = Zone::factory()->create();
-        $this->postJson("/api/v1/parishes/{$parish->id}/zones")->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.id', $zone->id);
-        $this->postJson("/api/v1/parishes/{$parish->id}/zones", ['parish_id' => $other->parish_id])->assertOk()->assertJsonCount(0, 'data');
-        $this->postJson('/api/v1/parishes/999999/zones')->assertNotFound();
+        $this->getJson("/api/v1/parishes/{$parish->id}/zones")->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.id', $zone->id);
+        $this->getJson("/api/v1/parishes/{$parish->id}/zones?parish_id={$other->parish_id}")->assertOk()->assertJsonCount(0, 'data');
+        $this->getJson('/api/v1/parishes/999999/zones')->assertNotFound();
         $this->postJson("/api/v1/provinces/{$parish->deanery->diocese->ecclesiastical_province_id}/dioceses")->assertOk()->assertJsonPath('data.0.id', $parish->deanery->diocese_id);
         $this->postJson("/api/v1/dioceses/{$parish->deanery->diocese_id}/deaneries")->assertOk()->assertJsonPath('data.0.id', $parish->deanery_id);
         $this->postJson("/api/v1/deaneries/{$parish->deanery_id}/parishes")->assertOk()->assertJsonPath('data.0.id', $parish->id);
@@ -62,7 +62,7 @@ class DirectoryApiTest extends TestCase
         $response = $this->postJson("/api/v1/parishes/{$parish->id}/structure")->assertOk()->assertJsonCount(1, 'data.zones')->assertJsonCount(1, 'data.choirs')->assertJsonMissingPath('data.families')->assertJsonMissingPath('data.members');
         $this->assertStringNotContainsString('SECRET-', $response->getContent());
         $this->assertStringNotContainsString('private@example.test', $response->getContent());
-        $this->postJson("/api/v1/zones/{$zone->id}/jumuiyas")->assertOk()->assertJsonCount(1, 'data');
+        $this->getJson("/api/v1/zones/{$zone->id}/jumuiyas")->assertOk()->assertJsonCount(1, 'data');
     }
 
     public function test_filters_search_and_pagination_are_consistent(): void

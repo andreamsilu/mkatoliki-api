@@ -191,5 +191,5 @@ if ('IntersectionObserver' in window) {
 </html>
 `;
 
-writeFileSync(resolve(directory, 'index.html'), html);
+writeFileSync(resolve(directory, 'index.html'), html.replace(/[ \t]+$/gm, ''));
 console.log(`Built docs/api/index.html: ${operations.length} operations and ${Object.keys(spec.components.schemas).length} schemas.`);

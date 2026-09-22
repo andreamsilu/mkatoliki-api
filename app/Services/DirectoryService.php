@@ -4,9 +4,13 @@ namespace App\Services;
 
 use App\Models\Deanery;
 use App\Models\DirectoryEntity;
+use App\Models\Family;
+use App\Models\Jumuiya;
+use App\Models\Member;
 use App\Models\Parish;
 use App\Models\ParishHistory;
 use App\Models\User;
+use App\Models\Zone;
 use App\Support\EntityRegistry;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Cache;
@@ -97,13 +101,15 @@ final class DirectoryService
             $before = $model->attributesToArray();
             $model->fill($attributes);
             $this->hierarchy->validate($model);
+            $this->validateOperationalAssignments($model);
             if ($id) {
                 $this->hierarchy->preventUnsafeReparenting($model);
             } else {
                 Gate::forUser($actor)->authorize('create', $model);
             }
             // Recheck the destination scope when a leaf record changes parish.
-            if ($id && $model->isDirty(array_keys(EntityRegistry::definition($entity)['parents']))) {
+            $parentFields = array_keys(EntityRegistry::definition($entity)['parents']);
+            if ($id && $parentFields !== [] && $model->isDirty($parentFields)) {
                 Gate::forUser($actor)->authorize('create', $model);
             }
             if (! $id && EntityRegistry::definition($entity)['public']) {
@@ -115,6 +121,19 @@ final class DirectoryService
             DB::afterCommit(fn () => $this->invalidateCache());
 
             return $model->refresh();
+        }, 3);
+    }
+
+    public function delete(string $entity, int $id, User $actor): void
+    {
+        DB::transaction(function () use ($entity, $id, $actor): void {
+            $model = EntityRegistry::model($entity)->newQuery()->lockForUpdate()->findOrFail($id);
+            Gate::forUser($actor)->authorize('delete', $model);
+            $this->ensureNoDependents($entity, $model);
+            $before = $model->attributesToArray();
+            $model->delete();
+            $this->audit->record($actor, 'deleted', $entity, $id, $before);
+            DB::afterCommit(fn () => $this->invalidateCache());
         }, 3);
     }
 
@@ -148,5 +167,91 @@ final class DirectoryService
     public function invalidateCache(): void
     {
         Cache::forever('directory:revision', (string) Str::uuid());
+    }
+
+    private function validateOperationalAssignments(DirectoryEntity $entity): void
+    {
+        if ($entity instanceof Member) {
+            $this->validateMemberLeadership($entity);
+
+            return;
+        }
+
+        $assignments = match (true) {
+            $entity instanceof Zone => ['leader_member_id' => 'zone_id'],
+            $entity instanceof Jumuiya => ['leader_member_id' => 'jumuiya_id', 'secretary_member_id' => 'jumuiya_id'],
+            $entity instanceof Family => ['head_member_id' => 'family_id'],
+            default => [],
+        };
+
+        foreach ($assignments as $field => $membershipField) {
+            $memberId = $entity->{$field};
+            if ($memberId === null) {
+                continue;
+            }
+
+            $member = Member::query()->lockForUpdate()->find($memberId);
+            if (! $member || ! $entity->exists || (int) $member->{$membershipField} !== (int) $entity->id) {
+                throw ValidationException::withMessages([
+                    $field => 'The selected leader must be a member of this organization.',
+                ]);
+            }
+        }
+    }
+
+    private function validateMemberLeadership(Member $member): void
+    {
+        if (! $member->exists) {
+            return;
+        }
+
+        $assignments = [
+            ['model' => Zone::class, 'fields' => ['leader_member_id'], 'membership' => 'zone_id'],
+            ['model' => Jumuiya::class, 'fields' => ['leader_member_id', 'secretary_member_id'], 'membership' => 'jumuiya_id'],
+            ['model' => Family::class, 'fields' => ['head_member_id'], 'membership' => 'family_id'],
+        ];
+
+        foreach ($assignments as $assignment) {
+            $query = $assignment['model']::query()->lockForUpdate();
+            $query->where(function (Builder $leaders) use ($assignment, $member): void {
+                foreach ($assignment['fields'] as $field) {
+                    $leaders->orWhere($field, $member->id);
+                }
+            });
+            $organizationId = $query->value('id');
+            if ($organizationId && (int) $member->{$assignment['membership']} !== (int) $organizationId) {
+                throw ValidationException::withMessages([
+                    $assignment['membership'] => 'A designated leader cannot be moved out of the organization they lead.',
+                ]);
+            }
+        }
+    }
+
+    private function ensureNoDependents(string $entity, DirectoryEntity $model): void
+    {
+        foreach (EntityRegistry::ENTITIES as $childDefinition) {
+            foreach ($childDefinition['parents'] as $field => $parentDefinition) {
+                if ($parentDefinition['model'] === $model::class && $childDefinition['model']::query()->where($field, $model->id)->exists()) {
+                    throw ValidationException::withMessages([
+                        $entity => 'This record cannot be deleted while dependent records exist.',
+                    ]);
+                }
+            }
+        }
+
+        $scopeColumn = match ($entity) {
+            'provinces' => 'ecclesiastical_province_id',
+            'dioceses' => 'diocese_id',
+            'deaneries' => 'deanery_id',
+            'parishes' => 'parish_id',
+            'zones' => 'zone_id',
+            'jumuiyas' => 'jumuiya_id',
+            default => null,
+        };
+        if ($scopeColumn && User::query()->where($scopeColumn, $model->id)->exists()) {
+            throw ValidationException::withMessages([
+                $entity => 'This record cannot be deleted while administrator accounts are assigned to it.',
+            ]);
+        }
     }
 }

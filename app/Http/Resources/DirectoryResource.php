@@ -13,7 +13,7 @@ class DirectoryResource extends JsonResource
         $fields = array_merge(['id', 'created_at', 'updated_at'], $this->resource->getFillable());
         $fields = array_diff($fields, ['verification_status', 'verified_at']);
         if (! $request->attributes->get('directory_private', false)) {
-            $fields = array_diff($fields, ['phone', 'email', 'address', 'description']);
+            $fields = array_diff($fields, ['phone', 'email', 'address', 'description', 'leader_member_id', 'secretary_member_id', 'head_member_id']);
         }
 
         return Arr::only($this->resource->attributesToArray(), $fields);

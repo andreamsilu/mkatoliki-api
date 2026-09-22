@@ -11,10 +11,19 @@ class DirectoryWriteRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $user = $this->user();
-        if ($this->isMethod('post') && ! $this->exists('parish_id')
-            && $user?->role?->name === 'parish_admin' && $user->parish_id
-            && array_key_exists('parish_id', EntityRegistry::definition($this->route('entity'))['parents'])) {
-            $this->merge(['parish_id' => $user->parish_id]);
+        $scopeField = match ($user?->role?->name) {
+            'province_admin' => 'ecclesiastical_province_id',
+            'diocesan_admin' => 'diocese_id',
+            'deanery_admin' => 'deanery_id',
+            'parish_admin' => 'parish_id',
+            'zone_leader' => 'zone_id',
+            'jumuiya_leader' => 'jumuiya_id',
+            default => null,
+        };
+        if ($this->isMethod('post') && $scopeField && ! $this->exists($scopeField)
+            && $user->getAttribute($scopeField)
+            && array_key_exists($scopeField, EntityRegistry::definition($this->route('entity'))['parents'])) {
+            $this->merge([$scopeField => $user->getAttribute($scopeField)]);
         }
     }
 
@@ -63,6 +72,14 @@ class DirectoryWriteRequest extends FormRequest
         foreach (['date_of_birth', 'established_at'] as $field) {
             if (isset($rules[$field])) {
                 $rules[$field] = ['sometimes', 'nullable', 'date_format:Y-m-d', 'before_or_equal:today'];
+            }
+        }
+        if (isset($rules['membership_started_at'])) {
+            $rules['membership_started_at'] = ['sometimes', 'nullable', 'date_format:Y-m-d', 'before_or_equal:today'];
+        }
+        foreach (['leader_member_id', 'secretary_member_id', 'head_member_id'] as $field) {
+            if (isset($rules[$field])) {
+                $rules[$field] = ['sometimes', 'nullable', 'integer', 'exists:members,id'];
             }
         }
         if (isset($rules['email'])) {

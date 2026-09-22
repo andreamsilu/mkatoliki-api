@@ -7,9 +7,9 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Laravel\Sanctum\HasApiTokens;
 
 #[Fillable(['name', 'email', 'password'])]
@@ -24,6 +24,36 @@ class User extends Authenticatable
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
+    }
+
+    public function province(): BelongsTo
+    {
+        return $this->belongsTo(EcclesiasticalProvince::class, 'ecclesiastical_province_id');
+    }
+
+    public function diocese(): BelongsTo
+    {
+        return $this->belongsTo(Diocese::class);
+    }
+
+    public function deanery(): BelongsTo
+    {
+        return $this->belongsTo(Deanery::class);
+    }
+
+    public function parish(): BelongsTo
+    {
+        return $this->belongsTo(Parish::class);
+    }
+
+    public function zone(): BelongsTo
+    {
+        return $this->belongsTo(Zone::class);
+    }
+
+    public function jumuiya(): BelongsTo
+    {
+        return $this->belongsTo(Jumuiya::class);
     }
 
     public function hasPermission(string $permission): bool

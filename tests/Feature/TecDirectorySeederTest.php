@@ -22,7 +22,7 @@ class TecDirectorySeederTest extends TestCase
         $originalParishIds = Parish::query()->orderBy('code')->pluck('id', 'code')->all();
         $this->seed(DatabaseSeeder::class);
 
-        $this->assertDatabaseCount('roles', 5);
+        $this->assertDatabaseCount('roles', 8);
         $this->assertDatabaseCount('permissions', 6);
         $this->assertDatabaseCount('data_sources', 1);
         $this->assertDatabaseCount('ecclesiastical_provinces', 7);

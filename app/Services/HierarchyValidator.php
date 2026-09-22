@@ -57,7 +57,11 @@ final class HierarchyValidator
                 }
             }
             $scopeColumn = match ($key) {
-                'dioceses' => 'diocese_id', 'deaneries' => 'deanery_id', default => null,
+                'dioceses' => 'diocese_id',
+                'deaneries' => 'deanery_id',
+                'zones' => 'zone_id',
+                'jumuiyas' => 'jumuiya_id',
+                default => null,
             };
             if ($scopeColumn && User::where($scopeColumn, $entity->id)->exists()) {
                 throw ValidationException::withMessages([$field => 'An organization with assigned administrators cannot be reparented.']);

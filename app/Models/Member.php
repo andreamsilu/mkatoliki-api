@@ -4,9 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['parish_id', 'family_id', 'outstation_id', 'zone_id', 'jumuiya_id', 'member_code', 'first_name', 'middle_name', 'last_name', 'gender', 'date_of_birth', 'phone', 'email', 'status'])]
+#[Fillable(['parish_id', 'family_id', 'family_relationship', 'outstation_id', 'zone_id', 'jumuiya_id', 'member_code', 'first_name', 'middle_name', 'last_name', 'gender', 'date_of_birth', 'membership_started_at', 'phone', 'email', 'status'])]
 class Member extends DirectoryEntity
 {
     protected $table = 'members';

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\DirectoryController;
 use App\Http\Controllers\Api\V1\GovernanceController;
 use App\Support\EntityRegistry;
@@ -13,7 +14,13 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
         Route::post('search', [DirectoryController::class, 'search'])->name('search');
         Route::post('parishes/{id}/context', [DirectoryController::class, 'context'])->whereNumber('id')->name('parishes.context');
         Route::post('parishes/{id}/structure', [DirectoryController::class, 'structure'])->whereNumber('id')->name('parishes.structure');
-        foreach (['provinces' => ['dioceses'], 'dioceses' => ['deaneries'], 'deaneries' => ['parishes'], 'parishes' => ['outstations', 'zones', 'jumuiyas'], 'zones' => ['jumuiyas']] as $parent => $children) {
+        Route::get('parishes', [DirectoryController::class, 'index'])->defaults('entity', 'parishes')->name('parishes.list');
+        Route::get('parishes/{id}', [DirectoryController::class, 'show'])->whereNumber('id')->defaults('entity', 'parishes')->name('parishes.detail');
+        Route::get('parishes/{id}/zones', [DirectoryController::class, 'children'])->whereNumber('id')->defaults('entity', 'parishes')->defaults('child', 'zones')->name('parishes.zones.list');
+        Route::get('zones/{id}', [DirectoryController::class, 'show'])->whereNumber('id')->defaults('entity', 'zones')->name('zones.detail');
+        Route::get('zones/{id}/jumuiyas', [DirectoryController::class, 'children'])->whereNumber('id')->defaults('entity', 'zones')->defaults('child', 'jumuiyas')->name('zones.jumuiyas.list');
+        Route::get('jumuiyas/{id}', [DirectoryController::class, 'show'])->whereNumber('id')->defaults('entity', 'jumuiyas')->name('jumuiyas.detail');
+        foreach (['provinces' => ['dioceses'], 'dioceses' => ['deaneries'], 'deaneries' => ['parishes'], 'parishes' => ['outstations', 'jumuiyas']] as $parent => $children) {
             foreach ($children as $child) {
                 Route::post("$parent/{id}/$child", [DirectoryController::class, 'children'])->whereNumber('id')->defaults('entity', $parent)->defaults('child', $child)->name("$parent.$child");
             }
@@ -27,6 +34,29 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
     Route::middleware(['auth:sanctum', 'administrator', 'throttle:authenticated-api'])->group(function (): void {
         Route::get('auth/me', [AuthController::class, 'me'])->name('auth.me');
         Route::post('auth/logout', [AuthController::class, 'logout'])->name('auth.logout');
+        Route::post('admin/dashboard', DashboardController::class)->name('admin.dashboard');
+
+        Route::post('parishes', [DirectoryController::class, 'store'])->defaults('entity', 'parishes')->name('operations.parishes.store');
+        Route::match(['put', 'patch'], 'parishes/{id}', [DirectoryController::class, 'update'])->whereNumber('id')->defaults('entity', 'parishes')->name('operations.parishes.update');
+        Route::delete('parishes/{id}', [DirectoryController::class, 'destroy'])->whereNumber('id')->defaults('entity', 'parishes')->name('operations.parishes.destroy');
+        Route::post('parishes/{id}/zones', [DirectoryController::class, 'storeChild'])->whereNumber('id')->defaults('parent', 'parishes')->defaults('entity', 'zones')->name('operations.parishes.zones.store');
+        Route::match(['put', 'patch'], 'zones/{id}', [DirectoryController::class, 'update'])->whereNumber('id')->defaults('entity', 'zones')->name('operations.zones.update');
+        Route::delete('zones/{id}', [DirectoryController::class, 'destroy'])->whereNumber('id')->defaults('entity', 'zones')->name('operations.zones.destroy');
+        Route::post('zones/{id}/jumuiyas', [DirectoryController::class, 'storeChild'])->whereNumber('id')->defaults('parent', 'zones')->defaults('entity', 'jumuiyas')->name('operations.zones.jumuiyas.store');
+        Route::match(['put', 'patch'], 'jumuiyas/{id}', [DirectoryController::class, 'update'])->whereNumber('id')->defaults('entity', 'jumuiyas')->name('operations.jumuiyas.update');
+        Route::delete('jumuiyas/{id}', [DirectoryController::class, 'destroy'])->whereNumber('id')->defaults('entity', 'jumuiyas')->name('operations.jumuiyas.destroy');
+
+        Route::get('jumuiyas/{id}/families', [DirectoryController::class, 'children'])->whereNumber('id')->defaults('entity', 'jumuiyas')->defaults('child', 'families')->name('operations.jumuiyas.families.list');
+        Route::post('jumuiyas/{id}/families', [DirectoryController::class, 'storeChild'])->whereNumber('id')->defaults('parent', 'jumuiyas')->defaults('entity', 'families')->name('operations.jumuiyas.families.store');
+        Route::get('jumuiyas/{id}/members', [DirectoryController::class, 'children'])->whereNumber('id')->defaults('entity', 'jumuiyas')->defaults('child', 'members')->name('operations.jumuiyas.members.list');
+        Route::get('families/{id}', [DirectoryController::class, 'show'])->whereNumber('id')->defaults('entity', 'families')->name('operations.families.detail');
+        Route::get('families/{id}/members', [DirectoryController::class, 'children'])->whereNumber('id')->defaults('entity', 'families')->defaults('child', 'members')->name('operations.families.members.list');
+        Route::post('families/{id}/members', [DirectoryController::class, 'storeChild'])->whereNumber('id')->defaults('parent', 'families')->defaults('entity', 'members')->name('operations.families.members.store');
+        Route::delete('families/{id}', [DirectoryController::class, 'destroy'])->whereNumber('id')->defaults('entity', 'families')->name('operations.families.destroy');
+        Route::get('parishes/{id}/members', [DirectoryController::class, 'children'])->whereNumber('id')->defaults('entity', 'parishes')->defaults('child', 'members')->name('operations.parishes.members.list');
+        Route::post('parishes/{id}/members', [DirectoryController::class, 'storeChild'])->whereNumber('id')->defaults('parent', 'parishes')->defaults('entity', 'members')->name('operations.parishes.members.store');
+        Route::get('members/{id}', [DirectoryController::class, 'show'])->whereNumber('id')->defaults('entity', 'members')->name('operations.members.detail');
+
         foreach (['families', 'members'] as $entity) {
             Route::post("$entity/search", [DirectoryController::class, 'index'])->defaults('entity', $entity)->name("$entity.index");
             Route::post("$entity/{id}", [DirectoryController::class, 'show'])->whereNumber('id')->defaults('entity', $entity)->name("$entity.show");
