@@ -56,6 +56,11 @@ class User extends Authenticatable
         return $this->belongsTo(Jumuiya::class);
     }
 
+    public function member(): BelongsTo
+    {
+        return $this->belongsTo(Member::class);
+    }
+
     public function hasPermission(string $permission): bool
     {
         return $this->is_active && ($this->role?->permissions->contains('name', $permission) ?? false);

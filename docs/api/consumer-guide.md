@@ -199,7 +199,17 @@ GET collections accept pagination fields in the query string; legacy POST collec
 
 If `truncated` is true, fetch the linked collection from page 1 and paginate it independently. Treat that collection as the complete result rather than appending it to the first 100 records. Structure does not accept pagination parameters and never includes families or members.
 
-## Authentication and access
+### Parish content
+
+`GET /parishes/{id}/content` is public and returns the parish profile plus published Mass times, announcements, future events, and projects. It returns `404` when the parish or any primary ancestor is inactive. Empty arrays mean the parish has not published verified content of that type.
+
+## Member authentication
+
+Member accounts are linked one-to-one to existing member records by an API operator; there is no public self-registration endpoint. `POST /member/auth/login` accepts `identity` (the linked account email, member email, phone, or member code), `password`, and `device_name`. It returns an expiring bearer token with the `member:read` ability and the member profile.
+
+Use `GET /member/auth/me` to refresh the signed-in member profile and `POST /member/auth/logout` to revoke the current token. The account, member, parish, and every primary parish ancestor must remain active. Member tokens do not grant administrator access.
+
+## Administrator authentication and access
 
 Request an administrator account and organizational scope from your API provider. There is no public registration endpoint, token refresh endpoint, or account-management API.
 

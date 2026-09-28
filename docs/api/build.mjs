@@ -76,6 +76,7 @@ for (const [path, pathItem] of Object.entries(spec.paths)) {
     if (!['get', 'post', 'put', 'patch', 'delete', 'head', 'options'].includes(method)) continue;
     const parameters = [...(pathItem.parameters ?? []), ...(operation.parameters ?? [])].map(resolveReference);
     const protectedRoute = (operation.security ?? spec.security ?? []).length > 0;
+    const memberRoute = operation.tags?.includes('Member') ?? false;
     const access = protectedRoute ? 'Bearer token' : 'Public';
     const request = resolveReference(operation.requestBody)?.content?.['application/json']?.schema;
     const responses = Object.entries(operation.responses).map(([status, response]) => {
@@ -86,7 +87,7 @@ for (const [path, pathItem] of Object.entries(spec.paths)) {
     operations.push({ path, method, access, html: `<details class="endpoint" id="${escape(operation.operationId)}" data-method="${method}" data-access="${protectedRoute ? 'protected' : 'public'}">
       <summary><span class="method ${method}">${method.toUpperCase()}</span><code>${escape(path)}</code><span class="access">${access}</span></summary>
       <div class="endpoint-body"><h3>${escape(operation.summary)}</h3><p>${escape(operation.description ?? '')}</p>
-      <p class="muted">${protectedRoute ? 'Requires an active administrator, token permissions, and applicable organizational scope.' : 'No bearer token required.'} <a href="#${escape(operation.operationId)}">Link to operation</a></p>
+      <p class="muted">${protectedRoute ? (memberRoute ? 'Requires an active member and a token with the member:read ability.' : 'Requires an active administrator, token permissions, and applicable organizational scope.') : 'No bearer token required.'} <a href="#${escape(operation.operationId)}">Link to operation</a></p>
       ${parameters.length ? `<h4>Parameters</h4>${table(['Name', 'Location', 'Type', 'Required', 'Details'], parameters.map((parameter) => [`<code>${escape(parameter.name)}</code>`, escape(parameter.in), typeLabel(parameter.schema), parameter.required ? 'Yes' : 'No', [constraints(parameter.schema), escape(parameter.description ?? '')].filter(Boolean).join('<br>')]))}` : '<p>No path or query parameters.</p>'}
       ${request ? `<h4>JSON request body</h4>${fields(request)}<details class="raw-schema"><summary>Request schema JSON</summary>${jsonBlock(resolveReference(request))}</details>` : ''}
       ${responses}</div></details>` });

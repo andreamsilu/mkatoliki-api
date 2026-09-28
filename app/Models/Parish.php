@@ -44,6 +44,31 @@ class Parish extends DirectoryEntity
         return $this->hasMany(Member::class, 'parish_id');
     }
 
+    public function contributionCampaigns(): HasMany
+    {
+        return $this->hasMany(ContributionCampaign::class);
+    }
+
+    public function massTimes(): HasMany
+    {
+        return $this->hasMany(ParishMassTime::class);
+    }
+
+    public function announcements(): HasMany
+    {
+        return $this->hasMany(ParishAnnouncement::class);
+    }
+
+    public function events(): HasMany
+    {
+        return $this->hasMany(ParishEvent::class);
+    }
+
+    public function projects(): HasMany
+    {
+        return $this->hasMany(ParishProject::class);
+    }
+
     public function associations(): HasMany
     {
         return $this->hasMany(Association::class, 'parish_id');

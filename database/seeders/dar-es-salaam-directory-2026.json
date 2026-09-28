@@ -1,0 +1,323 @@
+{
+  "source": {
+    "name": "Confirmed Dar es Salaam parish-deanery mapping",
+    "type": "confirmed_directory_update",
+    "publisher": "Mkatolik project",
+    "reference": "User-confirmed mapping supplied to the project on 2026-09-26.",
+    "version": "2026-09-26",
+    "publication_date": "2026-09-26",
+    "description": "Confirmed partial Dar es Salaam directory update containing four deaneries and 41 parish-to-deanery mappings. It supplements rather than modifies the historical TEC 2020 snapshot."
+  },
+  "diocese_code": "DSM",
+  "deaneries": [
+    {
+      "code": "DSM-STP",
+      "name": "Dekania ya St. Peter",
+      "name_en": "St. Peter Deanery"
+    },
+    {
+      "code": "DSM-MAK",
+      "name": "Dekania ya Makuburi",
+      "name_en": "Makuburi Deanery"
+    },
+    {
+      "code": "DSM-MBA",
+      "name": "Dekania ya Mbagala",
+      "name_en": "Mbagala Deanery"
+    },
+    {
+      "code": "DSM-UBU",
+      "name": "Dekania ya Ubungo",
+      "name_en": "Ubungo Deanery"
+    }
+  ],
+  "parishes": [
+    {
+      "code": "DSM-SINZA",
+      "parent_code": "DSM-STP",
+      "name": "Parokia ya Sinza",
+      "name_en": "Sinza Parish",
+      "patron_saint": "Bikira Maria Mama wa Mwokozi"
+    },
+    {
+      "code": "DSM-OYSTER-BAY",
+      "parent_code": "DSM-STP",
+      "name": "Parokia ya Oyster Bay",
+      "name_en": "Oyster Bay Parish",
+      "patron_saint": "Mt. Petro"
+    },
+    {
+      "code": "DSM-HANANASI",
+      "parent_code": "DSM-STP",
+      "name": "Parokia ya Hananasi",
+      "name_en": "Hananasi Parish",
+      "patron_saint": "Mt. Anna"
+    },
+    {
+      "code": "DSM-MWANANYAMALA",
+      "parent_code": "DSM-STP",
+      "name": "Parokia ya Mwananyamala",
+      "name_en": "Mwananyamala Parish",
+      "patron_saint": "Mt. Martin de Porres"
+    },
+    {
+      "code": "DSM-MWENGE",
+      "parent_code": "DSM-STP",
+      "name": "Parokia ya Mwenge",
+      "name_en": "Mwenge Parish",
+      "patron_saint": "Mt. Maximilian Kolbe"
+    },
+    {
+      "code": "DSM-KAWE",
+      "parent_code": "DSM-STP",
+      "name": "Parokia ya Kawe",
+      "name_en": "Kawe Parish",
+      "patron_saint": "Mt. Mikael Malaika Mkuu"
+    },
+    {
+      "code": "DSM-KIJITONYAMA",
+      "parent_code": "DSM-STP",
+      "name": "Parokia ya Kijitonyama",
+      "name_en": "Kijitonyama Parish",
+      "patron_saint": "Mt. Yakobo Mkuu Mtume"
+    },
+    {
+      "code": "DSM-MAKONGO-JUU",
+      "parent_code": "DSM-STP",
+      "name": "Parokia ya Makongo Juu",
+      "name_en": "Makongo Juu Parish",
+      "patron_saint": "Bikira Maria Mama wa Rozari Takatifu"
+    },
+    {
+      "code": "DSM-MIKOCHENI",
+      "parent_code": "DSM-STP",
+      "name": "Parokia ya Mikocheni",
+      "name_en": "Mikocheni Parish",
+      "patron_saint": "Mt. Martha"
+    },
+    {
+      "code": "DSM-MAGOMENI",
+      "parent_code": "DSM-STP",
+      "name": "Parokia ya Magomeni",
+      "name_en": "Magomeni Parish",
+      "patron_saint": "Watakatifu Mashahidi wa Uganda"
+    },
+    {
+      "code": "DSM-TABATA-KISIWANI",
+      "parent_code": "DSM-MAK",
+      "name": "Parokia ya Tabata Kisiwani",
+      "name_en": "Tabata Kisiwani Parish",
+      "patron_saint": "Mt. Padri Pio"
+    },
+    {
+      "code": "DSM-KIMARA-MTONI",
+      "parent_code": "DSM-MAK",
+      "name": "Parokia ya Kimara Mtoni",
+      "name_en": "Kimara Mtoni Parish",
+      "patron_saint": "Mt. Maria Magdalena"
+    },
+    {
+      "code": "DSM-KIMARA-BARUTI",
+      "parent_code": "DSM-MAK",
+      "name": "Parokia ya Kimara Baruti",
+      "name_en": "Kimara Baruti Parish",
+      "patron_saint": "Mt. Yohane XXIII"
+    },
+    {
+      "code": "DSM-MABIBO",
+      "parent_code": "DSM-MAK",
+      "name": "Parokia ya Mabibo",
+      "name_en": "Mabibo Parish",
+      "patron_saint": "Mt. Peter Faber"
+    },
+    {
+      "code": "DSM-MAKUBURI",
+      "parent_code": "DSM-MAK",
+      "name": "Parokia ya Makuburi",
+      "name_en": "Makuburi Parish",
+      "patron_saint": "Mwenyeheri Annuarite"
+    },
+    {
+      "code": "DSM-LUHANGA",
+      "parent_code": "DSM-MAK",
+      "name": "Parokia ya Luhanga",
+      "name_en": "Luhanga Parish",
+      "patron_saint": "Mt. Yohana Mbatizaji"
+    },
+    {
+      "code": "DSM-KIMARA-KANA",
+      "parent_code": "DSM-MAK",
+      "name": "Parokia ya Kimara Kana",
+      "name_en": "Kimara Kana Parish",
+      "patron_saint": "Mt. Maria Salome"
+    },
+    {
+      "code": "DSM-NZASA",
+      "parent_code": "DSM-MAK",
+      "name": "Parokia ya Nzasa",
+      "name_en": "Nzasa Parish",
+      "patron_saint": "Mt. Teresia wa Mtoto Yesu"
+    },
+    {
+      "code": "DSM-MAKOKA",
+      "parent_code": "DSM-MAK",
+      "name": "Parokia ya Makoka",
+      "name_en": "Makoka Parish",
+      "patron_saint": "Mt. Gaudence"
+    },
+    {
+      "code": "DSM-KILUNGULE",
+      "parent_code": "DSM-MAK",
+      "name": "Parokia ya Kilungule",
+      "name_en": "Kilungule Parish",
+      "patron_saint": "Mt. Monika"
+    },
+    {
+      "code": "DSM-MBAGALA",
+      "parent_code": "DSM-MBA",
+      "name": "Parokia ya Mbagala",
+      "name_en": "Mbagala Parish",
+      "patron_saint": "Mt. Anthony wa Padua"
+    },
+    {
+      "code": "DSM-CHAMAZI",
+      "parent_code": "DSM-MBA",
+      "name": "Parokia ya Chamazi",
+      "name_en": "Chamazi Parish",
+      "patron_saint": "Mt. Clara wa Asizi"
+    },
+    {
+      "code": "DSM-KIZUIANI",
+      "parent_code": "DSM-MBA",
+      "name": "Parokia ya Kizuiani",
+      "name_en": "Kizuiani Parish",
+      "patron_saint": "Kanisa la Kutukuka kwa Msalaba"
+    },
+    {
+      "code": "DSM-MGENINANI",
+      "parent_code": "DSM-MBA",
+      "name": "Parokia ya Mgeninani",
+      "name_en": "Mgeninani Parish",
+      "patron_saint": "Mt. Theresia wa Kalkuta"
+    },
+    {
+      "code": "DSM-MSONGOLA-A",
+      "parent_code": "DSM-MBA",
+      "name": "Parokia ya Msongola-A",
+      "name_en": "Msongola-A Parish",
+      "patron_saint": "Kanisa la Kristo Mfalme"
+    },
+    {
+      "code": "DSM-KILAMBA",
+      "parent_code": "DSM-MBA",
+      "name": "Parokia ya Kilamba",
+      "name_en": "Kilamba Parish",
+      "patron_saint": "Mt. Polykarp"
+    },
+    {
+      "code": "DSM-CHAMAZI-VIGOA",
+      "parent_code": "DSM-MBA",
+      "name": "Parokia ya Chamazi-Vigoa",
+      "name_en": "Chamazi-Vigoa Parish",
+      "patron_saint": "Mt. Antony wa Padua"
+    },
+    {
+      "code": "DSM-KIJICHI",
+      "parent_code": "DSM-MBA",
+      "name": "Parokia ya Kijichi",
+      "name_en": "Kijichi Parish",
+      "patron_saint": "Kanisa la Epifania"
+    },
+    {
+      "code": "DSM-VIGOZI",
+      "parent_code": "DSM-MBA",
+      "name": "Parokia ya Vigozi",
+      "name_en": "Vigozi Parish",
+      "patron_saint": "Mt. Thomas Mtume"
+    },
+    {
+      "code": "DSM-KIZINGA",
+      "parent_code": "DSM-MBA",
+      "name": "Parokia ya Kizinga",
+      "name_en": "Kizinga Parish",
+      "patron_saint": "Mt. Martin wa Tours"
+    },
+    {
+      "code": "DSM-MBANDE",
+      "parent_code": "DSM-MBA",
+      "name": "Parokia ya Mbande",
+      "name_en": "Mbande Parish",
+      "patron_saint": "Mt. Yakobo Mkuu Mtume"
+    },
+    {
+      "code": "DSM-MBAGALA-KUU",
+      "parent_code": "DSM-MBA",
+      "name": "Parokia ya Mbagala Kuu",
+      "name_en": "Mbagala Kuu Parish",
+      "patron_saint": "Mt. Gabriel Malaika Mkuu"
+    },
+    {
+      "code": "DSM-MAJIMATITU",
+      "parent_code": "DSM-MBA",
+      "name": "Parokia ya Majimatitu",
+      "name_en": "Majimatitu Parish",
+      "patron_saint": "Mt. Francisco wa Assizi"
+    },
+    {
+      "code": "DSM-MANZESE",
+      "parent_code": "DSM-UBU",
+      "name": "Parokia ya Manzese",
+      "name_en": "Manzese Parish",
+      "patron_saint": "Moyo Mtakatifu wa Yesu"
+    },
+    {
+      "code": "DSM-TANDALE",
+      "parent_code": "DSM-UBU",
+      "name": "Parokia ya Tandale",
+      "name_en": "Tandale Parish",
+      "patron_saint": "Mt. Karoli Lwanga"
+    },
+    {
+      "code": "DSM-UDSM",
+      "parent_code": "DSM-UBU",
+      "name": "Parokia ya Chuo Kikuu UDSM",
+      "name_en": "University of Dar es Salaam Parish",
+      "patron_saint": "Mt. Thomas wa Aquino"
+    },
+    {
+      "code": "DSM-UBUNGO-MSEWE",
+      "parent_code": "DSM-UBU",
+      "name": "Parokia ya Ubungo Msewe",
+      "name_en": "Ubungo Msewe Parish",
+      "patron_saint": "Mt. Paulo Mtume"
+    },
+    {
+      "code": "DSM-MICHUNGWANI",
+      "parent_code": "DSM-UBU",
+      "name": "Parokia ya Michungwani",
+      "name_en": "Michungwani Parish",
+      "patron_saint": "Mt. Anthony Maria Claret"
+    },
+    {
+      "code": "DSM-KIMARA-KOROGWE",
+      "parent_code": "DSM-UBU",
+      "name": "Parokia ya Kimara Korogwe",
+      "name_en": "Kimara Korogwe Parish",
+      "patron_saint": "Bikira Maria Msaada wa Daima"
+    },
+    {
+      "code": "DSM-KIMARA",
+      "parent_code": "DSM-UBU",
+      "name": "Parokia ya Kimara",
+      "name_en": "Kimara Parish",
+      "patron_saint": "Maria Mtakatifu"
+    },
+    {
+      "code": "DSM-CHANGANYIKENI",
+      "parent_code": "DSM-UBU",
+      "name": "Parokia ya Changanyikeni",
+      "name_en": "Changanyikeni Parish",
+      "patron_saint": "Kanisa la Utatu Mtakatifu"
+    }
+  ]
+}

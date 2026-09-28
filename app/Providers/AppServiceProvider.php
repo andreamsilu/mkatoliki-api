@@ -24,9 +24,13 @@ class AppServiceProvider extends ServiceProvider
         }
         RateLimiter::for('public-api', fn (Request $request) => Limit::perMinute(config('core.public_rate_limit'))->by($request->ip()));
         RateLimiter::for('authenticated-api', fn (Request $request) => Limit::perMinute(config('core.authenticated_rate_limit'))->by($request->user()?->id ?? $request->ip()));
-        RateLimiter::for('login', fn (Request $request) => [
-            Limit::perMinute(5)->by('login:'.$request->ip().':'.hash('sha256', strtolower((string) $request->input('email')))),
-            Limit::perMinute(20)->by('login-ip:'.$request->ip()),
-        ]);
+        RateLimiter::for('login', function (Request $request): array {
+            $identity = strtolower((string) ($request->input('email') ?? $request->input('identity')));
+
+            return [
+                Limit::perMinute(5)->by('login:'.$request->ip().':'.hash('sha256', $identity)),
+                Limit::perMinute(20)->by('login-ip:'.$request->ip()),
+            ];
+        });
     }
 }

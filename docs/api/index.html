@@ -24,7 +24,8 @@
 <a href="#requests-and-responses">Requests and responses</a>
 <a href="#pagination-filters-and-search">Pagination, filters, and search</a>
 <a href="#public-endpoints">Public endpoints</a>
-<a href="#authentication-and-access">Authentication and access</a>
+<a href="#member-authentication">Member authentication</a>
+<a href="#administrator-authentication-and-access">Administrator authentication and access</a>
 <a href="#create-and-update-records">Create and update records</a>
 <a href="#sources-and-corrections">Sources and corrections</a>
 <a href="#parish-transfers-and-history">Parish transfers and history</a>
@@ -32,8 +33,8 @@
 <a href="#audit-logs">Audit logs</a>
 <a href="#errors-and-rate-limits">Errors and rate limits</a>
 <a href="#javascript-integration">JavaScript integration</a>
-<a href="#integration-checklist">Integration checklist</a><p class="nav-label divider">API reference</p><a href="#endpoint-reference">All 140 operations</a><a href="#schema-reference">Request &amp; response schemas</a><p class="nav-label divider">Downloads</p><a href="consumer-guide.md" download>Markdown guide</a><a href="openapi.json" download>OpenAPI specification</a></nav></aside>
-<main id="main"><p class="eyebrow">Developer documentation / API v1</p><div class="intro-cards"><div class="intro-card"><strong>Browse the directory</strong>Public reads · No token required</div><div class="intro-card"><strong>Manage your community</strong>Scoped administrator access</div><div class="intro-card"><a href="#endpoint-reference"><strong>140 documented operations ↗</strong></a>Examples, fields &amp; response schemas</div></div><article id="guide"><h1 id="catholic-tanzania-core-api">Catholic Tanzania Core API</h1>
+<a href="#integration-checklist">Integration checklist</a><p class="nav-label divider">API reference</p><a href="#endpoint-reference">All 152 operations</a><a href="#schema-reference">Request &amp; response schemas</a><p class="nav-label divider">Downloads</p><a href="consumer-guide.md" download>Markdown guide</a><a href="openapi.json" download>OpenAPI specification</a></nav></aside>
+<main id="main"><p class="eyebrow">Developer documentation / API v1</p><div class="intro-cards"><div class="intro-card"><strong>Browse the directory</strong>Public reads · No token required</div><div class="intro-card"><strong>Manage your community</strong>Scoped administrator access</div><div class="intro-card"><a href="#endpoint-reference"><strong>152 documented operations ↗</strong></a>Examples, fields &amp; response schemas</div></div><article id="guide"><h1 id="catholic-tanzania-core-api">Catholic Tanzania Core API</h1>
 <p>API v1 · Consumer guide · Contract version 1.0.0</p>
 <p>Build applications that browse Tanzania's Catholic directory and, with administrator access, manage organizational and community records. Swahili names are primary; selected resources also provide an optional English name.</p>
 <p>The API uses JSON over HTTP. Public directory reads need no credentials. Family, member, and administrative endpoints require a bearer token and the appropriate organizational access.</p>
@@ -361,7 +362,12 @@ curl --fail-with-body --silent --show-error \
 </tbody>
 </table></div>
 <p>If <code>truncated</code> is true, fetch the linked collection from page 1 and paginate it independently. Treat that collection as the complete result rather than appending it to the first 100 records. Structure does not accept pagination parameters and never includes families or members.</p>
-<h2 id="authentication-and-access">Authentication and access</h2>
+<h3 id="parish-content">Parish content</h3>
+<p><code>GET /parishes/{id}/content</code> is public and returns the parish profile plus published Mass times, announcements, future events, and projects. It returns <code>404</code> when the parish or any primary ancestor is inactive. Empty arrays mean the parish has not published verified content of that type.</p>
+<h2 id="member-authentication">Member authentication</h2>
+<p>Member accounts are linked one-to-one to existing member records by an API operator; there is no public self-registration endpoint. <code>POST /member/auth/login</code> accepts <code>identity</code> (the linked account email, member email, phone, or member code), <code>password</code>, and <code>device_name</code>. It returns an expiring bearer token with the <code>member:read</code> ability and the member profile.</p>
+<p>Use <code>GET /member/auth/me</code> to refresh the signed-in member profile and <code>POST /member/auth/logout</code> to revoke the current token. The account, member, parish, and every primary parish ancestor must remain active. Member tokens do not grant administrator access.</p>
+<h2 id="administrator-authentication-and-access">Administrator authentication and access</h2>
 <p>Request an administrator account and organizational scope from your API provider. There is no public registration endpoint, token refresh endpoint, or account-management API.</p>
 <h3 id="sign-in">Sign in</h3>
 <p><code>POST /auth/login</code> accepts:</p>
@@ -965,7 +971,7 @@ console.log(firstPage.parishes);
 </ul>
 <p>Provider health checks are available at the origin-level paths <code>/health</code> (database/cache readiness) and <code>/up</code> (application liveness). They are outside the versioned API and do not use its standard success envelope.</p>
 </article>
-<section aria-labelledby="endpoint-reference"><h2 id="endpoint-reference">Endpoint reference</h2><p class="reference-intro">Every operation in API v1. Paths are relative to your API base URL. Open an operation for its parameters, request body, and response fields. Select a named type to read its schema.</p><div class="filters" hidden><div class="filter"><label for="endpoint-search">Find an endpoint</label><input id="endpoint-search" type="search" placeholder="Search path, action, or field…" autocomplete="off"></div><div class="filter"><label for="method-filter">HTTP method</label><select id="method-filter"><option value="">All methods</option><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option></select></div><div class="filter"><label for="access-filter">Access</label><select id="access-filter"><option value="">All access</option><option value="public">Public</option><option value="protected">Bearer token</option></select></div></div><p id="result-count" class="muted" role="status">140 operations</p><noscript><p>All operations are listed below. Use your browser's Find command to locate a path.</p></noscript><div id="endpoints"><details class="endpoint" id="show_provinces_id" data-method="post" data-access="public">
+<section aria-labelledby="endpoint-reference"><h2 id="endpoint-reference">Endpoint reference</h2><p class="reference-intro">Every operation in API v1. Paths are relative to your API base URL. Open an operation for its parameters, request body, and response fields. Select a named type to read its schema.</p><div class="filters" hidden><div class="filter"><label for="endpoint-search">Find an endpoint</label><input id="endpoint-search" type="search" placeholder="Search path, action, or field…" autocomplete="off"></div><div class="filter"><label for="method-filter">HTTP method</label><select id="method-filter"><option value="">All methods</option><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option></select></div><div class="filter"><label for="access-filter">Access</label><select id="access-filter"><option value="">All access</option><option value="public">Public</option><option value="protected">Bearer token</option></select></div></div><p id="result-count" class="muted" role="status">152 operations</p><noscript><p>All operations are listed below. Use your browser's Find command to locate a path.</p></noscript><div id="endpoints"><details class="endpoint" id="show_provinces_id" data-method="post" data-access="public">
       <summary><span class="method post">POST</span><code>/provinces/{id}</code><span class="access">Public</span></summary>
       <div class="endpoint-body"><h3>Show provinces</h3><p></p>
       <p class="muted">No bearer token required. <a href="#show_provinces_id">Link to operation</a></p>
@@ -7729,7 +7735,175 @@ console.log(firstPage.parishes);
       <p class="muted">Requires an active administrator, token permissions, and applicable organizational scope. <a href="#post_admin_dashboard">Link to operation</a></p>
       <p>No path or query parameters.</p>
 
-      <h4>200 response</h4><p>Successful response</p><div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>success</code></td><td>boolean</td><td>Yes</td><td>Allowed: true</td></tr><tr><td><code>data</code></td><td><a href="#schema-dashboardsummary">DashboardSummary</a></td><td>Yes</td><td></td></tr><tr><td><code>meta</code></td><td>object</td><td>Yes</td><td></td></tr></tbody></table></div><h4>default response</h4><p></p></div></details></div><p class="empty" id="empty-results" hidden>No operations match. Try a resource name such as “parishes” or clear the filters.</p></section>
+      <h4>200 response</h4><p>Successful response</p><div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>success</code></td><td>boolean</td><td>Yes</td><td>Allowed: true</td></tr><tr><td><code>data</code></td><td><a href="#schema-dashboardsummary">DashboardSummary</a></td><td>Yes</td><td></td></tr><tr><td><code>meta</code></td><td>object</td><td>Yes</td><td></td></tr></tbody></table></div><h4>default response</h4><p></p></div></details>
+<details class="endpoint" id="get_parish_content" data-method="get" data-access="public">
+      <summary><span class="method get">GET</span><code>/parishes/{id}/content</code><span class="access">Public</span></summary>
+      <div class="endpoint-body"><h3>Show public parish content</h3><p>Returns published content for an active parish whose full ecclesiastical ancestry is active. No authentication is required.</p>
+      <p class="muted">No bearer token required. <a href="#get_parish_content">Link to operation</a></p>
+      <h4>Parameters</h4><div class="table-wrap"><table><thead><tr><th scope="col">Name</th><th scope="col">Location</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>id</code></td><td>path</td><td>integer</td><td>Yes</td><td>Minimum: 1</td></tr></tbody></table></div>
+
+      <h4>200 response</h4><p>Successful response</p><div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>success</code></td><td>boolean</td><td>Yes</td><td>Allowed: true</td></tr><tr><td><code>data</code></td><td><a href="#schema-parishcontent">ParishContent</a></td><td>Yes</td><td></td></tr><tr><td><code>meta</code></td><td>object</td><td>Yes</td><td></td></tr></tbody></table></div><h4>default response</h4><p>Standard error (401, 403, 404, 405, 409, 422, 429, 500 or 503). Retry-After is included for 429.</p><div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>success</code></td><td>boolean</td><td>Yes</td><td>Allowed: false</td></tr><tr><td><code>error</code></td><td>object</td><td>Yes</td><td></td></tr></tbody></table></div></div></details>
+<details class="endpoint" id="post_member_auth_login" data-method="post" data-access="public">
+      <summary><span class="method post">POST</span><code>/member/auth/login</code><span class="access">Public</span></summary>
+      <div class="endpoint-body"><h3>Sign in a parish member</h3><p>Accepts the linked account email, member email, phone, or member code. The member, account, parish, and all parish ancestors must be active.</p>
+      <p class="muted">No bearer token required. <a href="#post_member_auth_login">Link to operation</a></p>
+      <p>No path or query parameters.</p>
+      <h4>JSON request body</h4><div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>identity</code></td><td>string</td><td>Yes</td><td>Max length: 255</td></tr><tr><td><code>password</code></td><td>string (password)</td><td>Yes</td><td>Max length: 255</td></tr><tr><td><code>device_name</code></td><td>string</td><td>Yes</td><td>Max length: 100</td></tr></tbody></table></div><details class="raw-schema"><summary>Request schema JSON</summary><pre><code class="language-json">{
+  &quot;type&quot;: &quot;object&quot;,
+  &quot;required&quot;: [
+    &quot;identity&quot;,
+    &quot;password&quot;,
+    &quot;device_name&quot;
+  ],
+  &quot;properties&quot;: {
+    &quot;identity&quot;: {
+      &quot;type&quot;: &quot;string&quot;,
+      &quot;maxLength&quot;: 255
+    },
+    &quot;password&quot;: {
+      &quot;type&quot;: &quot;string&quot;,
+      &quot;format&quot;: &quot;password&quot;,
+      &quot;maxLength&quot;: 255
+    },
+    &quot;device_name&quot;: {
+      &quot;type&quot;: &quot;string&quot;,
+      &quot;maxLength&quot;: 100
+    }
+  }
+}</code></pre></details>
+      <h4>200 response</h4><p>Successful response</p><div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>success</code></td><td>boolean</td><td>Yes</td><td>Allowed: true</td></tr><tr><td><code>data</code></td><td>object</td><td>Yes</td><td></td></tr><tr><td><code>meta</code></td><td>object</td><td>Yes</td><td></td></tr></tbody></table></div><h4>default response</h4><p>Standard error (401, 403, 404, 405, 409, 422, 429, 500 or 503). Retry-After is included for 429.</p><div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>success</code></td><td>boolean</td><td>Yes</td><td>Allowed: false</td></tr><tr><td><code>error</code></td><td>object</td><td>Yes</td><td></td></tr></tbody></table></div></div></details>
+<details class="endpoint" id="get_member_auth_me" data-method="get" data-access="protected">
+      <summary><span class="method get">GET</span><code>/member/auth/me</code><span class="access">Bearer token</span></summary>
+      <div class="endpoint-body"><h3>Show current member profile</h3><p>Requires an active member account and a token with the member:read ability.</p>
+      <p class="muted">Requires an active member and a token with the member:read ability. <a href="#get_member_auth_me">Link to operation</a></p>
+      <p>No path or query parameters.</p>
+
+      <h4>200 response</h4><p>Successful response</p><div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>success</code></td><td>boolean</td><td>Yes</td><td>Allowed: true</td></tr><tr><td><code>data</code></td><td><a href="#schema-memberprofile">MemberProfile</a></td><td>Yes</td><td></td></tr><tr><td><code>meta</code></td><td>object</td><td>Yes</td><td></td></tr></tbody></table></div><h4>default response</h4><p>Standard error (401, 403, 404, 405, 409, 422, 429, 500 or 503). Retry-After is included for 429.</p><div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>success</code></td><td>boolean</td><td>Yes</td><td>Allowed: false</td></tr><tr><td><code>error</code></td><td>object</td><td>Yes</td><td></td></tr></tbody></table></div></div></details>
+<details class="endpoint" id="post_member_auth_logout" data-method="post" data-access="protected">
+      <summary><span class="method post">POST</span><code>/member/auth/logout</code><span class="access">Bearer token</span></summary>
+      <div class="endpoint-body"><h3>Revoke current member token</h3><p>Revokes only the bearer token used for this request.</p>
+      <p class="muted">Requires an active member and a token with the member:read ability. <a href="#post_member_auth_logout">Link to operation</a></p>
+      <p>No path or query parameters.</p>
+
+      <h4>200 response</h4><p>Successful response</p><div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>success</code></td><td>boolean</td><td>Yes</td><td>Allowed: true</td></tr><tr><td><code>data</code></td><td>object</td><td>Yes</td><td></td></tr><tr><td><code>meta</code></td><td>object</td><td>Yes</td><td></td></tr></tbody></table></div><h4>default response</h4><p>Standard error (401, 403, 404, 405, 409, 422, 429, 500 or 503). Retry-After is included for 429.</p><div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>success</code></td><td>boolean</td><td>Yes</td><td>Allowed: false</td></tr><tr><td><code>error</code></td><td>object</td><td>Yes</td><td></td></tr></tbody></table></div></div></details>
+<details class="endpoint" id="get_member_dashboard" data-method="get" data-access="protected">
+      <summary><span class="method get">GET</span><code>/member/dashboard</code><span class="access">Bearer token</span></summary>
+      <div class="endpoint-body"><h3>Show member dashboard</h3><p></p>
+      <p class="muted">Requires an active member and a token with the member:read ability. <a href="#get_member_dashboard">Link to operation</a></p>
+      <p>No path or query parameters.</p>
+
+      <h4>200 response</h4><p>Successful response</p><div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>success</code></td><td>boolean</td><td>Yes</td><td>Allowed: true</td></tr><tr><td><code>data</code></td><td>object</td><td>Yes</td><td></td></tr><tr><td><code>meta</code></td><td>object</td><td>Yes</td><td></td></tr></tbody></table></div><h4>default response</h4><p>Standard error (401, 403, 404, 405, 409, 422, 429, 500 or 503). Retry-After is included for 429.</p><div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>success</code></td><td>boolean</td><td>Yes</td><td>Allowed: false</td></tr><tr><td><code>error</code></td><td>object</td><td>Yes</td><td></td></tr></tbody></table></div></div></details>
+<details class="endpoint" id="put_member_profile" data-method="put" data-access="protected">
+      <summary><span class="method put">PUT</span><code>/member/profile</code><span class="access">Bearer token</span></summary>
+      <div class="endpoint-body"><h3>Update member profile</h3><p></p>
+      <p class="muted">Requires an active member and a token with the member:read ability. <a href="#put_member_profile">Link to operation</a></p>
+      <p>No path or query parameters.</p>
+      <h4>JSON request body</h4><p>object</p><details class="raw-schema"><summary>Request schema JSON</summary><pre><code class="language-json">{
+  &quot;type&quot;: &quot;object&quot;
+}</code></pre></details>
+      <h4>200 response</h4><p>Successful response</p><div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>success</code></td><td>boolean</td><td>Yes</td><td>Allowed: true</td></tr><tr><td><code>data</code></td><td>object</td><td>Yes</td><td></td></tr><tr><td><code>meta</code></td><td>object</td><td>Yes</td><td></td></tr></tbody></table></div><h4>default response</h4><p>Standard error (401, 403, 404, 405, 409, 422, 429, 500 or 503). Retry-After is included for 429.</p><div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>success</code></td><td>boolean</td><td>Yes</td><td>Allowed: false</td></tr><tr><td><code>error</code></td><td>object</td><td>Yes</td><td></td></tr></tbody></table></div></div></details>
+<details class="endpoint" id="patch_member_profile" data-method="patch" data-access="protected">
+      <summary><span class="method patch">PATCH</span><code>/member/profile</code><span class="access">Bearer token</span></summary>
+      <div class="endpoint-body"><h3>Update member profile</h3><p></p>
+      <p class="muted">Requires an active member and a token with the member:read ability. <a href="#patch_member_profile">Link to operation</a></p>
+      <p>No path or query parameters.</p>
+      <h4>JSON request body</h4><p>object</p><details class="raw-schema"><summary>Request schema JSON</summary><pre><code class="language-json">{
+  &quot;type&quot;: &quot;object&quot;
+}</code></pre></details>
+      <h4>200 response</h4><p>Successful response</p><div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>success</code></td><td>boolean</td><td>Yes</td><td>Allowed: true</td></tr><tr><td><code>data</code></td><td>object</td><td>Yes</td><td></td></tr><tr><td><code>meta</code></td><td>object</td><td>Yes</td><td></td></tr></tbody></table></div><h4>default response</h4><p>Standard error (401, 403, 404, 405, 409, 422, 429, 500 or 503). Retry-After is included for 429.</p><div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>success</code></td><td>boolean</td><td>Yes</td><td>Allowed: false</td></tr><tr><td><code>error</code></td><td>object</td><td>Yes</td><td></td></tr></tbody></table></div></div></details>
+<details class="endpoint" id="put_member_password" data-method="put" data-access="protected">
+      <summary><span class="method put">PUT</span><code>/member/password</code><span class="access">Bearer token</span></summary>
+      <div class="endpoint-body"><h3>Update member password</h3><p></p>
+      <p class="muted">Requires an active member and a token with the member:read ability. <a href="#put_member_password">Link to operation</a></p>
+      <p>No path or query parameters.</p>
+      <h4>JSON request body</h4><div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>current_password</code></td><td>string (password)</td><td>Yes</td><td></td></tr><tr><td><code>password</code></td><td>string (password)</td><td>Yes</td><td></td></tr><tr><td><code>password_confirmation</code></td><td>string (password)</td><td>Yes</td><td></td></tr></tbody></table></div><details class="raw-schema"><summary>Request schema JSON</summary><pre><code class="language-json">{
+  &quot;type&quot;: &quot;object&quot;,
+  &quot;required&quot;: [
+    &quot;current_password&quot;,
+    &quot;password&quot;,
+    &quot;password_confirmation&quot;
+  ],
+  &quot;properties&quot;: {
+    &quot;current_password&quot;: {
+      &quot;type&quot;: &quot;string&quot;,
+      &quot;format&quot;: &quot;password&quot;
+    },
+    &quot;password&quot;: {
+      &quot;type&quot;: &quot;string&quot;,
+      &quot;format&quot;: &quot;password&quot;
+    },
+    &quot;password_confirmation&quot;: {
+      &quot;type&quot;: &quot;string&quot;,
+      &quot;format&quot;: &quot;password&quot;
+    }
+  }
+}</code></pre></details>
+      <h4>200 response</h4><p>Successful response</p><div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>success</code></td><td>boolean</td><td>Yes</td><td>Allowed: true</td></tr><tr><td><code>data</code></td><td>object</td><td>Yes</td><td></td></tr><tr><td><code>meta</code></td><td>object</td><td>Yes</td><td></td></tr></tbody></table></div><h4>default response</h4><p>Standard error (401, 403, 404, 405, 409, 422, 429, 500 or 503). Retry-After is included for 429.</p><div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>success</code></td><td>boolean</td><td>Yes</td><td>Allowed: false</td></tr><tr><td><code>error</code></td><td>object</td><td>Yes</td><td></td></tr></tbody></table></div></div></details>
+<details class="endpoint" id="patch_member_notification_read" data-method="patch" data-access="protected">
+      <summary><span class="method patch">PATCH</span><code>/member/notifications/{notification}/read</code><span class="access">Bearer token</span></summary>
+      <div class="endpoint-body"><h3>Mark member notification read</h3><p></p>
+      <p class="muted">Requires an active member and a token with the member:read ability. <a href="#patch_member_notification_read">Link to operation</a></p>
+      <h4>Parameters</h4><div class="table-wrap"><table><thead><tr><th scope="col">Name</th><th scope="col">Location</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>notification</code></td><td>path</td><td>integer</td><td>Yes</td><td>Minimum: 1</td></tr></tbody></table></div>
+
+      <h4>200 response</h4><p>Successful response</p><div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>success</code></td><td>boolean</td><td>Yes</td><td>Allowed: true</td></tr><tr><td><code>data</code></td><td>object</td><td>Yes</td><td></td></tr><tr><td><code>meta</code></td><td>object</td><td>Yes</td><td></td></tr></tbody></table></div><h4>default response</h4><p>Standard error (401, 403, 404, 405, 409, 422, 429, 500 or 503). Retry-After is included for 429.</p><div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>success</code></td><td>boolean</td><td>Yes</td><td>Allowed: false</td></tr><tr><td><code>error</code></td><td>object</td><td>Yes</td><td></td></tr></tbody></table></div></div></details>
+<details class="endpoint" id="post_member_contribution_payment_request" data-method="post" data-access="protected">
+      <summary><span class="method post">POST</span><code>/member/contributions/{campaign}/payment-requests</code><span class="access">Bearer token</span></summary>
+      <div class="endpoint-body"><h3>Create pending contribution payment request</h3><p></p>
+      <p class="muted">Requires an active member and a token with the member:read ability. <a href="#post_member_contribution_payment_request">Link to operation</a></p>
+      <h4>Parameters</h4><div class="table-wrap"><table><thead><tr><th scope="col">Name</th><th scope="col">Location</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>campaign</code></td><td>path</td><td>integer</td><td>Yes</td><td>Minimum: 1</td></tr></tbody></table></div>
+      <h4>JSON request body</h4><div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>amount</code></td><td>number</td><td>Yes</td><td>Minimum: 100</td></tr><tr><td><code>payment_method</code></td><td>string</td><td>Yes</td><td>Allowed: &quot;mobile_money&quot;, &quot;bank&quot;</td></tr></tbody></table></div><details class="raw-schema"><summary>Request schema JSON</summary><pre><code class="language-json">{
+  &quot;type&quot;: &quot;object&quot;,
+  &quot;required&quot;: [
+    &quot;amount&quot;,
+    &quot;payment_method&quot;
+  ],
+  &quot;properties&quot;: {
+    &quot;amount&quot;: {
+      &quot;type&quot;: &quot;number&quot;,
+      &quot;minimum&quot;: 100
+    },
+    &quot;payment_method&quot;: {
+      &quot;type&quot;: &quot;string&quot;,
+      &quot;enum&quot;: [
+        &quot;mobile_money&quot;,
+        &quot;bank&quot;
+      ]
+    }
+  }
+}</code></pre></details>
+      <h4>200 response</h4><p>Successful response</p><div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>success</code></td><td>boolean</td><td>Yes</td><td>Allowed: true</td></tr><tr><td><code>data</code></td><td>object</td><td>Yes</td><td></td></tr><tr><td><code>meta</code></td><td>object</td><td>Yes</td><td></td></tr></tbody></table></div><h4>default response</h4><p>Standard error (401, 403, 404, 405, 409, 422, 429, 500 or 503). Retry-After is included for 429.</p><div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>success</code></td><td>boolean</td><td>Yes</td><td>Allowed: false</td></tr><tr><td><code>error</code></td><td>object</td><td>Yes</td><td></td></tr></tbody></table></div></div></details>
+<details class="endpoint" id="post_member_sacrament_request" data-method="post" data-access="protected">
+      <summary><span class="method post">POST</span><code>/member/sacraments/{sacrament}/requests</code><span class="access">Bearer token</span></summary>
+      <div class="endpoint-body"><h3>Request sacrament service</h3><p></p>
+      <p class="muted">Requires an active member and a token with the member:read ability. <a href="#post_member_sacrament_request">Link to operation</a></p>
+      <h4>Parameters</h4><div class="table-wrap"><table><thead><tr><th scope="col">Name</th><th scope="col">Location</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>sacrament</code></td><td>path</td><td>integer</td><td>Yes</td><td>Minimum: 1</td></tr></tbody></table></div>
+      <h4>JSON request body</h4><div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>type</code></td><td>string</td><td>Yes</td><td>Allowed: &quot;certificate&quot;, &quot;correction&quot;</td></tr><tr><td><code>message</code></td><td>string · nullable</td><td>—</td><td></td></tr></tbody></table></div><details class="raw-schema"><summary>Request schema JSON</summary><pre><code class="language-json">{
+  &quot;type&quot;: &quot;object&quot;,
+  &quot;required&quot;: [
+    &quot;type&quot;
+  ],
+  &quot;properties&quot;: {
+    &quot;type&quot;: {
+      &quot;type&quot;: &quot;string&quot;,
+      &quot;enum&quot;: [
+        &quot;certificate&quot;,
+        &quot;correction&quot;
+      ]
+    },
+    &quot;message&quot;: {
+      &quot;type&quot;: &quot;string&quot;,
+      &quot;nullable&quot;: true
+    }
+  }
+}</code></pre></details>
+      <h4>200 response</h4><p>Successful response</p><div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>success</code></td><td>boolean</td><td>Yes</td><td>Allowed: true</td></tr><tr><td><code>data</code></td><td>object</td><td>Yes</td><td></td></tr><tr><td><code>meta</code></td><td>object</td><td>Yes</td><td></td></tr></tbody></table></div><h4>default response</h4><p>Standard error (401, 403, 404, 405, 409, 422, 429, 500 or 503). Retry-After is included for 429.</p><div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>success</code></td><td>boolean</td><td>Yes</td><td>Allowed: false</td></tr><tr><td><code>error</code></td><td>object</td><td>Yes</td><td></td></tr></tbody></table></div></div></details>
+<details class="endpoint" id="get_member_report" data-method="get" data-access="protected">
+      <summary><span class="method get">GET</span><code>/member/reports/{type}</code><span class="access">Bearer token</span></summary>
+      <div class="endpoint-body"><h3>Generate member report data</h3><p></p>
+      <p class="muted">Requires an active member and a token with the member:read ability. <a href="#get_member_report">Link to operation</a></p>
+      <h4>Parameters</h4><div class="table-wrap"><table><thead><tr><th scope="col">Name</th><th scope="col">Location</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>type</code></td><td>path</td><td>string</td><td>Yes</td><td>Allowed: &quot;contributions&quot;, &quot;sacraments&quot;, &quot;membership&quot;, &quot;annual&quot;</td></tr></tbody></table></div>
+
+      <h4>200 response</h4><p>Successful response</p><div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>success</code></td><td>boolean</td><td>Yes</td><td>Allowed: true</td></tr><tr><td><code>data</code></td><td>object</td><td>Yes</td><td></td></tr><tr><td><code>meta</code></td><td>object</td><td>Yes</td><td></td></tr></tbody></table></div><h4>default response</h4><p>Standard error (401, 403, 404, 405, 409, 422, 429, 500 or 503). Retry-After is included for 429.</p><div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>success</code></td><td>boolean</td><td>Yes</td><td>Allowed: false</td></tr><tr><td><code>error</code></td><td>object</td><td>Yes</td><td></td></tr></tbody></table></div></div></details></div><p class="empty" id="empty-results" hidden>No operations match. Try a resource name such as “parishes” or clear the filters.</p></section>
 <section aria-labelledby="schema-reference"><h2 id="schema-reference">Schema reference</h2><p>Input schemas describe creation bodies. Patch schemas describe partial updates. Public schemas omit contact fields and administrative descriptions. “Required” indicates presence required by the schema; nullable fields may contain JSON null.</p><details class="schema" id="schema-error"><summary>Error</summary><div class="endpoint-body"><p></p><div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>success</code></td><td>boolean</td><td>Yes</td><td>Allowed: false</td></tr><tr><td><code>error</code></td><td>object</td><td>Yes</td><td></td></tr></tbody></table></div><details class="raw-schema"><summary>Schema JSON</summary><pre><code class="language-json">{
   &quot;type&quot;: &quot;object&quot;,
   &quot;required&quot;: [
@@ -11404,6 +11578,231 @@ console.log(firstPage.parishes);
           &quot;type&quot;: &quot;integer&quot;,
           &quot;minimum&quot;: 1,
           &quot;nullable&quot;: true
+        }
+      }
+    }
+  }
+}</code></pre></details></div></details>
+<details class="schema" id="schema-memberprofile"><summary>MemberProfile</summary><div class="endpoint-body"><p></p><div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>id</code></td><td>integer (int64)</td><td>Yes</td><td></td></tr><tr><td><code>member_code</code></td><td>string</td><td>Yes</td><td></td></tr><tr><td><code>name</code></td><td>string</td><td>Yes</td><td></td></tr><tr><td><code>email</code></td><td>string (email) · nullable</td><td>—</td><td></td></tr><tr><td><code>phone</code></td><td>string · nullable</td><td>—</td><td></td></tr><tr><td><code>parish</code></td><td>object</td><td>Yes</td><td></td></tr><tr><td><code>jumuiya</code></td><td>object · nullable</td><td>—</td><td></td></tr></tbody></table></div><details class="raw-schema"><summary>Schema JSON</summary><pre><code class="language-json">{
+  &quot;type&quot;: &quot;object&quot;,
+  &quot;required&quot;: [
+    &quot;id&quot;,
+    &quot;member_code&quot;,
+    &quot;name&quot;,
+    &quot;parish&quot;
+  ],
+  &quot;properties&quot;: {
+    &quot;id&quot;: {
+      &quot;type&quot;: &quot;integer&quot;,
+      &quot;format&quot;: &quot;int64&quot;
+    },
+    &quot;member_code&quot;: {
+      &quot;type&quot;: &quot;string&quot;
+    },
+    &quot;name&quot;: {
+      &quot;type&quot;: &quot;string&quot;
+    },
+    &quot;email&quot;: {
+      &quot;type&quot;: &quot;string&quot;,
+      &quot;format&quot;: &quot;email&quot;,
+      &quot;nullable&quot;: true
+    },
+    &quot;phone&quot;: {
+      &quot;type&quot;: &quot;string&quot;,
+      &quot;nullable&quot;: true
+    },
+    &quot;parish&quot;: {
+      &quot;type&quot;: &quot;object&quot;,
+      &quot;required&quot;: [
+        &quot;id&quot;,
+        &quot;name&quot;
+      ],
+      &quot;properties&quot;: {
+        &quot;id&quot;: {
+          &quot;type&quot;: &quot;integer&quot;,
+          &quot;format&quot;: &quot;int64&quot;
+        },
+        &quot;name&quot;: {
+          &quot;type&quot;: &quot;string&quot;
+        },
+        &quot;deanery&quot;: {
+          &quot;type&quot;: &quot;string&quot;,
+          &quot;nullable&quot;: true
+        }
+      }
+    },
+    &quot;jumuiya&quot;: {
+      &quot;type&quot;: &quot;object&quot;,
+      &quot;nullable&quot;: true,
+      &quot;properties&quot;: {
+        &quot;id&quot;: {
+          &quot;type&quot;: &quot;integer&quot;,
+          &quot;format&quot;: &quot;int64&quot;
+        },
+        &quot;name&quot;: {
+          &quot;type&quot;: &quot;string&quot;
+        },
+        &quot;description&quot;: {
+          &quot;type&quot;: &quot;string&quot;,
+          &quot;nullable&quot;: true
+        },
+        &quot;phone&quot;: {
+          &quot;type&quot;: &quot;string&quot;,
+          &quot;nullable&quot;: true
+        },
+        &quot;leader&quot;: {
+          &quot;type&quot;: &quot;object&quot;,
+          &quot;nullable&quot;: true,
+          &quot;properties&quot;: {
+            &quot;name&quot;: {
+              &quot;type&quot;: &quot;string&quot;
+            },
+            &quot;phone&quot;: {
+              &quot;type&quot;: &quot;string&quot;,
+              &quot;nullable&quot;: true
+            }
+          }
+        }
+      }
+    }
+  }
+}</code></pre></details></div></details>
+<details class="schema" id="schema-parishcontent"><summary>ParishContent</summary><div class="endpoint-body"><p></p><div class="table-wrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Details</th></tr></thead><tbody><tr><td><code>id</code></td><td>integer (int64)</td><td>Yes</td><td></td></tr><tr><td><code>name</code></td><td>string</td><td>Yes</td><td></td></tr><tr><td><code>location</code></td><td>string · nullable</td><td>—</td><td></td></tr><tr><td><code>phone</code></td><td>string · nullable</td><td>—</td><td></td></tr><tr><td><code>email</code></td><td>string (email) · nullable</td><td>—</td><td></td></tr><tr><td><code>latitude</code></td><td>number (double) · nullable</td><td>—</td><td></td></tr><tr><td><code>longitude</code></td><td>number (double) · nullable</td><td>—</td><td></td></tr><tr><td><code>mass_times</code></td><td>array of object</td><td>Yes</td><td></td></tr><tr><td><code>announcements</code></td><td>array of object</td><td>Yes</td><td></td></tr><tr><td><code>events</code></td><td>array of object</td><td>Yes</td><td></td></tr><tr><td><code>projects</code></td><td>array of object</td><td>Yes</td><td></td></tr></tbody></table></div><details class="raw-schema"><summary>Schema JSON</summary><pre><code class="language-json">{
+  &quot;type&quot;: &quot;object&quot;,
+  &quot;required&quot;: [
+    &quot;id&quot;,
+    &quot;name&quot;,
+    &quot;mass_times&quot;,
+    &quot;announcements&quot;,
+    &quot;events&quot;,
+    &quot;projects&quot;
+  ],
+  &quot;properties&quot;: {
+    &quot;id&quot;: {
+      &quot;type&quot;: &quot;integer&quot;,
+      &quot;format&quot;: &quot;int64&quot;
+    },
+    &quot;name&quot;: {
+      &quot;type&quot;: &quot;string&quot;
+    },
+    &quot;location&quot;: {
+      &quot;type&quot;: &quot;string&quot;,
+      &quot;nullable&quot;: true
+    },
+    &quot;phone&quot;: {
+      &quot;type&quot;: &quot;string&quot;,
+      &quot;nullable&quot;: true
+    },
+    &quot;email&quot;: {
+      &quot;type&quot;: &quot;string&quot;,
+      &quot;format&quot;: &quot;email&quot;,
+      &quot;nullable&quot;: true
+    },
+    &quot;latitude&quot;: {
+      &quot;type&quot;: &quot;number&quot;,
+      &quot;format&quot;: &quot;double&quot;,
+      &quot;nullable&quot;: true
+    },
+    &quot;longitude&quot;: {
+      &quot;type&quot;: &quot;number&quot;,
+      &quot;format&quot;: &quot;double&quot;,
+      &quot;nullable&quot;: true
+    },
+    &quot;mass_times&quot;: {
+      &quot;type&quot;: &quot;array&quot;,
+      &quot;items&quot;: {
+        &quot;type&quot;: &quot;object&quot;,
+        &quot;properties&quot;: {
+          &quot;id&quot;: {
+            &quot;type&quot;: &quot;integer&quot;,
+            &quot;format&quot;: &quot;int64&quot;
+          },
+          &quot;day&quot;: {
+            &quot;type&quot;: &quot;string&quot;
+          },
+          &quot;times&quot;: {
+            &quot;type&quot;: &quot;string&quot;
+          }
+        }
+      }
+    },
+    &quot;announcements&quot;: {
+      &quot;type&quot;: &quot;array&quot;,
+      &quot;items&quot;: {
+        &quot;type&quot;: &quot;object&quot;,
+        &quot;properties&quot;: {
+          &quot;id&quot;: {
+            &quot;type&quot;: &quot;integer&quot;,
+            &quot;format&quot;: &quot;int64&quot;
+          },
+          &quot;title&quot;: {
+            &quot;type&quot;: &quot;string&quot;
+          },
+          &quot;summary&quot;: {
+            &quot;type&quot;: &quot;string&quot;
+          },
+          &quot;category&quot;: {
+            &quot;type&quot;: &quot;string&quot;
+          },
+          &quot;published_at&quot;: {
+            &quot;type&quot;: &quot;string&quot;,
+            &quot;format&quot;: &quot;date-time&quot;,
+            &quot;nullable&quot;: true
+          }
+        }
+      }
+    },
+    &quot;events&quot;: {
+      &quot;type&quot;: &quot;array&quot;,
+      &quot;items&quot;: {
+        &quot;type&quot;: &quot;object&quot;,
+        &quot;properties&quot;: {
+          &quot;id&quot;: {
+            &quot;type&quot;: &quot;integer&quot;,
+            &quot;format&quot;: &quot;int64&quot;
+          },
+          &quot;title&quot;: {
+            &quot;type&quot;: &quot;string&quot;
+          },
+          &quot;starts_at&quot;: {
+            &quot;type&quot;: &quot;string&quot;,
+            &quot;format&quot;: &quot;date-time&quot;
+          },
+          &quot;ends_at&quot;: {
+            &quot;type&quot;: &quot;string&quot;,
+            &quot;format&quot;: &quot;date-time&quot;,
+            &quot;nullable&quot;: true
+          },
+          &quot;venue&quot;: {
+            &quot;type&quot;: &quot;string&quot;
+          },
+          &quot;description&quot;: {
+            &quot;type&quot;: &quot;string&quot;
+          }
+        }
+      }
+    },
+    &quot;projects&quot;: {
+      &quot;type&quot;: &quot;array&quot;,
+      &quot;items&quot;: {
+        &quot;type&quot;: &quot;object&quot;,
+        &quot;properties&quot;: {
+          &quot;id&quot;: {
+            &quot;type&quot;: &quot;integer&quot;,
+            &quot;format&quot;: &quot;int64&quot;
+          },
+          &quot;title&quot;: {
+            &quot;type&quot;: &quot;string&quot;
+          },
+          &quot;subtitle&quot;: {
+            &quot;type&quot;: &quot;string&quot;,
+            &quot;nullable&quot;: true
+          },
+          &quot;progress&quot;: {
+            &quot;type&quot;: &quot;number&quot;,
+            &quot;minimum&quot;: 0,
+            &quot;maximum&quot;: 1
+          }
         }
       }
     }

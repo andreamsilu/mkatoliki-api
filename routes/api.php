@@ -4,11 +4,15 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\DirectoryController;
 use App\Http\Controllers\Api\V1\GovernanceController;
+use App\Http\Controllers\Api\V1\MemberAuthController;
+use App\Http\Controllers\Api\V1\MemberPortalController;
+use App\Http\Controllers\Api\V1\ParishContentController;
 use App\Support\EntityRegistry;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->name('api.v1.')->group(function (): void {
     Route::post('auth/login', [AuthController::class, 'login'])->middleware('throttle:login')->name('auth.login');
+    Route::post('member/auth/login', [MemberAuthController::class, 'login'])->middleware('throttle:login')->name('member.auth.login');
 
     Route::middleware('throttle:public-api')->group(function (): void {
         Route::post('search', [DirectoryController::class, 'search'])->name('search');
@@ -16,6 +20,7 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
         Route::post('parishes/{id}/structure', [DirectoryController::class, 'structure'])->whereNumber('id')->name('parishes.structure');
         Route::get('parishes', [DirectoryController::class, 'index'])->defaults('entity', 'parishes')->name('parishes.list');
         Route::get('parishes/{id}', [DirectoryController::class, 'show'])->whereNumber('id')->defaults('entity', 'parishes')->name('parishes.detail');
+        Route::get('parishes/{id}/content', ParishContentController::class)->whereNumber('id')->name('parishes.content');
         Route::get('parishes/{id}/zones', [DirectoryController::class, 'children'])->whereNumber('id')->defaults('entity', 'parishes')->defaults('child', 'zones')->name('parishes.zones.list');
         Route::get('zones/{id}', [DirectoryController::class, 'show'])->whereNumber('id')->defaults('entity', 'zones')->name('zones.detail');
         Route::get('zones/{id}/jumuiyas', [DirectoryController::class, 'children'])->whereNumber('id')->defaults('entity', 'zones')->defaults('child', 'jumuiyas')->name('zones.jumuiyas.list');
@@ -29,6 +34,18 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
             Route::post("$entity/search", [DirectoryController::class, 'index'])->defaults('entity', $entity)->name("$entity.index");
             Route::post("$entity/{id}", [DirectoryController::class, 'show'])->whereNumber('id')->defaults('entity', $entity)->name("$entity.show");
         }
+    });
+
+    Route::prefix('member')->name('member.')->middleware(['auth:sanctum', 'member', 'throttle:authenticated-api'])->group(function (): void {
+        Route::get('auth/me', [MemberAuthController::class, 'me'])->name('auth.me');
+        Route::post('auth/logout', [MemberAuthController::class, 'logout'])->name('auth.logout');
+        Route::get('dashboard', [MemberPortalController::class, 'dashboard'])->name('dashboard');
+        Route::match(['put', 'patch'], 'profile', [MemberPortalController::class, 'updateProfile'])->name('profile.update');
+        Route::put('password', [MemberPortalController::class, 'updatePassword'])->name('password.update');
+        Route::patch('notifications/{notification}/read', [MemberPortalController::class, 'markNotificationRead'])->whereNumber('notification')->name('notifications.read');
+        Route::post('contributions/{campaign}/payment-requests', [MemberPortalController::class, 'requestContributionPayment'])->whereNumber('campaign')->name('contributions.payment-requests.store');
+        Route::post('sacraments/{sacrament}/requests', [MemberPortalController::class, 'requestSacramentService'])->whereNumber('sacrament')->name('sacraments.requests.store');
+        Route::get('reports/{type}', [MemberPortalController::class, 'report'])->whereIn('type', ['contributions', 'sacraments', 'membership', 'annual'])->name('reports.show');
     });
 
     Route::middleware(['auth:sanctum', 'administrator', 'throttle:authenticated-api'])->group(function (): void {

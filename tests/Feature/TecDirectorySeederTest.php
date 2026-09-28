@@ -16,7 +16,7 @@ class TecDirectorySeederTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_default_seeding_loads_and_publishes_the_documented_2020_hierarchy_without_duplicates(): void
+    public function test_default_seeding_loads_publishes_and_preserves_versioned_directory_data_without_duplicates(): void
     {
         $this->seed(DatabaseSeeder::class);
         $originalParishIds = Parish::query()->orderBy('code')->pluck('id', 'code')->all();
@@ -24,21 +24,22 @@ class TecDirectorySeederTest extends TestCase
 
         $this->assertDatabaseCount('roles', 8);
         $this->assertDatabaseCount('permissions', 6);
-        $this->assertDatabaseCount('data_sources', 1);
+        $this->assertDatabaseCount('data_sources', 2);
         $this->assertDatabaseCount('ecclesiastical_provinces', 7);
         $this->assertDatabaseCount('dioceses', 34);
-        $this->assertDatabaseCount('deaneries', 45);
-        $this->assertDatabaseCount('parishes', 304);
+        $this->assertDatabaseCount('deaneries', 47);
+        $this->assertDatabaseCount('parishes', 345);
         $this->assertSame($originalParishIds, Parish::query()->orderBy('code')->pluck('id', 'code')->all());
         $this->assertSame(7, Diocese::query()->where('type', 'archdiocese')->count());
 
-        $source = DataSource::query()->firstOrFail();
+        $source = DataSource::query()->where('version', '2020')->firstOrFail();
         $this->assertSame('2020', $source->version);
         $this->assertStringContainsString('tec.or.tz', $source->reference);
         $this->assertStringContainsString('scribd.com', $source->reference);
+        $this->assertSame(45, Deanery::query()->where('source_id', $source->id)->count());
+        $this->assertSame(304, Parish::query()->where('source_id', $source->id)->count());
 
         foreach ([EcclesiasticalProvince::class, Diocese::class, Deanery::class, Parish::class] as $modelClass) {
-            $this->assertSame(0, $modelClass::query()->where('source_id', '!=', $source->id)->count());
             $this->assertSame(0, $modelClass::query()->where('status', '!=', 'active')->count());
             $this->assertSame(0, $modelClass::query()->where('verification_status', '!=', 'verified')->count());
             $this->assertSame(0, $modelClass::query()->whereNull('verified_at')->count());
@@ -63,11 +64,11 @@ class TecDirectorySeederTest extends TestCase
         $this->assertDatabaseCount('zones', 0);
         $this->assertDatabaseCount('jumuiyas', 0);
         $this->assertDatabaseCount('users', 0);
-        $this->assertSame(0, Parish::query()->where('code', 'like', 'DSM-%')->count());
+        $this->assertSame(41, Parish::query()->where('code', 'like', 'DSM-%')->count());
         $this->assertDatabaseMissing('parishes', ['code' => 'MSH-KCMC-CHAPLAINCY']);
         $this->assertDatabaseMissing('parishes', ['code' => 'ARU-KIKUNDE']);
 
-        foreach (['provinces' => 7, 'dioceses' => 34, 'deaneries' => 45, 'parishes' => 229] as $entity => $total) {
+        foreach (['provinces' => 7, 'dioceses' => 34, 'deaneries' => 47, 'parishes' => 270] as $entity => $total) {
             $this->postJson('/api/v1/'.$entity.'/search')->assertOk()->assertJsonPath('meta.total', $total);
         }
     }
