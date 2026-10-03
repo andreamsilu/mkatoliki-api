@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../mkatolik_app"
+		},
+		{
+			"path": "../../mkatolik-portal"
+		}
+	],
+	"settings": {}
+}
