@@ -27,6 +27,8 @@ x-application: &application
       condition: service_healthy
     redis:
       condition: service_healthy
+    storage-init:
+      condition: service_completed_successfully
   restart: unless-stopped
   init: true
   volumes:
@@ -35,6 +37,23 @@ x-application: &application
     - no-new-privileges:true
 
 services:
+  storage-init:
+    image: ${APP_IMAGE:-catholic-tanzania-api:local}
+    user: root
+    command:
+      - sh
+      - -c
+      - >-
+        mkdir -p
+        /var/www/html/storage/framework/cache/data
+        /var/www/html/storage/framework/sessions
+        /var/www/html/storage/framework/views
+        /var/www/html/storage/logs
+        && chown -R www-data:www-data /var/www/html/storage
+    volumes:
+      - app_storage:/var/www/html/storage
+    restart: "no"
+
   api:
     <<: *application
     healthcheck:

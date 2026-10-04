@@ -5,7 +5,8 @@ set -euo pipefail
 : "${HEALTH_URL:=http://127.0.0.1:8080/health}"
 cd "$DEPLOY_DIR"
 export APP_IMAGE="$1"
-docker compose pull api queue scheduler
+docker compose pull api queue scheduler storage-init
+docker compose run --rm --no-deps storage-init
 docker compose run --rm --no-deps api php artisan migrate --force
 docker compose up -d --no-build api queue scheduler nginx
 for attempt in $(seq 1 30); do
