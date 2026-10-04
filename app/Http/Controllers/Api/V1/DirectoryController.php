@@ -24,8 +24,17 @@ class DirectoryController extends Controller
     public function index(DirectoryListRequest $request, string $entity): JsonResponse
     {
         return $this->cached($request, function () use ($request, $entity): JsonResponse {
-            $page = $this->directory->query($entity, $request->validated(), $this->actor($request))
-                ->paginate(perPage: $request->integer('per_page', 25), page: $request->integer('page', 1));
+            $query = $this->directory->query($entity, $request->validated(), $this->actor($request));
+            $relations = match ($entity) {
+                'dioceses' => ['province'],
+                'deaneries' => ['diocese.province'],
+                'parishes' => ['deanery.diocese.province'],
+                default => [],
+            };
+            if ($relations !== []) {
+                $query->with($relations);
+            }
+            $page = $query->paginate(perPage: $request->integer('per_page', 25), page: $request->integer('page', 1));
 
             return ApiResponse::page($page, DirectoryResource::collection($page->getCollection())->resolve($request));
         });

@@ -47,6 +47,19 @@ class DirectoryApiTest extends TestCase
         $this->postJson("/api/v1/deaneries/{$parish->deanery_id}/parishes")->assertOk()->assertJsonPath('data.0.id', $parish->id);
     }
 
+    public function test_church_hierarchy_lists_include_ancestors_from_left_to_right(): void
+    {
+        $parish = Parish::factory()->create();
+
+        $this->administrator();
+        $this->postJson('/api/v1/admin/parishes/search')
+            ->assertOk()
+            ->assertJsonPath('data.0.hierarchy.province.id', $parish->deanery->diocese->ecclesiastical_province_id)
+            ->assertJsonPath('data.0.hierarchy.diocese.id', $parish->deanery->diocese_id)
+            ->assertJsonPath('data.0.hierarchy.deanery.id', $parish->deanery_id)
+            ->assertJsonPath('data.0.hierarchy.parish.id', $parish->id);
+    }
+
     public function test_context_and_structure_exclude_personal_data(): void
     {
         $parish = Parish::factory()->create(['phone' => '+255712345678', 'email' => 'private@example.test', 'address' => 'Private office']);
