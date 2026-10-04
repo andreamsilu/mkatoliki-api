@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AdministratorController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\DirectoryController;
@@ -81,6 +82,9 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
             Route::match(['put', 'patch'], "$entity/{id}", [DirectoryController::class, 'update'])->whereNumber('id')->defaults('entity', $entity)->name("$entity.update");
         }
         Route::prefix('admin')->name('admin.')->group(function (): void {
+            Route::get('administrators', [AdministratorController::class, 'index'])->name('administrators.index');
+            Route::post('administrators', [AdministratorController::class, 'store'])->name('administrators.store');
+            Route::patch('administrators/{administrator}', [AdministratorController::class, 'update'])->whereNumber('administrator')->name('administrators.update');
             Route::post('parishes/{id}/structure', [DirectoryController::class, 'structure'])->whereNumber('id')->name('parishes.structure');
             Route::post('data-sources/search', [GovernanceController::class, 'sources'])->name('sources.index');
             Route::post('data-sources', [GovernanceController::class, 'storeSource'])->name('sources.store');

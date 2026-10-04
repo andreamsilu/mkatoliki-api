@@ -19,7 +19,7 @@ class AppServiceProvider extends ServiceProvider
         foreach (EntityRegistry::ENTITIES as $definition) {
             Gate::policy($definition['model'], DirectoryPolicy::class);
         }
-        foreach (['sources.manage', 'imports.manage', 'audit.read'] as $permission) {
+        foreach (['sources.manage', 'imports.manage', 'audit.read', 'administrators.manage'] as $permission) {
             Gate::define($permission, fn ($user) => $user->hasPermission($permission) && $user->tokenCan($permission === 'audit.read' ? 'directory:read' : 'directory:write'));
         }
         RateLimiter::for('public-api', fn (Request $request) => Limit::perMinute(config('core.public_rate_limit'))->by($request->ip()));
