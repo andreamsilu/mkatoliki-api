@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Policies\DirectoryPolicy;
 use App\Support\EntityRegistry;
+use App\Support\MemberPhoneNumber;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -32,5 +33,14 @@ class AppServiceProvider extends ServiceProvider
                 Limit::perMinute(20)->by('login-ip:'.$request->ip()),
             ];
         });
+        RateLimiter::for('member-otp-request', function (Request $request): array {
+            $phone = MemberPhoneNumber::normalize(is_string($request->input('phone')) ? $request->input('phone') : null) ?? '';
+
+            return [
+                Limit::perMinute(5)->by('member-otp:ip:'.$request->ip()),
+                Limit::perHour(5)->by('member-otp:phone:'.hash('sha256', $phone)),
+            ];
+        });
+        RateLimiter::for('member-otp-verify', fn (Request $request) => Limit::perMinute(30)->by('member-otp:verify:'.$request->ip()));
     }
 }

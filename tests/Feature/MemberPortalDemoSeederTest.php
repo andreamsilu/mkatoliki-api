@@ -20,6 +20,7 @@ class MemberPortalDemoSeederTest extends TestCase
 
     public function test_it_seeds_an_idempotent_demo_member_portal_dataset(): void
     {
+        config(['member_auth.password_login_enabled' => true]);
         $this->seed([TecDirectorySeeder::class, DarEsSalaamDirectorySeeder::class, MemberPortalDemoSeeder::class]);
 
         $member = Member::query()->where('member_code', 'DEMO-DSM-SINZA-001')->firstOrFail();

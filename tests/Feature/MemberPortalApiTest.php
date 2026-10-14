@@ -43,19 +43,19 @@ class MemberPortalApiTest extends TestCase
         $this->withToken($token)->patchJson("/api/v1/member/notifications/{$otherNotification->id}/read")->assertNotFound();
     }
 
-    public function test_member_can_update_profile_and_password(): void
+    public function test_member_can_update_profile_and_legacy_password(): void
     {
+        config(['member_auth.password_login_enabled' => true]);
         [$member, $user] = $this->memberAccount();
         $token = $user->createToken('phone', ['member:read'], now()->addHour())->plainTextToken;
 
         $this->withToken($token)->patchJson('/api/v1/member/profile', [
             'first_name' => 'Neema',
-            'phone' => '+255712000000',
             'email' => 'neema@example.test',
         ])->assertOk()
             ->assertJsonPath('data.name', 'Neema Mrema')
             ->assertJsonPath('data.email', 'neema@example.test');
-        $this->assertDatabaseHas('members', ['id' => $member->id, 'first_name' => 'Neema', 'phone' => '+255712000000']);
+        $this->assertDatabaseHas('members', ['id' => $member->id, 'first_name' => 'Neema', 'phone' => $member->phone]);
         $this->assertDatabaseHas('users', ['id' => $user->id, 'email' => 'neema@example.test']);
 
         $this->withToken($token)->putJson('/api/v1/member/password', [

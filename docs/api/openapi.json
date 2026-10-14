@@ -3,7 +3,7 @@
     "info": {
         "title": "Catholic Tanzania Core API",
         "version": "1.0.0",
-        "description": "Catholic organizational and community directory for Tanzania. Swahili names are primary. Public reads expose active organizations with active primary ancestors, even when a bearer token is supplied. Authorized corrections take effect immediately. Private and administrative operations require an active administrator, permissions, token abilities, and organizational scope. Default limits: public 60/minute/IP; protected 120/minute/user. Tokens expire after eight hours by default. Versioned responses include X-Request-ID. PUT and PATCH are partial updates. Phase 1 parish-operation resources support audited soft deletion when no dependents exist. Canonical Phase 1 reads use GET while the earlier POST read/search operations remain available for compatibility. See the consumer guide at /docs on the API origin."
+        "description": "Catholic organizational and community directory for Tanzania. Swahili names are primary. Public reads expose active organizations with active primary ancestors, even when a bearer token is supplied. Authorized corrections take effect immediately. Private and administrative operations require an active administrator, permissions, token abilities, and organizational scope. Default limits: public 60/minute/IP; protected 120/minute/user. Administrator tokens expire after eight hours by default; phone-verified member sessions expire after thirty days. Versioned responses include X-Request-ID. PUT and PATCH are partial updates. Phase 1 parish-operation resources support audited soft deletion when no dependents exist. Canonical Phase 1 reads use GET while the earlier POST read/search operations remain available for compatibility. See the consumer guide at /docs on the API origin."
     },
     "servers": [
         {
@@ -5972,7 +5972,7 @@
                 "tags": [
                     "Authentication"
                 ],
-                "description": "Five attempts per minute per IP/email and twenty per IP. No public registration. Tokens expire after eight hours by default.",
+                "description": "Five attempts per minute per IP/email and twenty per IP. No public registration. Administrator tokens expire after eight hours by default; phone-verified member sessions expire after thirty days.",
                 "security": [],
                 "responses": {
                     "200": {
@@ -12278,6 +12278,38 @@
                 }
             }
         },
+        "/member/auth/otp/request": {
+            "post": {
+                "summary": "Request a member SMS login code",
+                "operationId": "post_member_auth_otp_request",
+                "tags": ["Member"],
+                "security": [],
+                "description": "Registered unique phones on active members receive a six-digit SMS code in webhook mode. Responses do not disclose registration. Codes expire in 300 seconds, resends require 60 seconds, and a resend invalidates the previous code. Temporary preview mode returns development_code for display in the app without sending SMS; preview is blocked in production. Webhook mode never returns the code or falls back to preview.",
+                "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "required": ["phone"], "properties": {"phone": {"type": "string", "example": "+255712345678"}}}}}},
+                "responses": {
+                    "200": {"description": "Challenge created; temporary code is returned only in development preview mode", "content": {"application/json": {"schema": {"type": "object", "properties": {"success": {"type": "boolean"}, "data": {"type": "object", "required": ["challenge_id", "expires_in", "resend_after"], "properties": {"challenge_id": {"type": "string", "format": "uuid"}, "expires_in": {"type": "integer"}, "resend_after": {"type": "integer"}, "development_code": {"type": "string", "pattern": "^[0-9]{6}$", "description": "Temporary random OTP, only present in non-production preview mode"}}}, "meta": {"type": "object"}}}}}},
+                    "422": {"description": "Invalid phone format"},
+                    "429": {"description": "Request rate or resend cooldown exceeded"},
+                    "503": {"description": "SMS delivery is disabled, unconfigured, or unavailable"}
+                }
+            }
+        },
+        "/member/auth/otp/verify": {
+            "post": {
+                "summary": "Verify a member phone and sign in",
+                "operationId": "post_member_auth_otp_verify",
+                "tags": ["Member"],
+                "security": [],
+                "description": "Consumes the challenge once. Five incorrect attempts invalidate it. The active member and their current registered phone are checked again. A linked member account is created automatically when needed. Tokens have member:read ability and expire three calendar months after verification, clamping month-end dates to the target month's last day. Expired sessions require another OTP verification; account activity does not extend expiry. Administrator access is never granted.",
+                "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "required": ["challenge_id", "code", "device_name"], "properties": {"challenge_id": {"type": "string", "format": "uuid"}, "code": {"type": "string", "pattern": "^[0-9]{6}$"}, "device_name": {"type": "string", "maxLength": 100}}}}}},
+                "responses": {
+                    "200": {"description": "Verified member session", "content": {"application/json": {"schema": {"type": "object", "properties": {"success": {"type": "boolean"}, "data": {"type": "object", "required": ["token", "token_type", "expires_at", "member"], "properties": {"token": {"type": "string"}, "token_type": {"type": "string", "enum": ["Bearer"]}, "expires_at": {"type": "string", "format": "date-time"}, "member": {"type": "object"}}}, "meta": {"type": "object"}}}}}},
+                    "422": {"description": "Invalid, expired, consumed, or exhausted challenge"},
+                    "429": {"description": "Verification rate exceeded"},
+                    "503": {"description": "SMS authentication is disabled or unavailable"}
+                }
+            }
+        },
         "/member/auth/login": {
             "post": {
                 "summary": "Sign in a parish member",
@@ -12285,7 +12317,7 @@
                 "tags": [
                     "Member"
                 ],
-                "description": "Accepts the linked account email, member email, phone, or member code. The member, account, parish, and all parish ancestors must be active.",
+                "description": "Legacy password login, disabled by default. Enable MEMBER_PASSWORD_LOGIN_ENABLED only for compatibility; new clients use the OTP request and verify endpoints.",
                 "security": [],
                 "requestBody": {
                     "required": true,

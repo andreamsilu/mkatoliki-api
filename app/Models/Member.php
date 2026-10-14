@@ -12,6 +12,15 @@ class Member extends DirectoryEntity
 {
     protected $table = 'members';
 
+    protected static function booted(): void
+    {
+        static::updating(function (Member $member): void {
+            if ($member->isDirty('phone') || ($member->isDirty('status') && $member->status !== 'active')) {
+                $member->user?->tokens()->delete();
+            }
+        });
+    }
+
     public function parish(): BelongsTo
     {
         return $this->belongsTo(Parish::class, 'parish_id');

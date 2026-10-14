@@ -33,7 +33,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
             return false;
         });
-        $exceptions->dontFlash(['password', 'password_confirmation', 'token']);
+        $exceptions->dontFlash(['password', 'password_confirmation', 'token', 'code', 'challenge_id']);
         $exceptions->render(function (Throwable $exception, Request $request) {
             if (! $request->is('api/*')) {
                 return null;

@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\DirectoryController;
 use App\Http\Controllers\Api\V1\GovernanceController;
 use App\Http\Controllers\Api\V1\MemberAuthController;
+use App\Http\Controllers\Api\V1\MemberPhoneAuthController;
 use App\Http\Controllers\Api\V1\MemberPortalController;
 use App\Http\Controllers\Api\V1\ParishAnnouncementController;
 use App\Http\Controllers\Api\V1\ParishContentController;
@@ -22,6 +23,8 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')->name('api.v1.')->group(function (): void {
     Route::post('auth/login', [AuthController::class, 'login'])->middleware('throttle:login')->name('auth.login');
     Route::post('member/auth/login', [MemberAuthController::class, 'login'])->middleware('throttle:login')->name('member.auth.login');
+    Route::post('member/auth/otp/request', [MemberPhoneAuthController::class, 'requestCode'])->middleware('throttle:member-otp-request')->name('member.auth.otp.request');
+    Route::post('member/auth/otp/verify', [MemberPhoneAuthController::class, 'verifyCode'])->middleware('throttle:member-otp-verify')->name('member.auth.otp.verify');
 
     Route::middleware('throttle:public-api')->group(function (): void {
         Route::post('search', [DirectoryController::class, 'search'])->name('search');

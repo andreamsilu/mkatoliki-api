@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use App\Support\EntityRegistry;
+use App\Support\MemberPhoneNumber;
+use App\Rules\UniqueMemberPhone;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -10,6 +12,12 @@ class DirectoryWriteRequest extends FormRequest
 {
     protected function prepareForValidation(): void
     {
+        if ($this->route('entity') === 'members' && is_string($this->input('phone'))) {
+            $phone = MemberPhoneNumber::normalize($this->input('phone'));
+            if ($phone) {
+                $this->merge(['phone' => $phone]);
+            }
+        }
         $user = $this->user();
         $scopeField = match ($user?->role?->name) {
             'province_admin' => 'ecclesiastical_province_id',
@@ -34,7 +42,7 @@ class DirectoryWriteRequest extends FormRequest
 
     public function rules(): array
     {
-        return self::rulesFor($this->route('entity'), $this->route('id'));
+        return self::rulesFor($this->route('entity'), $this->isMethod('post') ? null : $this->route('id'));
     }
 
     public static function rulesFor(string $entity, ?string $id = null): array
@@ -87,6 +95,9 @@ class DirectoryWriteRequest extends FormRequest
         }
         if (isset($rules['phone'])) {
             $rules['phone'] = ['sometimes', 'nullable', 'string', 'max:32'];
+            if ($entity === 'members') {
+                $rules['phone'][] = new UniqueMemberPhone($id !== null ? (int) $id : null);
+            }
         }
         if (isset($rules['gender'])) {
             $rules['gender'] = [$required, 'required', Rule::in(['male', 'female', 'unspecified'])];

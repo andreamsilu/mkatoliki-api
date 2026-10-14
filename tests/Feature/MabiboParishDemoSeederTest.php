@@ -28,6 +28,7 @@ class MabiboParishDemoSeederTest extends TestCase
 
     public function test_it_seeds_complete_idempotent_demo_data_for_mabibo(): void
     {
+        config(['member_auth.password_login_enabled' => true]);
         $this->seed([TecDirectorySeeder::class, DarEsSalaamDirectorySeeder::class, MabiboParishDemoSeeder::class]);
 
         $parish = Parish::query()->where('code', 'DSM-MABIBO')->firstOrFail();

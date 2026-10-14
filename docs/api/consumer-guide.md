@@ -6,6 +6,18 @@ Build applications that browse Tanzania's Catholic directory and, with administr
 
 The API uses JSON over HTTP. Public directory reads need no credentials. Family, member, and administrative endpoints require a bearer token and the appropriate organizational access.
 
+## Member phone login
+
+Parish staff register the member's own unique phone in the portal. Members do not need a password, member code, or separate account-provisioning command.
+
+1. POST `/member/auth/otp/request` with `{ "phone": "0712345678" }` (international `+255...` is also accepted).
+2. The response contains `challenge_id`, `expires_in`, and `resend_after`, without disclosing registration status. Enter the six-digit code delivered by SMS. Temporary development preview mode also returns `development_code`; display it with a clear test-mode label until SMS is configured. This field is absent in webhook mode.
+3. POST `/member/auth/otp/verify` with `challenge_id`, `code` as a string, and `device_name`. Successful verification returns `token`, `expires_at`, and the member's parish profile. Use that bearer token for member endpoints.
+
+Codes expire after five minutes, allow five incorrect attempts, and can be resent after 60 seconds. A resend invalidates the previous challenge. Member tokens expire three calendar months after verification, with month-end dates clamped to the target month's last day. At expiry, require a new phone verification; account activity never extends expiry. Use the returned `expires_at` in the app. Phone changes require parish-office assistance and revoke existing sessions. Ambiguous, inactive, and unregistered phone numbers never receive member access. The old password-login endpoint is disabled unless explicitly enabled for compatibility.
+
+`MEMBER_SMS_DRIVER=preview` is the temporary development default: it generates a random code without sending SMS, stores only its hash, and returns the code for the app to display. Preview cannot verify phone ownership and returns 503 in `APP_ENV=production`. Configure an HTTPS adapter using `MEMBER_SMS_DRIVER=webhook`, `MEMBER_SMS_WEBHOOK_URL`, and `MEMBER_SMS_WEBHOOK_TOKEN` to enable real SMS and remove the preview field automatically. The adapter accepts JSON `to`, `sender`, and `message` with bearer authentication and returns a successful HTTP status only when it accepts delivery. An unconfigured or failed sender returns 503 with no preview fallback. Administrator authentication continues to use email and password.
+
 ## Quick start
 
 Obtain the API origin from your provider. The versioned base URL is **`https://YOUR_API_HOST/api/v1`**. For a local installation it is `http://localhost:8000/api/v1`. The host below is a placeholder; example IDs, codes, names, credentials, and timestamps are illustrative.

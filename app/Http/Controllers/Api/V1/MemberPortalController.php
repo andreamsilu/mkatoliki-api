@@ -58,6 +58,9 @@ class MemberPortalController extends Controller
 
     public function updatePassword(UpdateMemberPasswordRequest $request, AuditService $audit): JsonResponse
     {
+        if (! config('member_auth.password_login_enabled', false)) {
+            return ApiResponse::error('PASSWORD_LOGIN_DISABLED', 'Your account uses phone verification. No password is required.', 410);
+        }
         $user = $request->user();
         if (! Hash::check($request->validated('current_password'), $user->password)) {
             throw ValidationException::withMessages(['current_password' => 'The current password is incorrect.']);

@@ -15,6 +15,10 @@ class MemberProfileResource extends JsonResource
         $name = collect([$this->first_name, $this->middle_name, $this->last_name])
             ->filter()
             ->implode(' ');
+        $accountEmail = $this->user?->email ?? $request->user()?->email;
+        if (is_string($accountEmail) && str_ends_with($accountEmail, '@phone.mkatolik.invalid')) {
+            $accountEmail = null;
+        }
 
         return [
             'id' => $this->id,
@@ -23,7 +27,7 @@ class MemberProfileResource extends JsonResource
             'first_name' => $this->first_name,
             'middle_name' => $this->middle_name,
             'last_name' => $this->last_name,
-            'email' => $this->email ?? $this->user?->email ?? $request->user()?->email,
+            'email' => $this->email ?? $accountEmail,
             'phone' => $this->phone,
             'parish' => $this->whenLoaded('parish', fn () => [
                 'id' => $this->parish->id,

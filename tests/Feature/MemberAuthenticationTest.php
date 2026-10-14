@@ -12,6 +12,12 @@ class MemberAuthenticationTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        config(['member_auth.password_login_enabled' => true]);
+    }
+
     public function test_member_can_login_read_profile_and_logout(): void
     {
         [$member, $user] = $this->memberAccount();

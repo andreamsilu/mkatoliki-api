@@ -20,6 +20,9 @@ class MemberAuthController extends Controller
 {
     public function login(MemberLoginRequest $request, DirectoryService $directory, AuditService $audit): JsonResponse
     {
+        if (! config('member_auth.password_login_enabled', false)) {
+            return ApiResponse::error('PASSWORD_LOGIN_DISABLED', 'Use phone verification to sign in.', 410);
+        }
         $identity = trim($request->validated('identity'));
         $normalizedIdentity = mb_strtolower($identity);
         $user = User::query()
