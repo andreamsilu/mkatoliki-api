@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['parish_id', 'title', 'starts_at', 'ends_at', 'venue', 'description', 'is_published'])]
+#[Fillable(['parish_id', 'title', 'starts_at', 'ends_at', 'venue', 'description', 'banner_path', 'is_published'])]
 class ParishEvent extends Model
 {
     /** @use HasFactory<ParishEventFactory> */

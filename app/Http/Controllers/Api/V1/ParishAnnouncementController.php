@@ -8,11 +8,15 @@ use App\Http\Resources\ParishAnnouncementResource;
 use App\Models\Parish;
 use App\Models\ParishAnnouncement;
 use App\Services\AuditService;
+use App\Services\ParishBannerStorage;
 use App\Support\ApiResponse;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Throwable;
 
 class ParishAnnouncementController extends Controller
 {
@@ -38,31 +42,90 @@ class ParishAnnouncementController extends Controller
         return ApiResponse::page($records, ParishAnnouncementResource::collection($records->getCollection())->resolve($request));
     }
 
-    public function store(SaveParishAnnouncementRequest $request, Parish $parish, AuditService $audit): JsonResponse
-    {
+    public function store(
+        SaveParishAnnouncementRequest $request,
+        Parish $parish,
+        AuditService $audit,
+        ParishBannerStorage $bannerStorage,
+    ): JsonResponse {
         Gate::authorize('update', $parish);
-        $record = $parish->announcements()->create($request->validated());
-        $audit->record($request->user(), 'parish_announcement.created', 'parish_announcements', $record->id, new: $record->attributesToArray());
+        $attributes = Arr::except($request->validated(), ['banner', 'remove_banner']);
+        $bannerPath = $request->hasFile('banner')
+            ? $bannerStorage->store($request->file('banner'), $parish->id, 'announcements')
+            : null;
+
+        if ($bannerPath !== null) {
+            $attributes['banner_path'] = $bannerPath;
+        }
+
+        try {
+            $record = DB::transaction(function () use ($parish, $attributes, $audit, $request): ParishAnnouncement {
+                $record = $parish->announcements()->create($attributes);
+                $audit->record($request->user(), 'parish_announcement.created', 'parish_announcements', $record->id, new: $record->attributesToArray());
+
+                return $record;
+            });
+        } catch (Throwable $exception) {
+            $bannerStorage->delete($bannerPath);
+
+            throw $exception;
+        }
 
         return ApiResponse::success((new ParishAnnouncementResource($record))->resolve($request), 201);
     }
 
-    public function update(SaveParishAnnouncementRequest $request, ParishAnnouncement $announcement, AuditService $audit): JsonResponse
-    {
+    public function update(
+        SaveParishAnnouncementRequest $request,
+        ParishAnnouncement $announcement,
+        AuditService $audit,
+        ParishBannerStorage $bannerStorage,
+    ): JsonResponse {
         Gate::authorize('update', $announcement->parish);
         $before = $announcement->attributesToArray();
-        $announcement->update($request->validated());
-        $audit->record($request->user(), 'parish_announcement.updated', 'parish_announcements', $announcement->id, $before, $announcement->attributesToArray());
+        $previousBannerPath = $announcement->banner_path;
+        $attributes = Arr::except($request->validated(), ['banner', 'remove_banner']);
+        $newBannerPath = $request->hasFile('banner')
+            ? $bannerStorage->store($request->file('banner'), $announcement->parish_id, 'announcements')
+            : null;
+
+        if ($newBannerPath !== null) {
+            $attributes['banner_path'] = $newBannerPath;
+        } elseif ($request->boolean('remove_banner')) {
+            $attributes['banner_path'] = null;
+        }
+
+        try {
+            DB::transaction(function () use ($announcement, $attributes, $audit, $request, $before): void {
+                $announcement->update($attributes);
+                $audit->record($request->user(), 'parish_announcement.updated', 'parish_announcements', $announcement->id, $before, $announcement->attributesToArray());
+            });
+        } catch (Throwable $exception) {
+            $bannerStorage->delete($newBannerPath);
+
+            throw $exception;
+        }
+
+        if (($newBannerPath !== null || $request->boolean('remove_banner')) && $previousBannerPath !== $announcement->banner_path) {
+            $bannerStorage->delete($previousBannerPath);
+        }
 
         return ApiResponse::success((new ParishAnnouncementResource($announcement->fresh()))->resolve($request));
     }
 
-    public function destroy(Request $request, ParishAnnouncement $announcement, AuditService $audit): JsonResponse
-    {
+    public function destroy(
+        Request $request,
+        ParishAnnouncement $announcement,
+        AuditService $audit,
+        ParishBannerStorage $bannerStorage,
+    ): JsonResponse {
         Gate::authorize('update', $announcement->parish);
         $before = $announcement->attributesToArray();
-        $announcement->delete();
-        $audit->record($request->user(), 'parish_announcement.deleted', 'parish_announcements', $announcement->id, $before);
+        $bannerPath = $announcement->banner_path;
+        DB::transaction(function () use ($announcement, $audit, $request, $before): void {
+            $announcement->delete();
+            $audit->record($request->user(), 'parish_announcement.deleted', 'parish_announcements', $announcement->id, $before);
+        });
+        $bannerStorage->delete($bannerPath);
 
         return ApiResponse::success(['deleted' => true]);
     }

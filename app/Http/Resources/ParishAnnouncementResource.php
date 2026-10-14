@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class ParishAnnouncementResource extends JsonResource
 {
@@ -20,6 +21,8 @@ class ParishAnnouncementResource extends JsonResource
             'title' => $this->title,
             'summary' => $this->summary,
             'category' => $this->category,
+            'banner_path' => $this->banner_path,
+            'banner_url' => $this->banner_path ? Storage::disk('public')->url($this->banner_path) : null,
             'published_at' => $this->published_at?->toIso8601String(),
             'is_published' => (bool) $this->is_published,
             'created_at' => $this->created_at?->toIso8601String(),

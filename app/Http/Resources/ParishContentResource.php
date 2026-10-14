@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Models\Parish;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 /** @mixin Parish */
 class ParishContentResource extends JsonResource
@@ -34,6 +35,8 @@ class ParishContentResource extends JsonResource
                 'title' => $announcement->title,
                 'summary' => $announcement->summary,
                 'category' => $announcement->category,
+                'banner_path' => $announcement->banner_path,
+                'banner_url' => $announcement->banner_path ? Storage::disk('public')->url($announcement->banner_path) : null,
                 'published_at' => $announcement->published_at?->toIso8601String(),
             ]),
             'events' => $this->events->map(fn ($event): array => [
@@ -43,6 +46,8 @@ class ParishContentResource extends JsonResource
                 'ends_at' => $event->ends_at?->toIso8601String(),
                 'venue' => $event->venue,
                 'description' => $event->description,
+                'banner_path' => $event->banner_path,
+                'banner_url' => $event->banner_path ? Storage::disk('public')->url($event->banner_path) : null,
             ]),
             'projects' => $this->projects->map(fn ($project): array => [
                 'id' => $project->id,

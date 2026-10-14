@@ -21,6 +21,8 @@ class SaveParishEventRequest extends FormRequest
             'ends_at' => ['nullable', 'date', 'after_or_equal:starts_at'],
             'venue' => [$required, 'string', 'max:255'],
             'description' => [$required, 'string', 'max:5000'],
+            'banner' => ['sometimes', 'nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'remove_banner' => ['sometimes', 'boolean'],
             'is_published' => ['sometimes', 'boolean'],
         ];
     }

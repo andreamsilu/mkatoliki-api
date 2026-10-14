@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['parish_id', 'title', 'summary', 'category', 'published_at', 'is_published'])]
+#[Fillable(['parish_id', 'title', 'summary', 'category', 'banner_path', 'published_at', 'is_published'])]
 class ParishAnnouncement extends Model
 {
     /** @use HasFactory<ParishAnnouncementFactory> */
