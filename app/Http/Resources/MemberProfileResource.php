@@ -20,6 +20,9 @@ class MemberProfileResource extends JsonResource
             'id' => $this->id,
             'member_code' => $this->member_code,
             'name' => $name,
+            'first_name' => $this->first_name,
+            'middle_name' => $this->middle_name,
+            'last_name' => $this->last_name,
             'email' => $this->email ?? $this->user?->email ?? $request->user()?->email,
             'phone' => $this->phone,
             'parish' => $this->whenLoaded('parish', fn () => [

@@ -71,7 +71,11 @@ class MemberPortalController extends Controller
 
     public function markNotificationRead(Request $request, int $notification): JsonResponse
     {
-        $record = $this->member($request)->notifications()->findOrFail($notification);
+        $record = $this->member($request)
+            ->notifications()
+            ->whereNotNull('published_at')
+            ->where('published_at', '<=', now())
+            ->findOrFail($notification);
         $record->update(['read_at' => $record->read_at ?? now()]);
 
         return ApiResponse::success($this->notification($record));
@@ -143,7 +147,11 @@ class MemberPortalController extends Controller
             'parish.deanery',
             'jumuiya.leader',
             'sacraments' => fn ($query) => $query->orderBy('received_on')->orderBy('id'),
-            'notifications' => fn ($query) => $query->latest('published_at')->latest('id'),
+            'notifications' => fn ($query) => $query
+                ->whereNotNull('published_at')
+                ->where('published_at', '<=', now())
+                ->latest('published_at')
+                ->latest('id'),
         ]);
         $campaigns = ContributionCampaign::query()
             ->where('parish_id', $member->parish_id)
