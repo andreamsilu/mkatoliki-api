@@ -6,6 +6,7 @@ return [
     'code_ttl_seconds' => 300,
     'resend_seconds' => 60,
     'max_attempts' => 5,
+    'preview_phone' => '+255769289824',
     'sms' => [
         'driver' => env('MEMBER_SMS_DRIVER', 'preview'),
         'url' => env('MEMBER_SMS_WEBHOOK_URL'),

@@ -20,6 +20,7 @@ class MemberPhoneAuthentication
     public function requestCode(string $phone): array
     {
         $this->sms->ensureConfigured();
+        $this->ensurePreviewPhone($phone);
         $phoneKey = hash('sha256', $phone);
 
         return Cache::lock('member-otp:send-lock:'.$phoneKey, 20)->block(3, function () use ($phone, $phoneKey): array {
@@ -27,6 +28,9 @@ class MemberPhoneAuthentication
                 throw new HttpException(429, 'Please wait before requesting another code.');
             }
             $member = $this->eligibleMember($phone);
+            if (! $member && $this->sms->isPreview()) {
+                throw new HttpException(422, $this->previewMemberMessage());
+            }
             $id = (string) Str::uuid();
             $code = (string) random_int(100000, 999999);
             $ttl = (int) config('member_auth.code_ttl_seconds', 300);
@@ -68,43 +72,52 @@ class MemberPhoneAuthentication
             $challenge = Cache::get($key);
             if (! is_array($challenge) || $challenge['expires_at'] <= now()->timestamp) {
                 Cache::forget($key);
-
-                return null;
+                throw new HttpException(422, 'This verification code has expired or was already used. Request a new code.');
             }
             $phoneKey = hash('sha256', $challenge['phone']);
+            $this->ensurePreviewPhone($challenge['phone']);
 
             return Cache::lock('member-otp:send-lock:'.$phoneKey, 20)->block(3, function () use ($id, $code, $deviceName, $key, $challenge, $phoneKey): ?array {
                 if (Cache::get('member-otp:active:'.$phoneKey) !== $id) {
                     Cache::forget($key);
-
-                    return null;
+                    throw new HttpException(422, 'A newer verification code was requested. Enter the latest code.');
                 }
                 $challenge['attempts']++;
                 $valid = Hash::check($code, $challenge['code_hash']);
                 if (! $valid) {
                     if ($challenge['attempts'] >= (int) config('member_auth.max_attempts', 5)) {
                         Cache::forget($key);
+                        throw new HttpException(422, 'Too many incorrect attempts. Request a new verification code.');
                     } else {
                         Cache::put($key, $challenge, max(1, $challenge['expires_at'] - now()->timestamp));
                     }
 
                     return null;
                 }
-                Cache::forget($key);
-                Cache::forget('member-otp:active:'.$phoneKey);
                 if (! $challenge['member_id']) {
+                    Cache::forget($key);
+                    Cache::forget('member-otp:active:'.$phoneKey);
+                    if ($this->sms->isPreview()) {
+                        throw new HttpException(422, $this->previewMemberMessage());
+                    }
                     return null;
                 }
 
-                return DB::transaction(function () use ($challenge, $deviceName): ?array {
+                $session = DB::transaction(function () use ($challenge, $deviceName): ?array {
                     $member = Member::query()->lockForUpdate()->find($challenge['member_id']);
                     $eligible = $this->eligibleMember($challenge['phone']);
                     if (! $member || $eligible?->id !== $member->id
                         || MemberPhoneNumber::normalize($member->phone) !== $challenge['phone']) {
+                        if ($this->sms->isPreview()) {
+                            throw new HttpException(422, $this->previewMemberMessage());
+                        }
                         return null;
                     }
                     $user = User::query()->where('member_id', $member->id)->lockForUpdate()->first();
                     if ($user && (! $user->is_active || $user->role_id !== null)) {
+                        if ($this->sms->isPreview()) {
+                            throw new HttpException(422, $this->previewMemberMessage());
+                        }
                         return null;
                     }
                     if (! $user) {
@@ -123,6 +136,10 @@ class MemberPhoneAuthentication
 
                     return ['user' => $user, 'token' => $token->plainTextToken, 'expires_at' => $expiresAt->toIso8601String()];
                 });
+                Cache::forget($key);
+                Cache::forget('member-otp:active:'.$phoneKey);
+
+                return $session;
             });
         });
     }
@@ -142,5 +159,17 @@ class MemberPhoneAuthentication
         }
 
         return $member;
+    }
+
+    private function ensurePreviewPhone(string $phone): void
+    {
+        if ($this->sms->isPreview() && $phone !== config('member_auth.preview_phone', '+255769289824')) {
+            throw new HttpException(422, 'Temporary OTP login is available only for 0769289824.');
+        }
+    }
+
+    private function previewMemberMessage(): string
+    {
+        return 'This phone number must belong to exactly one active member in an active parish. Check the member phone, duplicate numbers, and account status in the portal, then request a new code.';
     }
 }

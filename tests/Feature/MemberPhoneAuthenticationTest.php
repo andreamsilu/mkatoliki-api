@@ -175,14 +175,16 @@ class MemberPhoneAuthenticationTest extends TestCase
     public function test_preview_returns_a_random_code_without_sending_sms(): void
     {
         config(['member_auth.sms.driver' => 'preview']);
-        Member::factory()->create(['phone' => '+255712345678']);
-        $response = $this->postJson('/api/v1/member/auth/otp/request', ['phone' => '+255712345678'])->assertOk();
+        Member::factory()->create(['phone' => '+255769289824']);
+        $response = $this->postJson('/api/v1/member/auth/otp/request', ['phone' => '0769289824'])->assertOk();
         $code = $response->json('data.development_code');
         $this->assertMatchesRegularExpression('/^[1-9][0-9]{5}$/', $code);
         $challenge = Cache::get('member-otp:challenge:'.$response->json('data.challenge_id'));
         $this->assertNotSame($code, $challenge['code_hash']);
         $this->assertArrayNotHasKey('development_code', $challenge);
         Http::assertNothingSent();
+        $this->verify($response->json('data.challenge_id'), '000000')->assertUnprocessable()
+            ->assertJsonPath('error.code', 'INVALID_VERIFICATION_CODE');
         $this->verify($response->json('data.challenge_id'), $code)->assertOk();
         $this->verify($response->json('data.challenge_id'), $code)->assertUnprocessable();
     }
@@ -190,9 +192,37 @@ class MemberPhoneAuthenticationTest extends TestCase
     public function test_preview_never_grants_access_to_an_unregistered_number(): void
     {
         config(['member_auth.sms.driver' => 'preview']);
-        $response = $this->postJson('/api/v1/member/auth/otp/request', ['phone' => '+255712345678'])->assertOk();
-        $this->verify($response->json('data.challenge_id'), $response->json('data.development_code'))->assertUnprocessable();
+        $this->postJson('/api/v1/member/auth/otp/request', ['phone' => '+255769289824'])
+            ->assertUnprocessable()->assertJsonMissingPath('data.development_code')
+            ->assertJsonPath('error.message', 'This phone number must belong to exactly one active member in an active parish. Check the member phone, duplicate numbers, and account status in the portal, then request a new code.');
+        $this->assertNull(Cache::get('member-otp:active:'.hash('sha256', '+255769289824')));
         $this->assertDatabaseCount('personal_access_tokens', 0);
+    }
+
+    public function test_preview_does_not_display_unusable_codes_for_duplicate_or_inactive_members(): void
+    {
+        config(['member_auth.sms.driver' => 'preview']);
+        $member = Member::factory()->create(['phone' => '+255769289824']);
+        $duplicate = Member::factory()->create(['phone' => '0769289824']);
+        $this->postJson('/api/v1/member/auth/otp/request', ['phone' => '0769289824'])
+            ->assertUnprocessable()->assertJsonMissingPath('data.development_code');
+        $duplicate->delete();
+        $member->update(['status' => 'inactive']);
+        $this->postJson('/api/v1/member/auth/otp/request', ['phone' => '+255769289824'])
+            ->assertUnprocessable()->assertJsonMissingPath('data.development_code');
+        Http::assertNothingSent();
+        $this->assertDatabaseCount('personal_access_tokens', 0);
+    }
+
+    public function test_preview_rejects_other_registered_phone_numbers(): void
+    {
+        config(['member_auth.sms.driver' => 'preview']);
+        Member::factory()->create(['phone' => '+255712345678']);
+        $this->postJson('/api/v1/member/auth/otp/request', ['phone' => '+255712345678'])
+            ->assertUnprocessable()->assertJsonMissingPath('data.development_code')
+            ->assertJsonPath('error.message', 'Temporary OTP login is available only for 0769289824.');
+        $this->assertNull(Cache::get('member-otp:active:'.hash('sha256', '+255712345678')));
+        Http::assertNothingSent();
     }
 
     public function test_preview_is_unavailable_in_production(): void

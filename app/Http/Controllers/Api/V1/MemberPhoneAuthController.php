@@ -35,7 +35,7 @@ class MemberPhoneAuthController extends Controller
             return ApiResponse::error('PHONE_LOGIN_BUSY', 'Please try again shortly.', 503);
         }
         if (! $session) {
-            return ApiResponse::error('INVALID_VERIFICATION_CODE', 'The code is invalid or expired. Request a new code and try again.', 422);
+            return ApiResponse::error('INVALID_VERIFICATION_CODE', 'The verification code is incorrect. Enter the latest code or request a new one.', 422);
         }
         $member = $session['user']->member->load(['parish.deanery', 'jumuiya.leader']);
 

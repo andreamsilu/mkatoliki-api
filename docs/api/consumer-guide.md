@@ -10,6 +10,8 @@ The API uses JSON over HTTP. Public directory reads need no credentials. Family,
 
 Parish staff register the member's own unique phone in the portal. Members do not need a password, member code, or separate account-provisioning command.
 
+Development preview accepts only `0769289824` or its international form `+255769289824`. That phone must match exactly one eligible active member before a code is displayed. Otherwise the request returns 422 with guidance to check the member phone, duplicate records, and account status in the portal. SMS mode permits all eligible registered phones and keeps registration details private.
+
 1. POST `/member/auth/otp/request` with `{ "phone": "0712345678" }` (international `+255...` is also accepted).
 2. The response contains `challenge_id`, `expires_in`, and `resend_after`, without disclosing registration status. Enter the six-digit code delivered by SMS. Temporary development preview mode also returns `development_code`; display it with a clear test-mode label until SMS is configured. This field is absent in webhook mode.
 3. POST `/member/auth/otp/verify` with `challenge_id`, `code` as a string, and `device_name`. Successful verification returns `token`, `expires_at`, and the member's parish profile. Use that bearer token for member endpoints.

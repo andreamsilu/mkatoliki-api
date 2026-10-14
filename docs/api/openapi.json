@@ -12288,7 +12288,7 @@
                 "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "required": ["phone"], "properties": {"phone": {"type": "string", "example": "+255712345678"}}}}}},
                 "responses": {
                     "200": {"description": "Challenge created; temporary code is returned only in development preview mode", "content": {"application/json": {"schema": {"type": "object", "properties": {"success": {"type": "boolean"}, "data": {"type": "object", "required": ["challenge_id", "expires_in", "resend_after"], "properties": {"challenge_id": {"type": "string", "format": "uuid"}, "expires_in": {"type": "integer"}, "resend_after": {"type": "integer"}, "development_code": {"type": "string", "pattern": "^[0-9]{6}$", "description": "Temporary random OTP, only present in non-production preview mode"}}}, "meta": {"type": "object"}}}}}},
-                    "422": {"description": "Invalid phone format"},
+                    "422": {"description": "Invalid phone format, or no eligible member in development preview mode"},
                     "429": {"description": "Request rate or resend cooldown exceeded"},
                     "503": {"description": "SMS delivery is disabled, unconfigured, or unavailable"}
                 }

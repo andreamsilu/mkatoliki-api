@@ -40,6 +40,8 @@ Until an SMS gateway is configured, `MEMBER_SMS_DRIVER=preview` (the development
 
 Phone numbers must identify one member. Members cannot change their login number through profile updates; authorized parish staff update it in the portal. Changing the number or deactivating the member revokes existing sessions. Historical duplicate numbers must be corrected by parish staff before those members can use phone login.
 
+Development preview is restricted to `0769289824` (`+255769289824`) and only displays a code when that phone belongs to an eligible member. Other numbers are rejected on both request and verification. Missing, duplicated, inactive, or disabled member records return a clear 422 message before a challenge is issued. The real SMS mode keeps registration details private and permits all eligible registered phones. Expired or consumed challenges, superseded challenges, exhausted attempts, and incorrect codes return actionable verification errors.
+
 `POST /api/v1/auth/login` with `email`, `password`, and `device_name` returns an eight-hour bearer token. Send `Authorization: Bearer <token>` on protected requests. `GET /auth/me` returns the current administrator and `POST /auth/logout` revokes the current token.
 
 Public listings, detail, search, parish context, and parish structure return **active** organizational records whose primary ancestors are also active. Personal contact information and administrative descriptions are excluded. Public responses never include families or members, even when the caller supplies a token.
