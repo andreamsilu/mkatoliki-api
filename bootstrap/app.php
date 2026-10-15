@@ -3,6 +3,7 @@
 use App\Http\Middleware\ApiRequestContext;
 use App\Http\Middleware\RequireActiveAdministrator;
 use App\Http\Middleware\RequireActiveMember;
+use App\Http\Middleware\RequireActiveContentReader;
 use App\Support\ApiResponse;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
@@ -23,6 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'administrator' => RequireActiveAdministrator::class,
             'member' => RequireActiveMember::class,
+            'content-reader' => RequireActiveContentReader::class,
         ]);
         $middleware->redirectGuestsTo(fn () => null);
     })

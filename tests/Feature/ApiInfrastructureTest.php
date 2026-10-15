@@ -57,7 +57,16 @@ class ApiInfrastructureTest extends TestCase
             }
             $path = substr($route->uri(), strlen('api/v1'));
             foreach (array_diff($route->methods(), ['HEAD']) as $method) {
-                $this->assertArrayHasKey(strtolower($method), $spec['paths'][$path] ?? [], "$method $path is undocumented");
+                $item = $spec['paths'][$path] ?? [];
+                if (isset($item['$ref'])) {
+                    [$file, $pointer] = explode('#', $item['$ref'], 2);
+                    $this->assertSame('./content.openapi.json', $file);
+                    $item = json_decode(file_get_contents(base_path('docs/api/content.openapi.json')), true, flags: JSON_THROW_ON_ERROR);
+                    foreach (explode('/', ltrim($pointer, '/')) as $part) {
+                        $item = $item[str_replace(['~1', '~0'], ['/', '~'], $part)] ?? [];
+                    }
+                }
+                $this->assertArrayHasKey(strtolower($method), $item, "$method $path is undocumented");
             }
         }
         $this->get('/api/openapi.json')->assertOk()->assertHeader('Content-Type', 'application/json');

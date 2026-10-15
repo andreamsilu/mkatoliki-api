@@ -23,7 +23,8 @@ class TecDirectorySeederTest extends TestCase
         $this->seed(DatabaseSeeder::class);
 
         $this->assertDatabaseCount('roles', 8);
-        $this->assertDatabaseCount('permissions', 6);
+        $this->assertDatabaseCount('permissions', 10);
+        $this->assertDatabaseCount('content_categories', 8);
         $this->assertDatabaseCount('data_sources', 2);
         $this->assertDatabaseCount('ecclesiastical_provinces', 7);
         $this->assertDatabaseCount('dioceses', 34);

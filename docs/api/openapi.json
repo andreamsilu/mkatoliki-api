@@ -3,7 +3,7 @@
     "info": {
         "title": "Catholic Tanzania Core API",
         "version": "1.0.0",
-        "description": "Catholic organizational and community directory for Tanzania. Swahili names are primary. Public reads expose active organizations with active primary ancestors, even when a bearer token is supplied. Authorized corrections take effect immediately. Private and administrative operations require an active administrator, permissions, token abilities, and organizational scope. Default limits: public 60/minute/IP; protected 120/minute/user. Administrator tokens expire after eight hours by default; phone-verified member sessions expire after thirty days. Versioned responses include X-Request-ID. PUT and PATCH are partial updates. Phase 1 parish-operation resources support audited soft deletion when no dependents exist. Canonical Phase 1 reads use GET while the earlier POST read/search operations remain available for compatibility. See the consumer guide at /docs on the API origin."
+        "description": "Catholic organizational and community directory for Tanzania, with a reviewed Catholic content library. Swahili names are primary. Public reads expose active organizations with active primary ancestors, even when a bearer token is supplied. Authorized corrections take effect immediately. Private and administrative operations require an active administrator, permissions, token abilities, and organizational scope. Default limits: public 60/minute/IP; protected 120/minute/user. Administrator tokens expire after eight hours by default; phone-verified member sessions expire after three calendar months. Versioned responses include X-Request-ID. PUT and PATCH are partial updates except for the documented full editable payload of Catholic content drafts. Phase 1 parish-operation resources support audited soft deletion when no dependents exist. Canonical Phase 1 reads use GET while the earlier POST read/search operations remain available for compatibility. Content readers expose only independently reviewed, published posts; editorial notes and media storage paths remain private. See the consumer guide at /docs on the API origin."
     },
     "servers": [
         {
@@ -28,6 +28,29 @@
         }
     ],
     "paths": {
+        "/content/feed": {"$ref": "./content.openapi.json#/paths/~1content~1feed"},
+        "/content/posts": {"$ref": "./content.openapi.json#/paths/~1content~1posts"},
+        "/content/search": {"$ref": "./content.openapi.json#/paths/~1content~1search"},
+        "/content/featured": {"$ref": "./content.openapi.json#/paths/~1content~1featured"},
+        "/content/categories": {"$ref": "./content.openapi.json#/paths/~1content~1categories"},
+        "/content/categories/{slug}/posts": {"$ref": "./content.openapi.json#/paths/~1content~1categories~1{slug}~1posts"},
+        "/content/posts/{slug}": {"$ref": "./content.openapi.json#/paths/~1content~1posts~1{slug}"},
+        "/content/posts/{slug}/related": {"$ref": "./content.openapi.json#/paths/~1content~1posts~1{slug}~1related"},
+        "/content/daily-reflection": {"$ref": "./content.openapi.json#/paths/~1content~1daily-reflection"},
+        "/content/media/{media}": {"$ref": "./content.openapi.json#/paths/~1content~1media~1{media}"},
+        "/content/posts/{slug}/reports": {"$ref": "./content.openapi.json#/paths/~1content~1posts~1{slug}~1reports"},
+        "/me/bookmarks": {"$ref": "./content.openapi.json#/paths/~1me~1bookmarks"},
+        "/me/bookmarks/{postId}": {"$ref": "./content.openapi.json#/paths/~1me~1bookmarks~1{postId}"},
+        "/admin/content/posts": {"$ref": "./content.openapi.json#/paths/~1admin~1content~1posts"},
+        "/admin/content/posts/{post}": {"$ref": "./content.openapi.json#/paths/~1admin~1content~1posts~1{post}"},
+        "/admin/content/posts/{post}/transition": {"$ref": "./content.openapi.json#/paths/~1admin~1content~1posts~1{post}~1transition"},
+        "/admin/content/taxonomy": {"$ref": "./content.openapi.json#/paths/~1admin~1content~1taxonomy"},
+        "/admin/content/taxonomy/{kind}": {"$ref": "./content.openapi.json#/paths/~1admin~1content~1taxonomy~1{kind}"},
+        "/admin/content/taxonomy/{kind}/{id}": {"$ref": "./content.openapi.json#/paths/~1admin~1content~1taxonomy~1{kind}~1{id}"},
+        "/admin/content/media": {"$ref": "./content.openapi.json#/paths/~1admin~1content~1media"},
+        "/admin/content/media/{media}/preview": {"$ref": "./content.openapi.json#/paths/~1admin~1content~1media~1{media}~1preview"},
+        "/admin/content/reports": {"$ref": "./content.openapi.json#/paths/~1admin~1content~1reports"},
+        "/admin/content/reports/{report}": {"$ref": "./content.openapi.json#/paths/~1admin~1content~1reports~1{report}"},
         "/provinces/{id}": {
             "post": {
                 "summary": "Show provinces",

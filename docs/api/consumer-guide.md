@@ -6,6 +6,20 @@ Build applications that browse Tanzania's Catholic directory and, with administr
 
 The API uses JSON over HTTP. Public directory reads need no credentials. Family, member, and administrative endpoints require a bearer token and the appropriate organizational access.
 
+## Catholic content feed
+
+Public clients can use `GET /content/feed` without a token. Feed, posts and search accept `locale` (`sw` default, or `en`), `category` slug, `format` (`article`, `audio`, `short`), `season`, `date` (`YYYY-MM-DD` publication date), `q`, `sort` (`editorial` or `recent`), `page` and `per_page` (1–30, default 12). The response follows the existing `success/data/meta` envelope. Advance through `meta.current_page` and `meta.last_page`; never fetch the whole library at once. English requests return only posts with reviewed English translations, with no implicit language fallback.
+
+`GET /content/categories` lists active filters. `GET /content/posts/{slug}` returns a full plain-text reader, tags, category names, source attribution, media rights and optional audio. `GET /content/posts/{slug}/related` suggests up to six published items sharing categories or tags. `GET /content/daily-reflection?locale=sw&date=YYYY-MM-DD` uses an assigned reflection date, defaulting to today in Tanzania; `data:null` means no reviewed publication exists. Editorial reflections are identified separately from official sources. No liturgical text is fabricated or automatically substituted.
+
+Images and audio use returned media URLs, never storage paths. Private assets return 404 until attached to a currently published item with confirmed rights. The audio endpoint supports byte ranges. Display attribution and only play returned authorized assets. Render body strings as plain text; do not interpret them as HTML.
+
+Active member tokens (`member:read`) and active administrator tokens (`directory:read` with directory-read permission) may list `GET /me/bookmarks`, save `POST /me/bookmarks` with `post_id`, check `GET /me/bookmarks/{postId}`, and remove `DELETE /me/bookmarks/{postId}`. Saving/removal is idempotent, bookmarks belong exclusively to the authenticated account, and archived content is omitted from saved lists. The mobile saved-content screen and signed-in portal readers at `/faith?saved=1` use the same private endpoints. Anonymous readers may report a published post with `POST /content/posts/{slug}/reports` and a `reason` of 10–2000 characters; avoid personal information. Reports are reviewed privately and do not automatically hide content.
+
+The portal's `/content` workspace calls `/admin/content/*` with existing administrator tokens. Authors save drafts, submit for review, and view their own history. A separate authorized reviewer approves or rejects with notes. Publication and future scheduling require `content.publish`; edits reset approval and remove the public version until rereviewed. Date/locale uniqueness prevents duplicate daily slots, including in advance. The existing scheduler publishes due approved posts every minute. Category and tag management, private media upload, report resolution and audit records use the same existing permission and response standards.
+
+The complete [Catholic content OpenAPI contract](content.openapi.json) documents all public, member and editorial operations. Main Swagger references the same contract. Mobile public-first-page caching is limited to 24 hours and shows an offline banner; do not substitute cached public data for private bookmarks, validation failures or withdrawn details. Recommendations are deterministic (featured, daily, selected category, then recent); no personal reading/prayer history or artificial popularity is recorded.
+
 ## Member phone login
 
 Parish staff register the member's own unique phone in the portal. Members do not need a password, member code, or separate account-provisioning command.

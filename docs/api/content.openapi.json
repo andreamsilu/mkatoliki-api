@@ -1,0 +1,1935 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Mkatolik Catholic Content API",
+    "version": "1.0.0",
+    "description": "Reviewed Catholic editorial library. Public readers never receive drafts or review notes. Plain-text bodies are rendered as text, not HTML. Scheduling uses the existing Laravel scheduler. Media is private until attached to a visible published post. No reading-history or advertising profiles are recorded."
+  },
+  "servers": [
+    {
+      "url": "/api/v1"
+    }
+  ],
+  "paths": {
+    "/content/feed": {
+      "get": {
+        "operationId": "contentFeed",
+        "summary": "Paginated editorial or recent public feed",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Locale"
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PerPage"
+          },
+          {
+            "$ref": "#/components/parameters/Category"
+          },
+          {
+            "$ref": "#/components/parameters/Format"
+          },
+          {
+            "$ref": "#/components/parameters/Season"
+          },
+          {
+            "$ref": "#/components/parameters/Date"
+          },
+          {
+            "$ref": "#/components/parameters/Search"
+          },
+          {
+            "$ref": "#/components/parameters/Sort"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Page"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "tags": [
+          "Catholic Content"
+        ]
+      }
+    },
+    "/content/posts": {
+      "get": {
+        "operationId": "contentPosts",
+        "summary": "Public posts; same pagination and filters as content/feed",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Locale"
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PerPage"
+          },
+          {
+            "$ref": "#/components/parameters/Category"
+          },
+          {
+            "$ref": "#/components/parameters/Format"
+          },
+          {
+            "$ref": "#/components/parameters/Season"
+          },
+          {
+            "$ref": "#/components/parameters/Date"
+          },
+          {
+            "$ref": "#/components/parameters/Search"
+          },
+          {
+            "$ref": "#/components/parameters/Sort"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Page"
+          }
+        },
+        "tags": [
+          "Catholic Content"
+        ]
+      }
+    },
+    "/content/search": {
+      "get": {
+        "operationId": "contentSearch",
+        "summary": "Search title, summary, body, category and tags",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Locale"
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PerPage"
+          },
+          {
+            "$ref": "#/components/parameters/Category"
+          },
+          {
+            "$ref": "#/components/parameters/Format"
+          },
+          {
+            "$ref": "#/components/parameters/Season"
+          },
+          {
+            "$ref": "#/components/parameters/Date"
+          },
+          {
+            "$ref": "#/components/parameters/Search"
+          },
+          {
+            "$ref": "#/components/parameters/Sort"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Page"
+          }
+        },
+        "tags": [
+          "Catholic Content"
+        ]
+      }
+    },
+    "/content/featured": {
+      "get": {
+        "operationId": "contentFeatured",
+        "summary": "Featured approved published posts",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Locale"
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PerPage"
+          },
+          {
+            "$ref": "#/components/parameters/Category"
+          },
+          {
+            "$ref": "#/components/parameters/Format"
+          },
+          {
+            "$ref": "#/components/parameters/Season"
+          },
+          {
+            "$ref": "#/components/parameters/Date"
+          },
+          {
+            "$ref": "#/components/parameters/Search"
+          },
+          {
+            "$ref": "#/components/parameters/Sort"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Page"
+          }
+        },
+        "tags": [
+          "Catholic Content"
+        ]
+      }
+    },
+    "/content/categories": {
+      "get": {
+        "operationId": "contentCategories",
+        "summary": "Active categories in display order",
+        "responses": {
+          "200": {
+            "description": "Category list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Category"
+                      }
+                    },
+                    "meta": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Catholic Content"
+        ]
+      }
+    },
+    "/content/categories/{slug}/posts": {
+      "get": {
+        "operationId": "contentCategoryPosts",
+        "summary": "Published posts in an active category",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Slug"
+          },
+          {
+            "$ref": "#/components/parameters/Locale"
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PerPage"
+          },
+          {
+            "$ref": "#/components/parameters/Format"
+          },
+          {
+            "$ref": "#/components/parameters/Season"
+          },
+          {
+            "$ref": "#/components/parameters/Date"
+          },
+          {
+            "$ref": "#/components/parameters/Search"
+          },
+          {
+            "$ref": "#/components/parameters/Sort"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Page"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "tags": [
+          "Catholic Content"
+        ]
+      }
+    },
+    "/content/posts/{slug}": {
+      "get": {
+        "operationId": "contentDetail",
+        "summary": "Published translated reader with full plain-text body",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Slug"
+          },
+          {
+            "$ref": "#/components/parameters/Locale"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Public detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/PublicPost"
+                    },
+                    "meta": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "tags": [
+          "Catholic Content"
+        ]
+      }
+    },
+    "/content/posts/{slug}/related": {
+      "get": {
+        "operationId": "contentRelated",
+        "summary": "Up to six visible posts sharing categories or tags",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Slug"
+          },
+          {
+            "$ref": "#/components/parameters/Locale"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Envelope containing an array of public posts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "array",
+                      "maxItems": 6,
+                      "items": {
+                        "$ref": "#/components/schemas/PublicPost"
+                      }
+                    },
+                    "meta": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Catholic Content"
+        ]
+      }
+    },
+    "/content/daily-reflection": {
+      "get": {
+        "operationId": "dailyReflection",
+        "summary": "Reviewed daily reflection for language and date",
+        "description": "Date defaults to today in Africa/Dar_es_Salaam. Returns data:null when no published reviewed reflection exists. A reflection can have been published before its assigned date; no readings are invented or filled in automatically.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Locale"
+          },
+          {
+            "$ref": "#/components/parameters/Date"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "PublicPost or null in the data envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "nullable": true,
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/PublicPost"
+                        }
+                      ]
+                    },
+                    "meta": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Catholic Content"
+        ]
+      }
+    },
+    "/content/media/{media}": {
+      "get": {
+        "operationId": "contentMedia",
+        "summary": "Stream authorized media attached to a published post",
+        "description": "Private local storage; paths are never disclosed. Supports standard byte-range requests through BinaryFileResponse, including audio seeking. Returns 404 for draft-only, unknown-rights or withdrawn assets. No-store and nosniff response headers. Rate limit: 600/minute/IP.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "media",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "in": "header",
+            "name": "Range",
+            "schema": {
+              "type": "string",
+              "example": "bytes=0-1023"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Image or audio bytes"
+          },
+          "206": {
+            "description": "Requested byte range"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "tags": [
+          "Catholic Content"
+        ]
+      }
+    },
+    "/content/posts/{slug}/reports": {
+      "post": {
+        "operationId": "reportContent",
+        "summary": "Report published content for editorial review",
+        "description": "No personal information is requested or stored. Reports do not automatically hide content. Limit: ten reports/day/IP, plus the configurable content public limit (240 requests/minute/IP by default). Only hashed IP rate-limit keys are retained temporarily.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Slug"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "reason"
+                ],
+                "properties": {
+                  "reason": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 2000
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Success"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "tags": [
+          "Catholic Content"
+        ]
+      }
+    },
+    "/me/bookmarks": {
+      "get": {
+        "operationId": "contentBookmarks",
+        "summary": "Authenticated account's own bookmarks, excluding withdrawn content",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Locale"
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PerPage"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Page"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "tags": [
+          "Catholic Content"
+        ]
+      },
+      "post": {
+        "operationId": "saveContentBookmark",
+        "summary": "Idempotently bookmark a visible post",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "post_id"
+                ],
+                "properties": {
+                  "post_id": {
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Success"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "tags": [
+          "Catholic Content"
+        ]
+      }
+    },
+    "/me/bookmarks/{postId}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "postId",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      ],
+      "get": {
+        "operationId": "contentBookmarkStatus",
+        "summary": "Return own bookmark status without exposing any post data",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Success"
+          }
+        },
+        "tags": [
+          "Catholic Content"
+        ]
+      },
+      "delete": {
+        "operationId": "removeContentBookmark",
+        "summary": "Idempotently remove own bookmark, including withdrawn posts",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Success"
+          }
+        },
+        "tags": [
+          "Catholic Content"
+        ]
+      }
+    },
+    "/admin/content/posts": {
+      "get": {
+        "operationId": "editorialPosts",
+        "summary": "Paginated drafts and publications available to this editor",
+        "description": "content.manage and directory:read required. Authors see only their posts; content.review users can inspect all posts.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "in": "query",
+            "name": "per_page",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Search"
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "draft",
+                "in_review",
+                "approved",
+                "published",
+                "archived"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "author_id",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "category",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Date"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/AdminPage"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "tags": [
+          "Catholic Content"
+        ]
+      },
+      "post": {
+        "operationId": "createEditorialPost",
+        "summary": "Create a draft and its translations, categories and reflection dates",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Draft"
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Success"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "description": "Slug or daily date/locale conflict"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "tags": [
+          "Catholic Content"
+        ]
+      }
+    },
+    "/admin/content/posts/{post}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/PostId"
+        }
+      ],
+      "get": {
+        "operationId": "editorialPost",
+        "summary": "Authorized draft preview including translations, reviews and reflection dates",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Success"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "tags": [
+          "Catholic Content"
+        ]
+      },
+      "patch": {
+        "operationId": "updateEditorialPost",
+        "summary": "Replace editable content; reset approval and withdraw any prior publication",
+        "description": "Full editable payload required. Author identity, review decisions and status cannot be set through this payload.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Draft"
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Success"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "tags": [
+          "Catholic Content"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteContentDraft",
+        "summary": "Soft-delete an owned draft; publications must be archived instead",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Success"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "tags": [
+          "Catholic Content"
+        ]
+      }
+    },
+    "/admin/content/posts/{post}/transition": {
+      "post": {
+        "operationId": "transitionContent",
+        "summary": "Submit, independently review, publish, schedule, unpublish or archive",
+        "description": "Draft → in_review → approved → published → archived. Rejection and unpublishing return to draft. Authors cannot review themselves. Approval requires confirmed text/media rights, an active category and a Kiswahili translation. schedule/publish/archive/unpublish require content.publish. Transitions and notes are audited. Scheduled publication runs every minute through the existing scheduler.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PostId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "action"
+                ],
+                "properties": {
+                  "action": {
+                    "type": "string",
+                    "enum": [
+                      "submit",
+                      "approve",
+                      "reject",
+                      "publish",
+                      "schedule",
+                      "unpublish",
+                      "archive"
+                    ]
+                  },
+                  "notes": {
+                    "type": "string",
+                    "nullable": true,
+                    "maxLength": 5000,
+                    "description": "Required on rejection"
+                  },
+                  "scheduled_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "nullable": true,
+                    "description": "Required future instant for schedule; include timezone"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Success"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "tags": [
+          "Catholic Content"
+        ]
+      }
+    },
+    "/admin/content/taxonomy": {
+      "get": {
+        "operationId": "editorialTaxonomy",
+        "summary": "Categories, up to 1000 tags, up to 500 authors and review/publish capabilities",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Success"
+          }
+        },
+        "tags": [
+          "Catholic Content"
+        ]
+      }
+    },
+    "/admin/content/taxonomy/{kind}": {
+      "post": {
+        "operationId": "createContentTaxonomy",
+        "summary": "Create a category or tag; requires content.publish",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Kind"
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Taxonomy"
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Success"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "tags": [
+          "Catholic Content"
+        ]
+      }
+    },
+    "/admin/content/taxonomy/{kind}/{id}": {
+      "patch": {
+        "operationId": "updateContentTaxonomy",
+        "summary": "Update a category or tag; deactivating categories removes them from discovery",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Kind"
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Taxonomy"
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Success"
+          }
+        },
+        "tags": [
+          "Catholic Content"
+        ]
+      }
+    },
+    "/admin/content/media": {
+      "get": {
+        "operationId": "editorialMedia",
+        "summary": "Paginated authorized media selection; 30 assets/page, no storage paths",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Success"
+          }
+        },
+        "tags": [
+          "Catholic Content"
+        ]
+      },
+      "post": {
+        "operationId": "uploadContentMedia",
+        "summary": "Upload private authorized image/audio with source and rights metadata",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "file",
+                  "source_name",
+                  "attribution",
+                  "rights_status"
+                ],
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "JPEG, PNG or WebP: max 5 MiB and 6000x6000 pixels. MP3, M4A, OGG or WAV: max 20 MiB. SVG/HTML/executables are rejected. Files remain private until approved publication."
+                  },
+                  "source_name": {
+                    "type": "string",
+                    "maxLength": 255
+                  },
+                  "source_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "HTTPS only"
+                  },
+                  "attribution": {
+                    "type": "string",
+                    "maxLength": 2000
+                  },
+                  "rights_status": {
+                    "$ref": "#/components/schemas/Rights"
+                  },
+                  "license_details": {
+                    "type": "string",
+                    "maxLength": 5000,
+                    "description": "Required for licensed/permission"
+                  },
+                  "alt_text": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "description": "Required for image uploads; describe the image accessibly."
+                  },
+                  "duration_seconds": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 86400
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Success"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "tags": [
+          "Catholic Content"
+        ]
+      }
+    },
+    "/admin/content/reports": {
+      "get": {
+        "operationId": "editorialReports",
+        "summary": "Unresolved content reports, 30/page; requires content.review",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Success"
+          }
+        },
+        "tags": [
+          "Catholic Content"
+        ]
+      }
+    },
+    "/admin/content/reports/{report}": {
+      "patch": {
+        "operationId": "resolveContentReport",
+        "summary": "Mark a report reviewed; archive or unpublish its post separately if appropriate",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "report",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Success"
+          }
+        },
+        "tags": [
+          "Catholic Content"
+        ]
+      }
+    },
+    "/admin/content/media/{media}/preview": {
+      "get": {
+        "tags": [
+          "Catholic Content"
+        ],
+        "operationId": "editorialMediaPreview",
+        "summary": "Privately preview a draft image or recording before publication",
+        "description": "Requires content.manage and directory:read, plus asset ownership or content.review. Unknown-rights assets remain inspectable privately by authorized staff; this does not publish them. Supports byte ranges. Paths and bearer tokens must never be put in a public preview URL.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "media",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "in": "header",
+            "name": "Range",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Private image or audio stream"
+          },
+          "206": {
+            "description": "Private byte range"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "Sanctum"
+      }
+    },
+    "parameters": {
+      "Locale": {
+        "in": "query",
+        "name": "locale",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "sw",
+            "en"
+          ],
+          "default": "sw"
+        }
+      },
+      "Page": {
+        "in": "query",
+        "name": "page",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        }
+      },
+      "PerPage": {
+        "in": "query",
+        "name": "per_page",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 30,
+          "default": 12
+        }
+      },
+      "Category": {
+        "in": "query",
+        "name": "category",
+        "schema": {
+          "type": "string",
+          "maxLength": 100
+        }
+      },
+      "Format": {
+        "in": "query",
+        "name": "format",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "article",
+            "audio",
+            "short"
+          ]
+        }
+      },
+      "Season": {
+        "in": "query",
+        "name": "season",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "advent",
+            "christmas",
+            "lent",
+            "easter",
+            "ordinary"
+          ]
+        }
+      },
+      "Date": {
+        "in": "query",
+        "name": "date",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      "Search": {
+        "in": "query",
+        "name": "q",
+        "schema": {
+          "type": "string",
+          "maxLength": 100
+        }
+      },
+      "Sort": {
+        "in": "query",
+        "name": "sort",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "editorial",
+            "recent"
+          ],
+          "default": "editorial"
+        }
+      },
+      "Slug": {
+        "in": "path",
+        "name": "slug",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "PostId": {
+        "in": "path",
+        "name": "post",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "Kind": {
+        "in": "path",
+        "name": "kind",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "categories",
+            "tags"
+          ]
+        }
+      }
+    },
+    "requestBodies": {
+      "Draft": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Draft"
+            }
+          }
+        }
+      },
+      "Taxonomy": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "name",
+                "slug"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                "slug": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9-]+$"
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "icon": {
+                  "type": "string",
+                  "enum": [
+                    "book-open",
+                    "church",
+                    "heart-handshake",
+                    "music",
+                    "landmark",
+                    "circle-help",
+                    "users",
+                    "newspaper"
+                  ]
+                },
+                "sort_order": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 1000
+                },
+                "is_active": {
+                  "type": "boolean"
+                }
+              },
+              "description": "icon, sort_order and is_active are required for categories."
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "Success": {
+        "description": "Standard envelope: success:true, data (operation result), meta:{}",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "success",
+                "data",
+                "meta"
+              ],
+              "properties": {
+                "success": {
+                  "type": "boolean"
+                },
+                "data": {},
+                "meta": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Page": {
+        "description": "Paginated public content. Bodies are omitted until detail is requested.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PublicPost"
+                  }
+                },
+                "meta": {
+                  "$ref": "#/components/schemas/PageMeta"
+                }
+              }
+            }
+          }
+        }
+      },
+      "AdminPage": {
+        "description": "Paginated editorial posts, with translations, categories, tags and author. Includes private draft state only for authorized editors.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EditorialPost"
+                  }
+                },
+                "meta": {
+                  "$ref": "#/components/schemas/PageMeta"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Error": {
+        "description": "Standard error envelope; validation fields appear under error.details",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "enum": [
+                    false
+                  ]
+                },
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "details": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "PageMeta": {
+        "type": "object",
+        "properties": {
+          "current_page": {
+            "type": "integer"
+          },
+          "per_page": {
+            "type": "integer"
+          },
+          "last_page": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          }
+        }
+      },
+      "Rights": {
+        "type": "string",
+        "enum": [
+          "original",
+          "public_domain",
+          "licensed",
+          "permission",
+          "unknown"
+        ]
+      },
+      "Category": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "icon": {
+            "type": "string"
+          },
+          "sort_order": {
+            "type": "integer"
+          },
+          "is_active": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Translation": {
+        "type": "object",
+        "required": [
+          "locale",
+          "title",
+          "summary",
+          "body"
+        ],
+        "properties": {
+          "locale": {
+            "type": "string",
+            "enum": [
+              "sw",
+              "en"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "summary": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "body": {
+            "type": "string",
+            "maxLength": 200000
+          },
+          "scripture_reference": {
+            "type": "string",
+            "nullable": true
+          },
+          "practical_action": {
+            "type": "string",
+            "nullable": true
+          },
+          "closing_prayer": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "Draft": {
+        "type": "object",
+        "required": [
+          "slug",
+          "content_type",
+          "format",
+          "source_type",
+          "rights_status",
+          "category_ids",
+          "translations"
+        ],
+        "properties": {
+          "slug": {
+            "type": "string",
+            "maxLength": 180,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "content_type": {
+            "type": "string",
+            "enum": [
+              "reflection",
+              "teaching",
+              "prayer",
+              "song",
+              "history",
+              "question",
+              "christian_life",
+              "parish_story"
+            ]
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "article",
+              "audio",
+              "short"
+            ]
+          },
+          "featured": {
+            "type": "boolean"
+          },
+          "season": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "advent",
+              "christmas",
+              "lent",
+              "easter",
+              "ordinary"
+            ]
+          },
+          "category_ids": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 8,
+            "uniqueItems": true,
+            "items": {
+              "type": "integer"
+            }
+          },
+          "tag_ids": {
+            "type": "array",
+            "maxItems": 20,
+            "uniqueItems": true,
+            "items": {
+              "type": "integer"
+            }
+          },
+          "translations": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 5,
+            "items": {
+              "$ref": "#/components/schemas/Translation"
+            }
+          },
+          "cover_media_id": {
+            "type": "integer",
+            "nullable": true
+          },
+          "audio_media_id": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Required for audio format"
+          },
+          "source_type": {
+            "type": "string",
+            "enum": [
+              "editorial",
+              "official"
+            ]
+          },
+          "source_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "source_url": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "description": "HTTPS; required together with source_name for official sources"
+          },
+          "rights_status": {
+            "$ref": "#/components/schemas/Rights"
+          },
+          "license_details": {
+            "type": "string",
+            "nullable": true,
+            "description": "Required for licensed/permission text"
+          },
+          "composer": {
+            "type": "string",
+            "nullable": true
+          },
+          "choir": {
+            "type": "string",
+            "nullable": true
+          },
+          "reading_time_minutes": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 240,
+            "nullable": true
+          },
+          "reflections": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "locale",
+                "reflection_date"
+              ],
+              "properties": {
+                "locale": {
+                  "type": "string",
+                  "enum": [
+                    "sw",
+                    "en"
+                  ]
+                },
+                "reflection_date": {
+                  "type": "string",
+                  "format": "date"
+                }
+              }
+            },
+            "description": "Reflection posts only. Unique date/locale and post/locale, matching a translation; duplicate reservation returns 409."
+          }
+        }
+      },
+      "EditorialPost": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Draft"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "draft",
+                  "in_review",
+                  "approved",
+                  "published",
+                  "archived"
+                ]
+              },
+              "author_id": {
+                "type": "integer"
+              },
+              "reviewer_id": {
+                "type": "integer",
+                "nullable": true
+              },
+              "published_at": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
+              },
+              "scheduled_at": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
+              },
+              "reviews": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "review_notes": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "reviewed_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "PublicPost": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string",
+            "description": "Detail/daily only"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "content_type": {
+            "type": "string"
+          },
+          "format": {
+            "type": "string"
+          },
+          "featured": {
+            "type": "boolean"
+          },
+          "season": {
+            "type": "string",
+            "nullable": true
+          },
+          "author": {
+            "type": "string"
+          },
+          "published_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "scripture_reference": {
+            "type": "string",
+            "nullable": true
+          },
+          "practical_action": {
+            "type": "string",
+            "nullable": true
+          },
+          "closing_prayer": {
+            "type": "string",
+            "nullable": true
+          },
+          "source_type": {
+            "type": "string"
+          },
+          "source_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "source_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "rights_status": {
+            "$ref": "#/components/schemas/Rights"
+          },
+          "license_details": {
+            "type": "string",
+            "nullable": true
+          },
+          "composer": {
+            "type": "string",
+            "nullable": true
+          },
+          "choir": {
+            "type": "string",
+            "nullable": true
+          },
+          "reading_time_minutes": {
+            "type": "integer",
+            "nullable": true
+          },
+          "share_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Category"
+            }
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "slug": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "cover": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Asset"
+              }
+            ]
+          },
+          "audio": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Asset"
+              }
+            ]
+          },
+          "reflection_date": {
+            "type": "string",
+            "format": "date",
+            "nullable": true,
+            "description": "Assigned reflection date for the requested locale; distinct from published_at."
+          }
+        }
+      },
+      "Asset": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "alt_text": {
+            "type": "string",
+            "nullable": true
+          },
+          "attribution": {
+            "type": "string",
+            "nullable": true
+          },
+          "source_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "source_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "rights_status": {
+            "$ref": "#/components/schemas/Rights"
+          },
+          "license_details": {
+            "type": "string",
+            "nullable": true
+          },
+          "duration_seconds": {
+            "type": "integer",
+            "nullable": true
+          }
+        }
+      }
+    }
+  }
+}

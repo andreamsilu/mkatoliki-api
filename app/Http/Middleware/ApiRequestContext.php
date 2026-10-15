@@ -27,11 +27,12 @@ class ApiRequestContext
         $response->headers->set('X-Request-ID', $requestId);
         $response->headers->set('X-Content-Type-Options', 'nosniff');
         $response->headers->set('Cache-Control', 'no-store, private');
+        $privateReading = $request->is('api/v1/content/*', 'api/v1/me/bookmarks*');
         Log::info('api.request', [
             'request_id' => $requestId, 'timestamp' => now()->toIso8601String(),
-            'endpoint' => $request->route()?->uri() ?? $request->path(), 'method' => $request->method(),
+            'endpoint' => $request->route()?->uri() ?? ($privateReading ? 'api/v1/content/{unmatched}' : $request->path()), 'method' => $request->method(),
             'status' => $response->getStatusCode(), 'duration_ms' => round((hrtime(true) - $start) / 1e6, 2),
-            'user_id' => $request->user()?->id, 'ip_address' => $request->ip(),
+            'user_id' => $privateReading ? null : $request->user()?->id, 'ip_address' => $privateReading ? null : $request->ip(),
         ]);
 
         return $response;

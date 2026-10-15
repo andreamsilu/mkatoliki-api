@@ -20,6 +20,8 @@ use App\Http\Controllers\Api\V1\SacramentManagementController;
 use App\Support\EntityRegistry;
 use Illuminate\Support\Facades\Route;
 
+require __DIR__.'/content.php';
+
 Route::prefix('v1')->name('api.v1.')->group(function (): void {
     Route::post('auth/login', [AuthController::class, 'login'])->middleware('throttle:login')->name('auth.login');
     Route::post('member/auth/login', [MemberAuthController::class, 'login'])->middleware('throttle:login')->name('member.auth.login');

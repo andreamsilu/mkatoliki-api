@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Policies\DirectoryPolicy;
+use App\Policies\ContentPostPolicy;
+use App\Models\ContentPost;
 use App\Support\EntityRegistry;
 use App\Support\MemberPhoneNumber;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -17,6 +19,7 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        Gate::policy(ContentPost::class, ContentPostPolicy::class);
         foreach (EntityRegistry::ENTITIES as $definition) {
             Gate::policy($definition['model'], DirectoryPolicy::class);
         }
@@ -24,6 +27,9 @@ class AppServiceProvider extends ServiceProvider
             Gate::define($permission, fn ($user) => $user->hasPermission($permission) && $user->tokenCan($permission === 'audit.read' ? 'directory:read' : 'directory:write'));
         }
         RateLimiter::for('public-api', fn (Request $request) => Limit::perMinute(config('core.public_rate_limit'))->by($request->ip()));
+        RateLimiter::for('content-report', fn (Request $request) => Limit::perDay(10)->by('content-report:'.hash('sha256', $request->ip())));
+        RateLimiter::for('content-media', fn (Request $request) => Limit::perMinute(600)->by('content-media:'.hash('sha256', $request->ip())));
+        RateLimiter::for('content-public', fn (Request $request) => Limit::perMinute(config('content.public_rate_limit', 240))->by('content-public:'.hash('sha256', $request->ip())));
         RateLimiter::for('authenticated-api', fn (Request $request) => Limit::perMinute(config('core.authenticated_rate_limit'))->by($request->user()?->id ?? $request->ip()));
         RateLimiter::for('login', function (Request $request): array {
             $identity = strtolower((string) ($request->input('email') ?? $request->input('identity')));

@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', fn () => response()->json(['name' => 'Catholic Tanzania Core API', 'version' => config('core.version'), 'documentation' => route('swagger'), 'openapi' => route('openapi'), 'consumer_documentation' => route('docs')]))->name('home');
 Route::get('/health', HealthController::class)->name('health');
 Route::get('/api/openapi.json', fn () => response()->file(base_path('docs/api/openapi.json'), ['Content-Type' => 'application/json']))->name('openapi');
+Route::get('/api/content.openapi.json', fn () => response()->file(base_path('docs/api/content.openapi.json'), ['Content-Type' => 'application/json']))->name('content.openapi');
+Route::get('/docs/content.openapi.json', fn () => response()->file(base_path('docs/api/content.openapi.json'), ['Content-Type' => 'application/json']))->name('docs.content.openapi');
 Route::view('/swagger', 'swagger')->name('swagger');
 Route::get('/docs', fn () => redirect()->route('docs.index'))->name('docs');
 Route::get('/docs/index.html', fn () => response()->file(base_path('docs/api/index.html'), ['Content-Type' => 'text/html; charset=UTF-8']))->name('docs.index');

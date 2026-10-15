@@ -10,6 +10,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             AccessControlSeeder::class,
+            ContentCategorySeeder::class,
             AdministratorSeeder::class,
             TecDirectorySeeder::class,
             DarEsSalaamDirectorySeeder::class,
