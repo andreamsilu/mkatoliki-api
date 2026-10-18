@@ -26,8 +26,8 @@ class ContentPostResource extends JsonResource
             'source_type' => $this->source_type, 'source_name' => $this->source_name, 'source_url' => $this->source_url,
             'rights_status' => $this->rights_status, 'license_details' => $this->when($detail, $this->license_details),
             'composer' => $this->composer, 'choir' => $this->choir,
-            'categories' => $this->categories->map->only(['id', 'name', 'slug', 'icon'])->values(),
-            'tags' => $this->tags->map->only(['id', 'name', 'slug'])->values(),
+            'categories' => $this->categories->map->only(['id', 'name', 'slug', 'icon'])->values()->all(),
+            'tags' => $this->tags->map->only(['id', 'name', 'slug'])->values()->all(),
             'cover' => $this->asset($this->cover, $detail), 'audio' => $this->asset($this->audio, $detail),
         ];
     }

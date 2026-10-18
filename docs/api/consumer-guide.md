@@ -2,6 +2,16 @@
 
 API v1 · Consumer guide · Contract version 1.0.0
 
+## Published parish reports
+
+Parish reports are authored publications, with a written body, a PDF, or both. They are separate from private automatically generated member statistics. The mobile menu **Ripoti za Parokia** reads reports for the selected parish without requiring login. The bottom navigation remains Home, Imani and Profile/Login.
+
+Public routes are `GET /parishes/{id}/reports` (paginated, default 20, maximum 50), `GET /parishes/{id}/reports/{report}` (full written report), and `GET /parishes/{id}/reports/{report}/document` (PDF). Public access checks the active parish and ancestors, publication status and publication time on every request. Drafts, future publications, withdrawn reports and cross-parish document IDs return 404. Public listings omit the body; detail includes it. Files stay private and no storage path is returned.
+
+The parish admin portal manages these records at `/operations/reports` using table listings and editing modals. Admin API routes are `GET/POST /admin/parishes/{parish}/published-reports`, `PATCH/DELETE /admin/published-reports/{report}`, and `GET /admin/published-reports/{report}/document` for authorized previews. All use existing directory permissions, token abilities and organization scope. Saves require `title`, `summary` and `is_published`; include a nonempty `body` or `document` PDF (or retain the existing attachment). PDF maximum is 10 MiB, validated by file type and MIME. Use multipart POST with `_method=PATCH` to replace a PDF; `remove_document=1` removes it unless a replacement is supplied. Optional `report_date` uses YYYY-MM-DD. When publishing without `published_at`, the server uses the current time. Publishing explicitly makes the report available to parish readers, including guests; private member records are never added automatically.
+
+Activation requires the `2026_10_15_000002_create_parish_published_reports_table` migration and mobile dependency resolution for the approved `url_launcher` entry. No migration, dependency installation or runtime verification was performed during source implementation. Regression test sources: API `ParishPublishedReportsTest.php`, mobile `parish_reports_repository_test.dart`.
+
 Build applications that browse Tanzania's Catholic directory and, with administrator access, manage organizational and community records. Swahili names are primary; selected resources also provide an optional English name.
 
 The API uses JSON over HTTP. Public directory reads need no credentials. Family, member, and administrative endpoints require a bearer token and the appropriate organizational access.

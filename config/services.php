@@ -2,6 +2,12 @@
 
 return [
 
+    'catholic_readings' => [
+        'base_url' => env('CATHOLIC_READINGS_BASE_URL', 'https://cpbjr.github.io/catholic-readings-api'),
+        'fallback_url' => env('CATHOLIC_READINGS_FALLBACK_URL', 'https://raw.githubusercontent.com/cpbjr/catholic-readings-api/main'),
+        'cache_store' => env('CATHOLIC_READINGS_CACHE_STORE', 'file'),
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Third Party Services

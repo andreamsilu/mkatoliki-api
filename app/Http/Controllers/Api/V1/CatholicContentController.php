@@ -74,7 +74,7 @@ class CatholicContentController extends Controller
     public function index(Request $request): JsonResponse
     {
         $filters = $this->filters($request);
-        $key = 'content:feed:'.hash('sha256', json_encode($filters).Cache::get('content:revision', 'initial').$request->path());
+        $key = 'content:feed:v2:'.hash('sha256', json_encode($filters).Cache::get('content:revision', 'initial').$request->path());
         $result = Cache::remember($key, 60, function () use ($request): array {
             $query = $this->query($request);
             if ($request->is('api/v1/content/featured')) {

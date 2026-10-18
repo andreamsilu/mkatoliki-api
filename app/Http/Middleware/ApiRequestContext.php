@@ -27,7 +27,7 @@ class ApiRequestContext
         $response->headers->set('X-Request-ID', $requestId);
         $response->headers->set('X-Content-Type-Options', 'nosniff');
         $response->headers->set('Cache-Control', 'no-store, private');
-        $privateReading = $request->is('api/v1/content/*', 'api/v1/me/bookmarks*');
+        $privateReading = $request->is('api/v1/content/*', 'api/v1/me/bookmarks*', 'api/v1/parishes/*/reports*');
         Log::info('api.request', [
             'request_id' => $requestId, 'timestamp' => now()->toIso8601String(),
             'endpoint' => $request->route()?->uri() ?? ($privateReading ? 'api/v1/content/{unmatched}' : $request->path()), 'method' => $request->method(),

@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\V1\ParishMassTimeController;
 use App\Http\Controllers\Api\V1\ParishNotificationController;
 use App\Http\Controllers\Api\V1\ParishProjectController;
 use App\Http\Controllers\Api\V1\ParishReportController;
+use App\Http\Controllers\Api\V1\ParishPublishedReportController;
 use App\Http\Controllers\Api\V1\SacramentManagementController;
 use App\Support\EntityRegistry;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +36,9 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
         Route::get('parishes', [DirectoryController::class, 'index'])->defaults('entity', 'parishes')->name('parishes.list');
         Route::get('parishes/{id}', [DirectoryController::class, 'show'])->whereNumber('id')->defaults('entity', 'parishes')->name('parishes.detail');
         Route::get('parishes/{id}/content', ParishContentController::class)->whereNumber('id')->name('parishes.content');
+        Route::get('parishes/{id}/reports', [ParishPublishedReportController::class, 'publicIndex'])->whereNumber('id')->name('parishes.published-reports.index');
+        Route::get('parishes/{id}/reports/{report}', [ParishPublishedReportController::class, 'show'])->whereNumber(['id', 'report'])->name('parishes.published-reports.show');
+        Route::get('parishes/{id}/reports/{report}/document', [ParishPublishedReportController::class, 'document'])->whereNumber(['id', 'report'])->name('parishes.published-reports.document');
         Route::get('parishes/{id}/zones', [DirectoryController::class, 'children'])->whereNumber('id')->defaults('entity', 'parishes')->defaults('child', 'zones')->name('parishes.zones.list');
         Route::get('zones/{id}', [DirectoryController::class, 'show'])->whereNumber('id')->defaults('entity', 'zones')->name('zones.detail');
         Route::get('zones/{id}/jumuiyas', [DirectoryController::class, 'children'])->whereNumber('id')->defaults('entity', 'zones')->defaults('child', 'jumuiyas')->name('zones.jumuiyas.list');
@@ -137,6 +141,11 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
             Route::post('parishes/{parish}/notifications', [ParishNotificationController::class, 'store'])->whereNumber('parish')->name('parishes.notifications.store');
             Route::delete('notifications/{notification}', [ParishNotificationController::class, 'destroy'])->whereNumber('notification')->name('notifications.destroy');
             Route::get('parishes/{parish}/reports/{type}', ParishReportController::class)->whereNumber('parish')->whereIn('type', ['membership', 'contributions', 'sacraments', 'annual'])->name('parishes.reports.show');
+            Route::get('parishes/{parish}/published-reports', [ParishPublishedReportController::class, 'index'])->whereNumber('parish')->name('parishes.published-reports.index');
+            Route::post('parishes/{parish}/published-reports', [ParishPublishedReportController::class, 'store'])->whereNumber('parish')->name('parishes.published-reports.store');
+            Route::patch('published-reports/{report}', [ParishPublishedReportController::class, 'update'])->whereNumber('report')->name('published-reports.update');
+            Route::delete('published-reports/{report}', [ParishPublishedReportController::class, 'destroy'])->whereNumber('report')->name('published-reports.destroy');
+            Route::get('published-reports/{report}/document', [ParishPublishedReportController::class, 'preview'])->whereNumber('report')->name('published-reports.document');
 
             Route::post('parishes/{id}/structure', [DirectoryController::class, 'structure'])->whereNumber('id')->name('parishes.structure');
             Route::post('data-sources/search', [GovernanceController::class, 'sources'])->name('sources.index');

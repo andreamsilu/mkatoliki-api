@@ -28,6 +28,594 @@
         }
     ],
     "paths": {
+"/parishes/{id}/reports": {
+    "get": {
+      "tags": [
+        "Parish Operations"
+      ],
+      "summary": "Public parish report listing",
+      "description": "Written reports and optional PDFs explicitly published by the parish. Private generated member statistics are separate. Public endpoints require an active parish and active ancestors; drafts, future publications and withdrawn reports return 404. Administrative access requires directory permission, matching token ability and organizational scope. PDFs remain on private storage, with no-store responses.",
+      "parameters": [
+        {
+          "required": true,
+          "name": "id",
+          "schema": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "in": "path"
+        },
+        {
+          "name": "page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "in": "query"
+        },
+        {
+          "name": "per_page",
+          "schema": {
+            "minimum": 1,
+            "type": "integer",
+            "default": 20,
+            "maximum": 50
+          },
+          "in": "query"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/PublishedParishReport"
+                    }
+                  },
+                  "meta": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "$ref": "#/components/responses/Error"
+        },
+        "403": {
+          "$ref": "#/components/responses/Error"
+        },
+        "404": {
+          "$ref": "#/components/responses/Error"
+        },
+        "422": {
+          "$ref": "#/components/responses/Error"
+        },
+        "429": {
+          "$ref": "#/components/responses/Error"
+        },
+        "503": {
+          "$ref": "#/components/responses/Error"
+        }
+      }
+    }
+  },
+  "/parishes/{id}/reports/{report}": {
+    "get": {
+      "tags": [
+        "Parish Operations"
+      ],
+      "summary": "Public written parish report detail",
+      "description": "Written reports and optional PDFs explicitly published by the parish. Private generated member statistics are separate. Public endpoints require an active parish and active ancestors; drafts, future publications and withdrawn reports return 404. Administrative access requires directory permission, matching token ability and organizational scope. PDFs remain on private storage, with no-store responses.",
+      "parameters": [
+        {
+          "required": true,
+          "name": "id",
+          "schema": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "in": "path"
+        },
+        {
+          "required": true,
+          "name": "report",
+          "schema": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "in": "path"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean"
+                  },
+                  "data": {
+                    "$ref": "#/components/schemas/PublishedParishReport"
+                  },
+                  "meta": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "$ref": "#/components/responses/Error"
+        },
+        "403": {
+          "$ref": "#/components/responses/Error"
+        },
+        "404": {
+          "$ref": "#/components/responses/Error"
+        },
+        "422": {
+          "$ref": "#/components/responses/Error"
+        },
+        "429": {
+          "$ref": "#/components/responses/Error"
+        },
+        "503": {
+          "$ref": "#/components/responses/Error"
+        }
+      }
+    }
+  },
+  "/parishes/{id}/reports/{report}/document": {
+    "get": {
+      "tags": [
+        "Parish Operations"
+      ],
+      "summary": "Published parish PDF",
+      "description": "Written reports and optional PDFs explicitly published by the parish. Private generated member statistics are separate. Public endpoints require an active parish and active ancestors; drafts, future publications and withdrawn reports return 404. Administrative access requires directory permission, matching token ability and organizational scope. PDFs remain on private storage, with no-store responses.",
+      "parameters": [
+        {
+          "required": true,
+          "name": "id",
+          "schema": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "in": "path"
+        },
+        {
+          "required": true,
+          "name": "report",
+          "schema": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "in": "path"
+        },
+        {
+          "name": "Range",
+          "schema": {
+            "type": "string"
+          },
+          "in": "header"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response",
+          "content": {
+            "application/pdf": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        },
+        "401": {
+          "$ref": "#/components/responses/Error"
+        },
+        "403": {
+          "$ref": "#/components/responses/Error"
+        },
+        "404": {
+          "$ref": "#/components/responses/Error"
+        },
+        "422": {
+          "$ref": "#/components/responses/Error"
+        },
+        "429": {
+          "$ref": "#/components/responses/Error"
+        },
+        "503": {
+          "$ref": "#/components/responses/Error"
+        }
+      }
+    }
+  },
+  "/admin/parishes/{parish}/published-reports": {
+    "get": {
+      "tags": [
+        "Parish Operations"
+      ],
+      "summary": "Manage parish-published reports",
+      "description": "Written reports and optional PDFs explicitly published by the parish. Private generated member statistics are separate. Public endpoints require an active parish and active ancestors; drafts, future publications and withdrawn reports return 404. Administrative access requires directory permission, matching token ability and organizational scope. PDFs remain on private storage, with no-store responses.",
+      "parameters": [
+        {
+          "required": true,
+          "name": "parish",
+          "schema": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "in": "path"
+        },
+        {
+          "name": "page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "in": "query"
+        },
+        {
+          "name": "per_page",
+          "schema": {
+            "minimum": 1,
+            "type": "integer",
+            "default": 20,
+            "maximum": 50
+          },
+          "in": "query"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/PublishedParishReport"
+                    }
+                  },
+                  "meta": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "$ref": "#/components/responses/Error"
+        },
+        "403": {
+          "$ref": "#/components/responses/Error"
+        },
+        "404": {
+          "$ref": "#/components/responses/Error"
+        },
+        "422": {
+          "$ref": "#/components/responses/Error"
+        },
+        "429": {
+          "$ref": "#/components/responses/Error"
+        },
+        "503": {
+          "$ref": "#/components/responses/Error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    },
+    "post": {
+      "tags": [
+        "Parish Operations"
+      ],
+      "summary": "Manage parish-published reports",
+      "description": "Written reports and optional PDFs explicitly published by the parish. Private generated member statistics are separate. Public endpoints require an active parish and active ancestors; drafts, future publications and withdrawn reports return 404. Administrative access requires directory permission, matching token ability and organizational scope. PDFs remain on private storage, with no-store responses.",
+      "parameters": [
+        {
+          "required": true,
+          "name": "parish",
+          "schema": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "in": "path"
+        }
+      ],
+      "responses": {
+        "201": {
+          "description": "Successful response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean"
+                  },
+                  "data": {
+                    "$ref": "#/components/schemas/PublishedParishReport"
+                  },
+                  "meta": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "$ref": "#/components/responses/Error"
+        },
+        "403": {
+          "$ref": "#/components/responses/Error"
+        },
+        "404": {
+          "$ref": "#/components/responses/Error"
+        },
+        "422": {
+          "$ref": "#/components/responses/Error"
+        },
+        "429": {
+          "$ref": "#/components/responses/Error"
+        },
+        "503": {
+          "$ref": "#/components/responses/Error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "requestBody": {
+        "content": {
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/PublishedParishReportInput"
+            }
+          }
+        },
+        "required": true
+      }
+    }
+  },
+  "/admin/published-reports/{report}": {
+    "patch": {
+      "tags": [
+        "Parish Operations"
+      ],
+      "summary": "Update or delete a parish publication",
+      "description": "Written reports and optional PDFs explicitly published by the parish. Private generated member statistics are separate. Public endpoints require an active parish and active ancestors; drafts, future publications and withdrawn reports return 404. Administrative access requires directory permission, matching token ability and organizational scope. PDFs remain on private storage, with no-store responses.",
+      "parameters": [
+        {
+          "required": true,
+          "name": "report",
+          "schema": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "in": "path"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean"
+                  },
+                  "data": {
+                    "$ref": "#/components/schemas/PublishedParishReport"
+                  },
+                  "meta": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "$ref": "#/components/responses/Error"
+        },
+        "403": {
+          "$ref": "#/components/responses/Error"
+        },
+        "404": {
+          "$ref": "#/components/responses/Error"
+        },
+        "422": {
+          "$ref": "#/components/responses/Error"
+        },
+        "429": {
+          "$ref": "#/components/responses/Error"
+        },
+        "503": {
+          "$ref": "#/components/responses/Error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "requestBody": {
+        "content": {
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/PublishedParishReportInput"
+            }
+          }
+        },
+        "required": true
+      }
+    },
+    "delete": {
+      "tags": [
+        "Parish Operations"
+      ],
+      "summary": "Update or delete a parish publication",
+      "description": "Written reports and optional PDFs explicitly published by the parish. Private generated member statistics are separate. Public endpoints require an active parish and active ancestors; drafts, future publications and withdrawn reports return 404. Administrative access requires directory permission, matching token ability and organizational scope. PDFs remain on private storage, with no-store responses.",
+      "parameters": [
+        {
+          "required": true,
+          "name": "report",
+          "schema": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "in": "path"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "deleted": {
+                        "type": "boolean"
+                      }
+                    }
+                  },
+                  "meta": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "$ref": "#/components/responses/Error"
+        },
+        "403": {
+          "$ref": "#/components/responses/Error"
+        },
+        "404": {
+          "$ref": "#/components/responses/Error"
+        },
+        "422": {
+          "$ref": "#/components/responses/Error"
+        },
+        "429": {
+          "$ref": "#/components/responses/Error"
+        },
+        "503": {
+          "$ref": "#/components/responses/Error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/published-reports/{report}/document": {
+    "get": {
+      "tags": [
+        "Parish Operations"
+      ],
+      "summary": "Authorized preview of parish PDF",
+      "description": "Written reports and optional PDFs explicitly published by the parish. Private generated member statistics are separate. Public endpoints require an active parish and active ancestors; drafts, future publications and withdrawn reports return 404. Administrative access requires directory permission, matching token ability and organizational scope. PDFs remain on private storage, with no-store responses.",
+      "parameters": [
+        {
+          "required": true,
+          "name": "report",
+          "schema": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "in": "path"
+        },
+        {
+          "name": "Range",
+          "schema": {
+            "type": "string"
+          },
+          "in": "header"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response",
+          "content": {
+            "application/pdf": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        },
+        "401": {
+          "$ref": "#/components/responses/Error"
+        },
+        "403": {
+          "$ref": "#/components/responses/Error"
+        },
+        "404": {
+          "$ref": "#/components/responses/Error"
+        },
+        "422": {
+          "$ref": "#/components/responses/Error"
+        },
+        "429": {
+          "$ref": "#/components/responses/Error"
+        },
+        "503": {
+          "$ref": "#/components/responses/Error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
         "/content/feed": {"$ref": "./content.openapi.json#/paths/~1content~1feed"},
         "/content/posts": {"$ref": "./content.openapi.json#/paths/~1content~1posts"},
         "/content/search": {"$ref": "./content.openapi.json#/paths/~1content~1search"},
@@ -37,6 +625,7 @@
         "/content/posts/{slug}": {"$ref": "./content.openapi.json#/paths/~1content~1posts~1{slug}"},
         "/content/posts/{slug}/related": {"$ref": "./content.openapi.json#/paths/~1content~1posts~1{slug}~1related"},
         "/content/daily-reflection": {"$ref": "./content.openapi.json#/paths/~1content~1daily-reflection"},
+        "/content/daily-readings": {"$ref": "./content.openapi.json#/paths/~1content~1daily-readings"},
         "/content/media/{media}": {"$ref": "./content.openapi.json#/paths/~1content~1media~1{media}"},
         "/content/posts/{slug}/reports": {"$ref": "./content.openapi.json#/paths/~1content~1posts~1{slug}~1reports"},
         "/me/bookmarks": {"$ref": "./content.openapi.json#/paths/~1me~1bookmarks"},
@@ -15378,6 +15967,104 @@
             }
         },
         "schemas": {
+"PublishedParishReport": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "integer"
+      },
+      "parish_id": {
+        "type": "integer"
+      },
+      "title": {
+        "type": "string"
+      },
+      "summary": {
+        "type": "string"
+      },
+      "body": {
+        "nullable": true,
+        "description": "Included in detail and administrative responses; plain text.",
+        "type": "string"
+      },
+      "report_date": {
+        "nullable": true,
+        "type": "string",
+        "format": "date"
+      },
+      "published_at": {
+        "nullable": true,
+        "type": "string",
+        "format": "date-time"
+      },
+      "is_published": {
+        "type": "boolean",
+        "description": "Administrative responses only."
+      },
+      "has_document": {
+        "type": "boolean"
+      },
+      "document_name": {
+        "type": "string",
+        "nullable": true
+      },
+      "document_size": {
+        "type": "integer",
+        "nullable": true
+      },
+      "document_url": {
+        "nullable": true,
+        "description": "Public gated PDF URL, omitted for private previews. No storage path.",
+        "type": "string",
+        "format": "uri"
+      }
+    }
+  },
+  "PublishedParishReportInput": {
+    "description": "Full editable snapshot. A nonempty body or attached/existing PDF is required. Publication without a timestamp uses the current time. Future-dated reports remain private until due. remove_document removes an old attachment; a replacement PDF takes precedence.",
+    "type": "object",
+    "required": [
+      "title",
+      "summary",
+      "is_published"
+    ],
+    "properties": {
+      "title": {
+        "type": "string",
+        "maxLength": 255
+      },
+      "summary": {
+        "type": "string",
+        "maxLength": 5000
+      },
+      "body": {
+        "nullable": true,
+        "type": "string",
+        "maxLength": 200000
+      },
+      "report_date": {
+        "nullable": true,
+        "type": "string",
+        "format": "date"
+      },
+      "published_at": {
+        "nullable": true,
+        "type": "string",
+        "format": "date-time"
+      },
+      "is_published": {
+        "type": "boolean"
+      },
+      "document": {
+        "description": "PDF only, maximum 10 MiB. Optional when a written body is present.",
+        "type": "string",
+        "format": "binary"
+      },
+      "remove_document": {
+        "type": "boolean"
+      }
+    }
+  },
             "Error": {
                 "type": "object",
                 "required": [

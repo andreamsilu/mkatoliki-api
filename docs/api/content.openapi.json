@@ -357,6 +357,58 @@
         ]
       }
     },
+    "/content/daily-readings": {
+      "get": {
+        "operationId": "dailyMassReadings",
+        "tags": ["Catholic Content"],
+        "summary": "Automatic daily Catholic Mass reading references",
+        "description": "Public endpoint, no login or API key required. Uses today's date in Africa/Dar_es_Salaam and the cpbjr Catholic Readings API's USCCB calendar. References only; no scripture text or reflection is generated. Normalizes English book names into locale-neutral book identifiers for translation by clients. Caches per date on first request; no scheduler or editorial publication is required. Tries the official GitHub repository mirror if GitHub Pages fails. Returns 503 for missing, malformed or wrong-date data; never substitutes another day's readings. Full readings link opens English USCCB text externally. This is not a Tanzania-specific liturgical calendar.",
+        "responses": {
+          "200": {
+            "description": "Today's reading references in the standard data envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["success", "data", "meta"],
+                  "properties": {
+                    "success": {"type": "boolean", "enum": [true]},
+                    "meta": {"type": "object"},
+                    "data": {
+                      "type": "object",
+                      "required": ["date", "timezone", "source", "source_url", "calendar", "references_only", "readings", "full_readings_url", "full_readings_language"],
+                      "properties": {
+                        "date": {"type": "string", "format": "date"},
+                        "timezone": {"type": "string", "enum": ["Africa/Dar_es_Salaam"]},
+                        "source": {"type": "string", "example": "Catholic Readings API"},
+                        "source_url": {"type": "string", "format": "uri"},
+                        "calendar": {"type": "string", "enum": ["USCCB"]},
+                        "references_only": {"type": "boolean", "enum": [true]},
+                        "full_readings_url": {"type": "string", "format": "uri"},
+                        "full_readings_language": {"type": "string", "enum": ["en"]},
+                        "readings": {
+                          "type": "array", "minItems": 3, "maxItems": 4,
+                          "items": {
+                            "type": "object", "required": ["type", "book", "verses"],
+                            "properties": {
+                              "type": {"type": "string", "enum": ["first_reading", "psalm", "second_reading", "gospel"]},
+                              "book": {"type": "string", "example": "ephesians"},
+                              "verses": {"type": "string", "example": "1:15-23"}
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {"description": "Provider data unavailable. Standard error envelope with code DAILY_READINGS_UNAVAILABLE."},
+          "429": {"description": "Public content rate limit exceeded."}
+        }
+      }
+    },
     "/content/daily-reflection": {
       "get": {
         "operationId": "dailyReflection",

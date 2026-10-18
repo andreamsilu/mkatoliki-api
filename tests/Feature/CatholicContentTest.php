@@ -69,6 +69,25 @@ class CatholicContentTest extends TestCase
         $this->getJson('/api/v1/content/feed?per_page=1000')->assertUnprocessable();
     }
 
+    public function test_post_relationships_are_json_arrays_in_feed_and_detail(): void
+    {
+        $post = ContentPost::factory()->published()->create();
+        $tag = \App\Models\ContentTag::create(['name' => 'Imani', 'slug' => 'imani']);
+        $post->tags()->attach($tag);
+        foreach (['/api/v1/content/feed', '/api/v1/content/posts/'.$post->slug] as $path) {
+            $response = $this->getJson($path)->assertOk();
+            $data = json_decode($response->getContent(), flags: JSON_THROW_ON_ERROR)->data;
+            $record = is_array($data) ? $data[0] : $data;
+            $this->assertIsArray($record->categories);
+            $this->assertIsArray($record->tags);
+            $this->assertSame('mafundisho', $record->categories[0]->slug);
+            $this->assertSame('imani', $record->tags[0]->slug);
+        }
+        $post->tags()->detach();
+        $response = $this->getJson('/api/v1/content/posts/'.$post->slug)->assertOk();
+        $this->assertSame([], json_decode($response->getContent(), flags: JSON_THROW_ON_ERROR)->data->tags);
+    }
+
     public function test_workflow_requires_an_independent_reviewer_and_records_history(): void
     {
         $author = $this->editor();

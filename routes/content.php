@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\CatholicContentController as PublicContent;
 use App\Http\Controllers\Api\V1\ContentEditorialController as Editorial;
+use App\Http\Controllers\Api\V1\DailyReadingsController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->name('api.v1.content.')->group(function (): void {
@@ -12,6 +13,7 @@ Route::prefix('v1')->name('api.v1.content.')->group(function (): void {
         Route::get('categories', [PublicContent::class, 'categories'])->name('categories');
         Route::get('categories/{slug}/posts', [PublicContent::class, 'category'])->name('category');
         Route::get('daily-reflection', [PublicContent::class, 'daily'])->name('daily');
+        Route::get('daily-readings', DailyReadingsController::class)->name('daily-readings');
         Route::get('posts/{slug}', [PublicContent::class, 'show'])->name('show');
         Route::get('posts/{slug}/related', [PublicContent::class, 'related'])->name('related');
         Route::post('posts/{slug}/reports', [PublicContent::class, 'report'])->middleware('throttle:content-report')->name('report');
